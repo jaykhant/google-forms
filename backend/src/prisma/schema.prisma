@@ -1,0 +1,45 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["rhel-openssl-1.0.x", "darwin-arm64", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String
+  username String
+  password String
+}
+
+model From {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  description String
+  Items       Items[] @relation("FromOfItems")
+}
+
+model Items {
+  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  type         String
+  display_name String
+  From         From?      @relation("FromOfItems", fields: [FromId], references: [id])
+  FromId       String?    @db.ObjectId
+  Response     Response[] @relation("ItemsofResponse")
+  Answer       Answer[]   @relation("ResponseofAnswer")
+}
+
+model Response {
+  id     String  @id @default(auto()) @map("_id") @db.ObjectId
+  Items  Items?  @relation("ItemsofResponse", fields: [ItemId], references: [id])
+  ItemId String? @db.ObjectId
+}
+
+model Answer {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  Response   Items?  @relation("ResponseofAnswer", fields: [ResponseId], references: [id])
+  ResponseId String? @db.ObjectId
+}
