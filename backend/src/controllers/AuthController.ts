@@ -8,16 +8,16 @@ import jwt from 'jsonwebtoken'
 import config from '../config/index'
 
 const signUp = catchAsync(async (req: Request, res: Response) => {
-    const { email, username, password } = req.body
+    const { email, name, password } = req.body
 
     const existingUser = await AuthService.find(email)
     if (existingUser) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Credentials')
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Email already registered.')
     }
 
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    const user = await AuthService.create(email, username, hashedPassword)
+    const user = await AuthService.create(email, name, hashedPassword)
 
     res.json({ user })
 })
