@@ -32,6 +32,8 @@
     "winston": "^3.10.0"
   },
   "devDependencies": {
-    "@types/morgan": "^1.9.5"
+    "@types/morgan": "^1.9.5",
+    "concurrently": "^8.2.1",
+    "prisma": "^5.2.0"
   }
 }

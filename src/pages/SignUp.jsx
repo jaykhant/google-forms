@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from "react-router-dom";
 import {
     Box,
@@ -12,28 +12,27 @@ import {
     FormControl,
     useColorModeValue,
     FormErrorMessage,
+    AlertIcon,
+    Alert
 } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
+import { AuthActionTypes, AuthReducerTypes } from '../store/Auth/type';
+import { connect } from 'react-redux';
 
-const SignUp = () => {
+const SignUp = ({ signUp, signUpForm, updateForm, isFormLoading, formErrorMessage, reset }) => {
     const {
         handleSubmit,
         register,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm()
 
-    function onSubmit(values) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                alert(JSON.stringify(values, null, 2))
-                resolve()
-            }, 3000)
-        })
-    }
+    useEffect(() => {
+        reset()
+    }, [reset])
 
     return (
         <div>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(signUp)}>
                 <Flex
                     minH={'100vh'}
                     align={'center'}
@@ -52,29 +51,42 @@ const SignUp = () => {
                             boxShadow={'lg'}
                             p={8}>
                             <Stack spacing={4}>
+                                {formErrorMessage ? <Alert status='error'>
+                                    <AlertIcon />
+                                    {formErrorMessage}
+                                </Alert> : ''}
                                 <FormControl isInvalid={errors.name}>
                                     <FormLabel htmlFor='name'>Name</FormLabel>
-                                    <Input type="name"  {...register('name', {
-                                        required: 'This is required',
-                                    })} />
+                                    <Input value={signUpForm.name}
+                                        onInput={(event) => updateForm({ key: 'name', value: event.target.value })} type="name"  {...register('name', {
+                                            required: 'This is required',
+                                        })} autoComplete='true' />
                                     <FormErrorMessage>
                                         {errors.name && errors.name.message}
                                     </FormErrorMessage>
                                 </FormControl>
                                 <FormControl isInvalid={errors.email}>
                                     <FormLabel htmlFor='email'>Email address</FormLabel>
-                                    <Input type="email"  {...register('email', {
-                                        required: 'This is required',
-                                    })} />
+                                    <Input
+                                        value={signUpForm.email}
+                                        onInput={(event) => updateForm({ key: 'email', value: event.target.value })}
+                                        type="email"
+                                        {...register('email', {
+                                            required: 'This is required',
+                                        })}
+                                        autoComplete='true' />
                                     <FormErrorMessage>
                                         {errors.email && errors.email.message}
                                     </FormErrorMessage>
                                 </FormControl>
                                 <FormControl isInvalid={errors.password}>
                                     <FormLabel htmlFor='password'>Password</FormLabel>
-                                    <Input type="password" {...register('password', {
-                                        required: 'This is required',
-                                    })} />
+                                    <Input value={signUpForm.password}
+                                        onInput={(event) => updateForm({ key: 'password', value: event.target.value })}
+                                        type="password"
+                                        {...register('password', {
+                                            required: 'This is required',
+                                        })} autoComplete='true' />
                                     <FormErrorMessage>
                                         {errors.password && errors.password.message}
                                     </FormErrorMessage>
@@ -87,7 +99,7 @@ const SignUp = () => {
                                             bg: 'blue.500',
                                         }}
                                         type='submit'
-                                        isLoading={isSubmitting}
+                                        isLoading={isFormLoading}
                                     >
                                         Sign up
                                     </Button>
@@ -97,14 +109,7 @@ const SignUp = () => {
                                 </Text>
                                 <Link to="/">
                                     <Stack spacing={10} pt='2'>
-                                        <Button
-                                            bg={'blue.400'}
-                                            color={'white'}
-                                            _hover={{
-                                                bg: 'blue.500',
-                                            }}
-                                            isLoading={isSubmitting}
-                                        >
+                                        <Button>
                                             Sign in
                                         </Button>
                                     </Stack>
@@ -118,4 +123,24 @@ const SignUp = () => {
     )
 }
 
-export default SignUp;
+const mapStateToProps = (state) => {
+    return {
+        signUpForm: state.auth.signUpForm,
+        formErrorMessage: state.auth.formErrorMessage,
+        isFormLoading: state.auth.isFormLoading
+    };
+};
+function mapDispatchToProps (dispatch) {
+    return ({
+        updateForm: ({ key, value }) => {
+            dispatch({ type: AuthReducerTypes.UPDATE_SIGN_UP_FORM, key, value })
+        },
+        reset: () => {
+            dispatch({ type: AuthReducerTypes.RESET })
+        },
+        signUp: () => {
+            dispatch({ type: AuthActionTypes.signUp })
+        }
+    })
+}
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

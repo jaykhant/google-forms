@@ -1,10 +1,10 @@
 import { prisma } from '../utils/PrismaClient';
 
-const create = async (email: string, username: string, password: string) => {
+const create = async (email: string, name: string, password: string) => {
     return await prisma.user.create({
         data: {
             email,
-            username,
+            name,
             password
         }
     })
