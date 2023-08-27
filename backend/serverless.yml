@@ -1,0 +1,32 @@
+service: google-form
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:3000
+        - https://master.d1mzgxiygpvgso.amplifyapp.com/
+      allowedHeaders:
+        - Authorization
+        - selectedProfile
+
+functions:
+  main:
+    handler: dist/serverless.handler
+    events:
+      - http:
+          method: ANY
+          path: /
+      - http:
+          method: ANY
+          path: '{proxy+}'
+
+package:
+  exclude:
+    - node_modules/**
+    - venv/**

@@ -1,0 +1,61 @@
+import Joi from "joi";
+
+const create = {
+    body: Joi.object().keys({
+        title: Joi.string().required()
+    })
+}
+
+const update = {
+    body: Joi.object().keys({
+        id: Joi.string().required(),
+        title: Joi.string().required(),
+        description: Joi.string().required(),
+        items: Joi.array().required().items(Joi.object({
+            type: Joi.string().required(),
+            display_name: Joi.string().required()
+        }))
+    })
+}
+
+const findAllForms = {
+    query: Joi.object().keys({
+        page: Joi.number().required().min(1),
+        size: Joi.number().required().min(1),
+    })
+}
+
+const find = {
+    query: Joi.object().keys({
+        id: Joi.string().required()
+    })
+}
+
+const remove = {
+    query: Joi.object().keys({
+        id: Joi.string().required()
+    })
+}
+
+const updatestatus = {
+    query: Joi.object().keys({
+        id: Joi.string().required()
+    })
+}
+
+const generateSignedUrl = {
+    query: Joi.object().keys({
+        formId: Joi.string().required(),
+        ext: Joi.string().required()
+    })
+}
+
+export default {
+    create,
+    update,
+    findAllForms,
+    find,
+    remove,
+    updatestatus,
+    generateSignedUrl
+}
