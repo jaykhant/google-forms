@@ -35,15 +35,30 @@ const signIn = catchAsync(async (req: Request, res: Response) => {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Credentials')
     }
 
-    const token = jwt.sign(
+    const accessToken = jwt.sign(
         { email: existingUser.email, id: existingUser.id },
-        config.secretkey
+        config.secretkey, { expiresIn: '2h' }
     )
+    const user = {
+        id: existingUser.id,
+        email: existingUser.email,
+        username: existingUser.username
+    }
 
-    res.json({ user: existingUser, token })
+    res.json({ user, accessToken })
+})
+
+const getCurrentUser = catchAsync(async (req: any, res: Response) => {
+    const loggedInUser = req.user
+    if (!loggedInUser)
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'User not found.')
+    res.json({
+        user: await AuthService.find(loggedInUser.email)
+    })
 })
 
 export default {
     signUp,
-    signIn
+    signIn,
+    getCurrentUser
 }

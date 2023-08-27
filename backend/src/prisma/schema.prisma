@@ -9,37 +9,40 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
   email    String
   name String
   password String
+  Response Response[] @relation("UserOfResponse")
+  Form     Form[]     @relation("UserOfForm")
 }
 
-model From {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+model Form {
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title       String
-  description String
-  Items       Items[] @relation("FromOfItems")
+  description String?
+  status      String
+  user        User?      @relation("UserOfForm", fields: [userId], references: [id])
+  userId      String?    @db.ObjectId
+  items       Items[]
+  Response    Response[] @relation("FormOfResponse")
 }
 
-model Items {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+type Items {
   type         String
   display_name String
-  From         From?      @relation("FromOfItems", fields: [FromId], references: [id])
-  FromId       String?    @db.ObjectId
-  Response     Response[] @relation("ItemsofResponse")
-  Answer       Answer[]   @relation("ResponseofAnswer")
 }
 
 model Response {
-  id     String  @id @default(auto()) @map("_id") @db.ObjectId
-  Items  Items?  @relation("ItemsofResponse", fields: [ItemId], references: [id])
-  ItemId String? @db.ObjectId
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  user   User?    @relation("UserOfResponse", fields: [userId], references: [id])
+  userId String?  @db.ObjectId
+  form   Form?    @relation("FormOfResponse", fields: [formId], references: [id])
+  formId String?  @db.ObjectId
+  answer Answer[]
 }
 
-model Answer {
-  id         String  @id @default(auto()) @map("_id") @db.ObjectId
-  Response   Items?  @relation("ResponseofAnswer", fields: [ResponseId], references: [id])
-  ResponseId String? @db.ObjectId
+type Answer {
+  question String
+  answer   String
 }

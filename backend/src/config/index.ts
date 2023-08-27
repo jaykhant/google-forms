@@ -8,7 +8,9 @@ const envVarsSchema = Joi.object().keys({
   ENV: Joi.string().required().valid('production', 'development', 'staging', 'test'),
   PORT: Joi.string().required(),
   DATABASE_URL: Joi.string().required(),
-  SECRET_KEY: Joi.string().required()
+  SECRET_KEY: Joi.string().required(),
+  AWS_ACCESS_KEY_ID: Joi.string().required(),
+  AWS_SECRET_ACCESS_KEY: Joi.string().required()
 })
   .unknown();
 
@@ -21,5 +23,9 @@ if (error) {
 export default {
   env: envVars.ENV,
   port: envVars.PORT,
-  secretkey: envVars.SECRET_KEY
+  secretkey: envVars.SECRET_KEY,
+  awsAccess: {
+    accessKeyId: envVars.S3_ACCESS_KEY_ID,
+    secretAccessKey: envVars.S3_SECRET_ACCESS_KEY
+  },
 };
