@@ -9,12 +9,14 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  email    String
-  name String
-  password String
-  Response Response[] @relation("UserOfResponse")
-  Form     Form[]     @relation("UserOfForm")
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  name      String
+  password  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Response  Response[] @relation("UserOfResponse")
+  Form      Form[]     @relation("UserOfForm")
 }
 
 model Form {
@@ -24,6 +26,8 @@ model Form {
   status      String
   user        User?      @relation("UserOfForm", fields: [userId], references: [id])
   userId      String?    @db.ObjectId
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   items       Items[]
   Response    Response[] @relation("FormOfResponse")
 }
@@ -31,15 +35,18 @@ model Form {
 type Items {
   type         String
   display_name String
+  itemName     String?
 }
 
 model Response {
-  id     String   @id @default(auto()) @map("_id") @db.ObjectId
-  user   User?    @relation("UserOfResponse", fields: [userId], references: [id])
-  userId String?  @db.ObjectId
-  form   Form?    @relation("FormOfResponse", fields: [formId], references: [id])
-  formId String?  @db.ObjectId
-  answer Answer[]
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  user      User?    @relation("UserOfResponse", fields: [userId], references: [id])
+  userId    String?  @db.ObjectId
+  form      Form?    @relation("FormOfResponse", fields: [formId], references: [id])
+  formId    String?  @db.ObjectId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  answer    Answer[]
 }
 
 type Answer {

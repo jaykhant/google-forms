@@ -12,14 +12,15 @@ const create = {
 
 const find = {
     query: Joi.object().keys({
-        formId: Joi.string().required()
+        formId: Joi.string().required(),
+        page: Joi.number().required().min(1),
+        size: Joi.number().required().min(1),
     })
 }
 
 const findResponseById = {
-    query: Joi.object().keys({
         id: Joi.string().required()
-    })
+
 }
 
 export default {

@@ -24,11 +24,11 @@ const generateSignedUrl = catchAsync(async (req: Request, res: Response) => {
     const imageId = new mongoose.Types.ObjectId()
 
     const signedUrls = s3BucketManager.generateSignedUrlForUpload(
-            folderName!,
-            imageId.toString(),
+            folderName!.toString(),
+            imageId!.toString(),
             ext!.toString()
         )
-
+    
     res.json(signedUrls)
 })
 
@@ -45,34 +45,37 @@ const update = catchAsync(async (req: any, res: Response) => {
     res.json({ data: await FormService.update(id, title, description, items) })
 })
 
-const findAllForms = catchAsync(async (req: Request, res: Response) => {
+const findAll = catchAsync(async (req: Request, res: Response) => {
     const { page, size } = req.query
 
     res.json({
-        forms: await FormService.getAllForms(Number(page), Number(size)),
-        totalData: await FormService.getTotalCountOfForms()
+        forms: await FormService.getAll(Number(page), Number(size)),
+        totalData: await FormService.getTotalCount()
     })
 })
 
 const find = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.query
+     const id = req.params.id
 
-    // const data = await FormService.findForm(String(id))
+    const data = await FormService.findForm(String(id))
 
-    // const folderName = id?.toString()
+    const folderName = id?.toString()
 
-    // const s3BucketManager = new S3BucketManager()
+    const s3BucketManager = new S3BucketManager()
 
-    // const imageId = new mongoose.Types.ObjectId()
+    const items = data?.items as any
+     
+    let signedUrls = []
+    for(let i = 0; i < items.length; i++) {
+    let imageName = items[i].itemName
+    if(imageName)
+    signedUrls.push(await s3BucketManager.generateSignedUrlForDownload(
+        folderName!.toString(),
+        imageName!
+    ))
+}
 
-    // const signedUrls = s3BucketManager.generateSignedUrlForDownload(
-    //     folderName!,
-    //     imageId.toString(),
-    //     ext!.toString()
-    // )
-
-
-    res.json({ data: await FormService.findForm(String(id)) })
+    res.json({data, signedUrls})
 })
 
 const remove = catchAsync(async (req: Request, res: Response) => {
@@ -97,7 +100,7 @@ const updatestatus = catchAsync(async (req: any, res: Response) => {
 export default {
     create,
     update,
-    findAllForms,
+    findAll,
     find,
     remove,
     updatestatus,

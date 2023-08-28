@@ -42,7 +42,7 @@ const signIn = catchAsync(async (req: Request, res: Response) => {
     const user = {
         id: existingUser.id,
         email: existingUser.email,
-        username: existingUser.username
+        username: existingUser.name
     }
 
     res.json({ user, accessToken })

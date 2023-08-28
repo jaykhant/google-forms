@@ -11,15 +11,15 @@ const create = catchAsync(async (req: any, res: Response) => {
 })
 
 const find = catchAsync(async (req: Request, res: Response) => {
-    const { formId } = req.query
+    const { formId, page, size } = req.query
 
     res.json({
-        response: await ResponseService.find(String(formId))
+        response: await ResponseService.find(String(formId), Number(page), Number(size))
     })
 })
 
 const findResponseById = catchAsync(async (req: Request, res: Response) => {
-    const { id } = req.query
+    const id = req.params.id
 
     res.json({
         response: await ResponseService.findResponseById(String(id))

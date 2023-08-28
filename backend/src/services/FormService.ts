@@ -23,19 +23,20 @@ const update = async (id: string, title: string, description: string, items: any
     })
 }
 
-const getAllForms = async (page: number, size: number) => {
+const getAll = async (page: number, size: number) => {
     return await prisma.form.findMany({
         skip: (page - 1) * size,
         take: size,
         select: {
             id: true,
             title: true,
-            description: true
+            description: true,
+            status: true
         }
     })
 }
 
-const getTotalCountOfForms = async () => {
+const getTotalCount = async () => {
     return await prisma.form.count()
 }
 
@@ -78,8 +79,8 @@ const findForm = async (id: string) => {
 export default {
     create,
     update,
-    getAllForms,
-    getTotalCountOfForms,
+    getAll,
+    getTotalCount,
     remove,
     updatestatus,
     find,

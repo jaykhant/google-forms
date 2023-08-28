@@ -13,12 +13,13 @@ const update = {
         description: Joi.string().required(),
         items: Joi.array().required().items(Joi.object({
             type: Joi.string().required(),
-            display_name: Joi.string().required()
+            display_name: Joi.string().required(),
+            itemName: Joi.string()
         }))
     })
 }
 
-const findAllForms = {
+const findAll = {
     query: Joi.object().keys({
         page: Joi.number().required().min(1),
         size: Joi.number().required().min(1),
@@ -26,9 +27,7 @@ const findAllForms = {
 }
 
 const find = {
-    query: Joi.object().keys({
         id: Joi.string().required()
-    })
 }
 
 const remove = {
@@ -53,7 +52,7 @@ const generateSignedUrl = {
 export default {
     create,
     update,
-    findAllForms,
+    findAll,
     find,
     remove,
     updatestatus,
