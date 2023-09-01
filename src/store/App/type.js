@@ -1,13 +1,13 @@
 const app = `app`
 
 const AppReducerTypes = {
-    UPDATE_IS_LOGGED_IN: `${app}/UPDATE_IS_LOGGED_IN`,
-    UPDATE_ACCESS_TOKEN: `${app}/UPDATE_ACCESS_TOKEN`,
+    LOGIN: `${app}/LOGIN`,
+    LOGOUT: `${app}/LOGOUT`,
     UPDATE_USER: `${app}/UPDATE_USER`,
 }
 
 const AppActionTypes = {
-    
+
 }
 
 module.exports = {

@@ -11,16 +11,16 @@ import {
     MenuButton,
 } from '@chakra-ui/react'
 import React from 'react';
+import { connect } from 'react-redux';
+import { AppReducerTypes } from '../../store/App/type.js';
 
-const Header = () => {
-    const [show,setShow] = React.useState(false)
-    const handleClick = () => setShow(!show)
+const Header = ({ logout, user }) => {
+    const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false)
     return (
         <>
             <Box bg={'white'} px={4} position={'sticky'} top={0} zIndex={10}>
                 <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
                     <Box>Google Form</Box>
-
                     <Flex alignItems={'center'}>
                         <Stack direction={'row'} spacing={7}>
                             <Menu>
@@ -30,15 +30,15 @@ const Header = () => {
                                     variant="unstyled"
                                     cursor={'pointer'}
                                     minW={0}
-                                    onClick={handleClick}
-                                    >
+                                    onClick={() => setIsContextMenuOpen(!isContextMenuOpen)}
+                                >
                                     <Flex gap={4} alignItems={'center'}>
-                                        <Text>Jay Khant </Text>
-                                        {!show ?  <ChevronDownIcon /> : <ChevronUpIcon />}
+                                        <Text>{user.name} </Text>
+                                        {!isContextMenuOpen ? <ChevronDownIcon /> : <ChevronUpIcon />}
                                     </Flex>
                                 </MenuButton>
                                 <MenuList alignItems={'center'} >
-                                    <MenuItem>Logout</MenuItem>
+                                    <MenuItem onClick={logout}>Logout</MenuItem>
                                 </MenuList>
                             </Menu>
                         </Stack>
@@ -49,4 +49,16 @@ const Header = () => {
     )
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+    return {
+        user: state.app.user,
+    };
+};
+function mapDispatchToProps (dispatch) {
+    return ({
+        logout: () => {
+            dispatch({ type: AppReducerTypes.LOGOUT })
+        },
+    })
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

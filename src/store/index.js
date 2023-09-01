@@ -9,10 +9,13 @@ import app from './App';
 import auth from './Auth'
 import authSaga from "./Auth/saga"
 
+import form from './Form';
+import formSaga from './Form/saga';
+
 const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
-    auth,
+    auth, form,
     app: persistReducer({
         key: 'app',
         storage,
@@ -28,3 +31,4 @@ export const store = configureStore({
 export const persistor = persistStore(store)
 
 sagaMiddleware.run(authSaga)
+sagaMiddleware.run(formSaga)

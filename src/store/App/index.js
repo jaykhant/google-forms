@@ -8,13 +8,16 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case AppReducerTypes.UPDATE_IS_LOGGED_IN: return {
+        case AppReducerTypes.LOGIN: return {
             ...state,
-            isLoggedIn: action.isLoggedIn
-        }
-        case AppReducerTypes.UPDATE_ACCESS_TOKEN: return {
-            ...state,
+            isLoggedIn: action.isLoggedIn,
             accessToken: action.accessToken
+        }
+        case AppReducerTypes.LOGOUT: return {
+            ...state,
+            isLoggedIn: false,
+            accessToken: '',
+            user: {}
         }
         case AppReducerTypes.UPDATE_USER: return {
             ...state,

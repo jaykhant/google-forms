@@ -24,8 +24,7 @@ function* signIn () {
         const response = yield call(authService.signIn, data)
         yield put({ type: AuthReducerTypes.FORM_LOADING, loading: false })
         yield put({ type: AuthReducerTypes.FORM_SUCCESS });
-        yield put({ type: AppReducerTypes.UPDATE_IS_LOGGED_IN, isLoggedIn: true })
-        yield put({ type: AppReducerTypes.UPDATE_ACCESS_TOKEN, accessToken: response.accessToken })
+        yield put({ type: AppReducerTypes.LOGIN, isLoggedIn: true, accessToken: response.accessToken })
         yield put({ type: AppReducerTypes.UPDATE_USER, user: response.user })
     } catch (error) {
         yield put({ type: AuthReducerTypes.FORM_LOADING, loading: false })
