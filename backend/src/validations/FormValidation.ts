@@ -11,10 +11,10 @@ const update = {
         id: Joi.string().required(),
         title: Joi.string().required(),
         description: Joi.string().required(),
-        items: Joi.array().required().items(Joi.object({
+        questions: Joi.array().required().items(Joi.object({
             type: Joi.string().required(),
-            display_name: Joi.string().required(),
-            itemName: Joi.string()
+            question: Joi.string().required(),
+            Option: Joi.array().optional()
         }))
     })
 }
@@ -42,19 +42,11 @@ const updatestatus = {
     })
 }
 
-const generateSignedUrl = {
-    query: Joi.object().keys({
-        formId: Joi.string().required(),
-        ext: Joi.string().required()
-    })
-}
-
 export default {
     create,
     update,
     findAll,
     find,
     remove,
-    updatestatus,
-    generateSignedUrl
+    updatestatus
 }

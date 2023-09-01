@@ -11,7 +11,7 @@ const create = async (userId: string, formId: string, answer: any) => {
 }
 
 const find = async (formId: string, page: number, size: number) => {
-    return await prisma.response.findFirst({
+    return await prisma.response.findMany({
         skip: (page - 1) * size,
         take: size,
         where: {

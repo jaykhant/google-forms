@@ -11,6 +11,5 @@ router.get('/', auth, validate(FormValidation.findAll), FormController.findAll)
 router.get('/:id', auth, validate(FormValidation.find), FormController.find)
 router.delete('/', auth, validate(FormValidation.remove), FormController.remove)
 router.put('/publish', auth, validate(FormValidation.updatestatus), FormController.updatestatus)
-router.get('/generate-signed-url/id', auth, validate(FormValidation.generateSignedUrl), FormController.generateSignedUrl);
 
 export default router

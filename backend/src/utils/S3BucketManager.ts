@@ -69,7 +69,7 @@ class S3BucketManager {
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.s3.listObjects(params, (err, data: any) => {
+      this.s3.listObjects(params, (err: any, data: any) => {
         if (err) reject(err);
 
         console.log("data", data, err)
@@ -85,7 +85,7 @@ class S3BucketManager {
         console.log("params", params)
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.s3.deleteObjects(params as DeleteObjectsRequest, function (err, data: any) {
+        this.s3.deleteObjects(params as DeleteObjectsRequest, function (err: any, data: any) {
           if (err) reject(err);
           resolve(data)
         });

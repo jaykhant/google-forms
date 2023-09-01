@@ -3,8 +3,6 @@ import FormService from '../services/FormService';
 import catchAsync from '../utils/CatchAsync';
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
-import S3BucketManager from '../utils/S3BucketManager'
-import mongoose from 'mongoose'
 
 const create = catchAsync(async (req: any, res: Response) => {
     const { title } = req.body
@@ -14,26 +12,8 @@ const create = catchAsync(async (req: any, res: Response) => {
     res.json(await FormService.create(title, user.id))
 })
 
-const generateSignedUrl = catchAsync(async (req: Request, res: Response) => {
-    const { formId, ext } = req.query
-
-    const folderName = formId?.toString()
-
-    const s3BucketManager = new S3BucketManager()
-
-    const imageId = new mongoose.Types.ObjectId()
-
-    const signedUrls = s3BucketManager.generateSignedUrlForUpload(
-            folderName!.toString(),
-            imageId!.toString(),
-            ext!.toString()
-        )
-    
-    res.json(signedUrls)
-})
-
 const update = catchAsync(async (req: any, res: Response) => {
-    const { id, title, description, items } = req.body
+    const { id, title, description, questions } = req.body
 
     const user = req.user
 
@@ -42,7 +22,7 @@ const update = catchAsync(async (req: any, res: Response) => {
         throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden')
     }
 
-    res.json({ data: await FormService.update(id, title, description, items) })
+    res.json({ data: await FormService.update(id, title, description, questions) })
 })
 
 const findAll = catchAsync(async (req: Request, res: Response) => {
@@ -55,27 +35,11 @@ const findAll = catchAsync(async (req: Request, res: Response) => {
 })
 
 const find = catchAsync(async (req: Request, res: Response) => {
-     const id = req.params.id
+    const id = req.params.id
 
     const data = await FormService.findForm(String(id))
 
-    const folderName = id?.toString()
-
-    const s3BucketManager = new S3BucketManager()
-
-    const items = data?.items as any
-     
-    let signedUrls = []
-    for(let i = 0; i < items.length; i++) {
-    let imageName = items[i].itemName
-    if(imageName)
-    signedUrls.push(await s3BucketManager.generateSignedUrlForDownload(
-        folderName!.toString(),
-        imageName!
-    ))
-}
-
-    res.json({data, signedUrls})
+    res.json({ data })
 })
 
 const remove = catchAsync(async (req: Request, res: Response) => {
@@ -103,6 +67,5 @@ export default {
     findAll,
     find,
     remove,
-    updatestatus,
-    generateSignedUrl
+    updatestatus
 }

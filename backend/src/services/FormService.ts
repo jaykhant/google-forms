@@ -5,12 +5,12 @@ const create = async (title: string, userId: string) => {
         data: {
             title,
             userId,
-            status: 'created'
+            status: 'creating'
         }
     })
 }
 
-const update = async (id: string, title: string, description: string, items: any) => {
+const update = async (id: string, title: string, description: string, questions: any) => {
     return await prisma.form.update({
         where: {
             id
@@ -18,7 +18,7 @@ const update = async (id: string, title: string, description: string, items: any
         data: {
             title,
             description,
-            items
+            questions
         }
     })
 }
@@ -31,8 +31,12 @@ const getAll = async (page: number, size: number) => {
             id: true,
             title: true,
             description: true,
-            status: true
-        }
+            status: true,
+            createdAt: true
+        },
+        orderBy: {
+            createdAt: 'desc',
+          }
     })
 }
 
