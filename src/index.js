@@ -1,7 +1,6 @@
 import './index.css';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Header from './components/Core/Header';
 import reportWebVitals from './reportWebVitals';
 import { ChakraProvider } from '@chakra-ui/react'
 import { BrowserRouter } from "react-router-dom";
@@ -19,7 +18,6 @@ root.render(
         <PersistGate loading={null} persistor={persistor}>
           <BrowserRouter>
             <NavigateSetter />
-            {window.location.pathname === '/' || window.location.pathname === '/sign-up' || window.location.pathname === '/view-form' ? '' : <Header />}
             <AppRouter />
           </BrowserRouter>
         </PersistGate>
