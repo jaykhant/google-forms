@@ -6,7 +6,7 @@ import ApiError from '../utils/ApiError';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const errorConverter = (err: any, req: Request, res: Response, next: NextFunction): void => {
-  const allowedOrigins = ['http://127.0.0.1:3000', 'http://localhost:3000', 'https://master.d1mzgxiygpvgso.amplifyapp.com/'];
+  const allowedOrigins = ['http://127.0.0.1:4000', 'http://localhost:4000', 'https://master.d1mzgxiygpvgso.amplifyapp.com/'];
   const origin = req.headers.origin as string;
    if (allowedOrigins.includes(origin)) {
     res.set('Access-Control-Allow-Origin', origin);

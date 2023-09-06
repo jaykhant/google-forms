@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk'
 import { DeleteObjectsRequest } from 'aws-sdk/clients/s3';
-import fs from 'fs'
 import httpStatus from 'http-status';
 import config from '../config/index'
 import ApiError from './ApiError'
@@ -36,8 +35,7 @@ class S3BucketManager {
       });
       console.log(signedUrl);
 
-      return { signedUrl, name };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return { signedUrl, name }
     } catch (error: any) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `S3 bucket error: ${error.message}`);
     }
@@ -45,51 +43,21 @@ class S3BucketManager {
 
   async generateSignedUrlForDownload(
     folderName: string,
-    imageName: string,
-    ext: string,
+    imageName: string
   ) {
     try {
-      const name = `${imageName}.${ext}`
+      const name = `${imageName}`
       const signedUrl =  this.s3.getSignedUrl('getObject', {
         Bucket: this.bucketInfo.Bucket,
         Key: `${folderName}/${name}`,
         Expires: 60 * 5, // 5 minutes
       });
       console.log(signedUrl);
-
+      
+      return { signedUrl, name }
     } catch (error: any) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `S3 bucket error: ${error.message}`);
     }
-  }
-
-  async getObject(
-    folderName: string,
-    name: string
-  ) {
-    return new Promise<void>((resolve, reject) => {
-      try {
-
-        if (!fs.existsSync(folderName)) {
-          fs.mkdirSync(folderName);
-        }
-
-        const getObjectRequest = this.s3.getObject({
-          Bucket: this.bucketInfo.Bucket,
-          Key: `${folderName}/${name}`
-        })
-
-        const writeStream = fs.createWriteStream(`${folderName}/${name}`);
-        const readStream = getObjectRequest.createReadStream().on('error', () => {
-          reject(new ApiError(httpStatus.BAD_REQUEST, 'File not found in s3 bucket.'))
-        }).pipe(writeStream)
-        readStream.on('close', () => {
-          resolve()
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        reject(`S3 bucket error: ${error.message}`)
-      }
-    })
   }
 
   //TODO: verift that this is working properly - __ is forlderName
@@ -101,7 +69,7 @@ class S3BucketManager {
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      this.s3.listObjects(params, (err, data: any) => {
+      this.s3.listObjects(params, (err: any, data: any) => {
         if (err) reject(err);
 
         console.log("data", data, err)
@@ -117,7 +85,7 @@ class S3BucketManager {
         console.log("params", params)
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        this.s3.deleteObjects(params as DeleteObjectsRequest, function (err, data: any) {
+        this.s3.deleteObjects(params as DeleteObjectsRequest, function (err: any, data: any) {
           if (err) reject(err);
           resolve(data)
         });

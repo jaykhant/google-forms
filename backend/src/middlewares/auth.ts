@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken'
 import AuthService from '../services/AuthService';
 
 const auth =
-
     async (req: any, res: Response, next: NextFunction) => {
         try {
             const accessToken = req.headers.authorization
@@ -21,8 +20,8 @@ const auth =
             next()
             return
         } catch (error: any) {
-            res.statusCode = httpStatus.BAD_REQUEST
-            return res.send(`Error: ${error.message}`)
+            res.statusCode = httpStatus.UNAUTHORIZED
+                return res.send({ message: 'Unauthorized' })
         }
     }
 export default auth

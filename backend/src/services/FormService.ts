@@ -5,12 +5,12 @@ const create = async (title: string, userId: string) => {
         data: {
             title,
             userId,
-            status: 'created'
+            status: 'creating'
         }
     })
 }
 
-const update = async (id: string, title: string, description: string, items: any) => {
+const update = async (id: string, title: string, description: string, questions: any) => {
     return await prisma.form.update({
         where: {
             id
@@ -18,24 +18,32 @@ const update = async (id: string, title: string, description: string, items: any
         data: {
             title,
             description,
-            items
+            questions
         }
     })
 }
 
-const getAllForms = async (page: number, size: number) => {
-    return await prisma.form.findMany({
-        skip: (page - 1) * size,
-        take: size,
-        select: {
-            id: true,
-            title: true,
-            description: true
-        }
+const getAll = async (page: number, size: number) => {
+    return await prisma.form.aggregateRaw({
+        pipeline: [
+            { $skip: (page - 1) * size },
+            { $limit: size },
+            { $sort: { createdAt: -1 } },
+            {
+                $project: {
+                    _id: 0,
+                    id: { $toString: "$_id" },
+                    title: 1,
+                    description: 1,
+                    status: 1,
+                    createdAt: { $toString: "$createdAt" }
+                },
+            },
+        ]
     })
 }
 
-const getTotalCountOfForms = async () => {
+const getTotalCount = async () => {
     return await prisma.form.count()
 }
 
@@ -68,18 +76,37 @@ const find = async (id: string, userId: string) => {
 }
 
 const findForm = async (id: string) => {
-    return await prisma.form.findFirst({
-        where: {
-            id
-        }
+    return await prisma.form.aggregateRaw({
+        pipeline: [
+            {
+                $match: {
+                    _id: {
+                        $oid: id
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    id: { $toString: "$_id" },
+                    title: 1,
+                    description: 1,
+                    status: 1,
+                    userId: { $toString: "$userId" },
+                    createdAt: { $toString: "$createdAt" },
+                    updatedAt: { $toString: "$updatedAt" },
+                    questions: 1
+                },
+            },
+        ]
     })
 }
 
 export default {
     create,
     update,
-    getAllForms,
-    getTotalCountOfForms,
+    getAll,
+    getTotalCount,
     remove,
     updatestatus,
     find,

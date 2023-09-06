@@ -6,7 +6,8 @@ import auth from '../../middlewares/auth';
 const router = express.Router();
 
 router.post('/', auth, validate(ResponseValidation.create), ResponseController.create)
-router.get('/find', auth, validate(ResponseValidation.findResponseById), ResponseController.findResponseById)
+router.get('/:id', auth, validate(ResponseValidation.findResponseById), ResponseController.findResponseById)
 router.get('/', auth, validate(ResponseValidation.find), ResponseController.find)
+router.get('/generate-signed-url/id', auth, validate(ResponseValidation.generateSignedUrl), ResponseController.generateSignedUrl);
 
 export default router
