@@ -30,12 +30,13 @@ function* findAll () {
     }
 }
 
-function* deleteForm () {
+function* deleteForm ({ deleteIndex }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: true })
-    const { deleteIndex, forms } = yield select(formState)
+    const { forms } = yield select(formState)
     try {
         yield call(formService.delete, { id: forms[deleteIndex].id })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: false })
+        yield put({ type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN, isDeleteConfirmationDialogOpen: false });
         yield put({
             type: FormReducerTypes.FORM_DELETE_SUCCESS, deleteIndex
         });

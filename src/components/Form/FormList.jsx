@@ -2,17 +2,24 @@ import React, { useEffect, useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { Button, Center, Flex, Spinner, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
-import { FormActionTypes } from '../../store/Form/type'
+import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
 import { connect } from 'react-redux'
 import DeleteConfirmationDialog from '../Core/DeleteConfirmationDialog'
 
-const FormList = ({ forms, findAll, isLoadingForGetForm, deleteForm }) => {
+const FormList = ({
+    forms,
+    findAll,
+    isLoadingForGetForm,
+    deleteForm,
+    isLoadingForDeleteForm,
+    isDeleteConfirmationDialogOpen,
+    updateIsDeleteConfirmationDialogOpen
+}) => {
 
     useEffect(() => {
         findAll()
     }, [findAll])
 
-    let [isDeleteConfirmationDialogOpen, setIsDeleteConfirmationDialogOpen] = useState(false)
     let [deleteIndex, setDeleteIndex] = useState(0)
 
     return (
@@ -41,7 +48,7 @@ const FormList = ({ forms, findAll, isLoadingForGetForm, deleteForm }) => {
                                     <Td>
                                         <Link to={`/manage-form/${form.id}`}> <Button size='sm'><SettingsIcon /></Button></Link>
                                         <Button ml="4" colorScheme='red' size='sm' onClick={() => {
-                                            setIsDeleteConfirmationDialogOpen(true);
+                                            updateIsDeleteConfirmationDialogOpen(true);
                                             setDeleteIndex(i)
                                         }}><DeleteIcon /></Button>
                                     </Td>
@@ -61,9 +68,9 @@ const FormList = ({ forms, findAll, isLoadingForGetForm, deleteForm }) => {
             </TableContainer>
             <DeleteConfirmationDialog
                 isOpen={isDeleteConfirmationDialogOpen}
-                onCancle={() => { setIsDeleteConfirmationDialogOpen(false) }}
+                isLoading={isLoadingForDeleteForm}
+                onCancle={() => { updateIsDeleteConfirmationDialogOpen(false) }}
                 onDelete={() => {
-                    setIsDeleteConfirmationDialogOpen(false)
                     deleteForm(deleteIndex)
                 }} />
         </Stack>
@@ -73,7 +80,9 @@ const FormList = ({ forms, findAll, isLoadingForGetForm, deleteForm }) => {
 const mapStateToProps = (state) => {
     return {
         forms: state.form.forms,
-        isLoadingForGetForm: state.form.isLoadingForGetForm
+        isLoadingForGetForm: state.form.isLoadingForGetForm,
+        isLoadingForDeleteForm: state.form.isLoadingForDeleteForm,
+        isDeleteConfirmationDialogOpen: state.form.isDeleteConfirmationDialogOpen
     };
 };
 function mapDispatchToProps (dispatch) {
@@ -81,8 +90,13 @@ function mapDispatchToProps (dispatch) {
         findAll: () => {
             dispatch({ type: FormActionTypes.findAll })
         },
-        deleteForm: () => dispatch({
-            type: FormActionTypes.delete
+        deleteForm: (deleteIndex) => dispatch({
+            type: FormActionTypes.delete,
+            deleteIndex
+        }),
+        updateIsDeleteConfirmationDialogOpen: (isDeleteConfirmationDialogOpen) => dispatch({
+            type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN,
+            isDeleteConfirmationDialogOpen
         })
     })
 }

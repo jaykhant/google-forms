@@ -9,6 +9,8 @@ const initialState = {
     isLoadingForGetForm: false,
     isLoadingForDeleteForm: false,
     isLoadingForCreateForm: false,
+
+    isDeleteConfirmationDialogOpen: false,
 }
 
 const reducer = (state = initialState, action) => {
@@ -37,9 +39,16 @@ const reducer = (state = initialState, action) => {
             ...state,
             isLoadingForCreateForm: action.isLoadingForCreateForm
         }
+        case FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN: return {
+            ...state,
+            isDeleteConfirmationDialogOpen: action.isDeleteConfirmationDialogOpen
+        }
         case FormReducerTypes.FORM_DELETE_SUCCESS: return {
             ...state,
-            forms: [...state.forms.splice(action.deleteIndex, 1)]
+            forms: [
+                ...state.forms.slice(0, action.deleteIndex),
+                ...state.forms.slice(action.deleteIndex + 1)
+            ]
         }
         default: return state
     }
