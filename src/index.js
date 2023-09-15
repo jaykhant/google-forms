@@ -8,7 +8,7 @@ import { store, persistor } from './store'
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import AppRouter from './router';
-import NavigateSetter from './components/NavigateSetter'
+import NavigateSetter from './components/Core/NavigateSetter'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

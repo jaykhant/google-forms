@@ -3,7 +3,7 @@ import { Input } from '@chakra-ui/input';
 import { Stack } from '@chakra-ui/layout';
 import { Text, Square, CloseButton } from '@chakra-ui/react'
 
-const Checkboxes = () => {
+const Checkbox = () => {
     return (
         <>
             <Stack gap="4" direction='row' display="flex" alignItems="center" justifyContent="start">
@@ -21,4 +21,4 @@ const Checkboxes = () => {
     )
 }
 
-export default Checkboxes;
+export default Checkbox;

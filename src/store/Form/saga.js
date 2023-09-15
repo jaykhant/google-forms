@@ -3,14 +3,15 @@ import { FormActionTypes, FormReducerTypes } from "./type";
 import { call, put, takeEvery } from 'redux-saga/effects'
 import { select } from 'redux-saga/effects'
 
-import FormService from "../../service/FormService";
 import History from "../../utils/History";
+import FormService from "../../service/FormService";
 let formService = new FormService()
 
 const formState = state => state.form;
 
 function* init () {
-    yield takeEvery(FormActionTypes.findAll, findAll);
+    yield takeEvery(FormActionTypes.findAll, findAll)
+    yield takeEvery(FormActionTypes.findOne, findOne)
     yield takeEvery(FormActionTypes.delete, deleteForm)
     yield takeEvery(FormActionTypes.create, create)
 }
@@ -24,6 +25,21 @@ function* findAll () {
         yield put({
             type: FormReducerTypes.SET_FORMS, forms: response.forms
         });
+    } catch (error) {
+        yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
+        //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
+    }
+}
+
+function* findOne ({ id }) {
+    yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
+    try {
+        const response = yield call(formService.findOne, { id })
+        console.log(response);
+        yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
+        // yield put({
+        //     type: FormReducerTypes.SET_FORM, form: response.forms
+        // });
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });

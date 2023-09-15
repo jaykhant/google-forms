@@ -46,7 +46,7 @@ const FormList = ({
                                     <Td><Link to={`/submit-form/${form.id}`}>Link</Link></Td>
                                     <Td>{form.createdAt}</Td>
                                     <Td>
-                                        <Link to={`/manage-form/${form.id}`}> <Button size='sm'><SettingsIcon /></Button></Link>
+                                        <Link to={`/form/${form.id}`}> <Button size='sm'><SettingsIcon /></Button></Link>
                                         <Button ml="4" colorScheme='red' size='sm' onClick={() => {
                                             updateIsDeleteConfirmationDialogOpen(true);
                                             setDeleteIndex(i)
