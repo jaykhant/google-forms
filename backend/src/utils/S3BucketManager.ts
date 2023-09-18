@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk'
 import { DeleteObjectsRequest } from 'aws-sdk/clients/s3';
 import httpStatus from 'http-status';
-import config from '../config/index'
+import config from '../config/Index'
 import ApiError from './ApiError'
 
 class S3BucketManager {
@@ -36,6 +36,7 @@ class S3BucketManager {
       console.log(signedUrl);
 
       return { signedUrl, name }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `S3 bucket error: ${error.message}`);
     }
@@ -47,14 +48,15 @@ class S3BucketManager {
   ) {
     try {
       const name = `${imageName}`
-      const signedUrl =  this.s3.getSignedUrl('getObject', {
+      const signedUrl = this.s3.getSignedUrl('getObject', {
         Bucket: this.bucketInfo.Bucket,
         Key: `${folderName}/${name}`,
         Expires: 60 * 5, // 5 minutes
       });
       console.log(signedUrl);
-      
+
       return { signedUrl, name }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, `S3 bucket error: ${error.message}`);
     }

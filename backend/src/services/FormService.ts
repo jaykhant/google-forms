@@ -10,6 +10,7 @@ const create = async (title: string, userId: string) => {
     })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const update = async (id: string, title: string, description: string, questions: any) => {
     return await prisma.form.update({
         where: {

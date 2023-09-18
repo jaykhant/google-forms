@@ -1,8 +1,8 @@
 import express from 'express';
 import FormController from '../../controllers/FormController';
-import validate from '../../middlewares/validate'
+import validate from '../../middlewares/Validate'
 import FormValidation from '../../validations/FormValidation';
-import auth from '../../middlewares/auth';
+import auth from '../../middlewares/Auth';
 const router = express.Router();
 
 router.post('/', auth, validate(FormValidation.create), FormController.create)

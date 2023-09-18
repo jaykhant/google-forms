@@ -4,6 +4,7 @@ import catchAsync from '../utils/CatchAsync';
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
     const { title } = req.body
 
@@ -12,6 +13,7 @@ const create = catchAsync(async (req: any, res: Response) => {
     res.json(await FormService.create(title, user.id))
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const update = catchAsync(async (req: any, res: Response) => {
     const { id, title, description, questions } = req.body
 
@@ -25,6 +27,7 @@ const update = catchAsync(async (req: any, res: Response) => {
     res.json({ data: await FormService.update(id, title, description, questions) })
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const findAll = catchAsync(async (req: Request, res: Response) => {
     const { page, size } = req.query
 
@@ -48,6 +51,7 @@ const remove = catchAsync(async (req: Request, res: Response) => {
     res.json({ data: await FormService.remove(String(id)) })
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updatestatus = catchAsync(async (req: any, res: Response) => {
     const { id } = req.query
 

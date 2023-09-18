@@ -14,7 +14,7 @@ const update = {
         questions: Joi.array().required().items(Joi.object({
             type: Joi.string().required(),
             question: Joi.string().required(),
-            Option: Joi.array().optional()
+            option: Joi.array().optional().items(Joi.string().required())
         }))
     })
 }
@@ -27,7 +27,7 @@ const findAll = {
 }
 
 const find = {
-        id: Joi.string().required()
+    id: Joi.string().required()
 }
 
 const remove = {

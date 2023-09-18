@@ -1,4 +1,4 @@
-import config from '.'
+import config from './Index'
 import * as winston from 'winston';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
