@@ -2,7 +2,7 @@ import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, Al
 import React from 'react';
 
 
-const DeleteConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => {
+const DeleteConfirmationDialog = ({ isOpen, onDelete, onCancle }) => {
     return (
         <AlertDialog
             isOpen={isOpen}
@@ -22,7 +22,7 @@ const DeleteConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => 
                         <Button onClick={onCancle}>
                             Cancel
                         </Button>
-                        <Button isLoading={isLoading} colorScheme='red' onClick={onDelete} ml={3}>
+                        <Button colorScheme='red' onClick={onDelete} ml={3}>
                             Delete
                         </Button>
                     </AlertDialogFooter>
