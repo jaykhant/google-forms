@@ -13,7 +13,6 @@ import {
 import React from 'react';
 import { connect } from 'react-redux';
 import { AppReducerTypes } from '../../store/App/type.js';
-import { Link } from 'react-router-dom';
 
 const Header = ({ logout, user }) => {
     const [isContextMenuOpen, setIsContextMenuOpen] = React.useState(false)
@@ -21,7 +20,7 @@ const Header = ({ logout, user }) => {
         <>
             <Box bg={'white'} px={4} position={'sticky'} top={0} zIndex={10}>
                 <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-                    <Link to={'/'}><Box>Google Form</Box></Link>
+                    <Box>Google Form</Box>
                     <Flex alignItems={'center'}>
                         <Stack direction={'row'} spacing={7}>
                             <Menu>
