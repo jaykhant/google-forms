@@ -24,8 +24,6 @@ const FormList = ({
 
     return (
         <Stack h={'87vh'} bg={'#f0ebf8'}>
-            <div>
-            </div>
             <TableContainer my={6} mx={{ base: "20", md: "40", lg: "60", xl: "80" }} >
                 <Table variant='simple'>
                     <Thead>

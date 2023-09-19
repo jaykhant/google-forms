@@ -5,7 +5,7 @@ import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-u
 
 const ManageForm = () => {
     return (
-        <div>
+        <>
             <Tabs variant="unstyled">
                 <TabList justifyContent={'center'}>
                     <Tab>Questions</Tab>
@@ -26,7 +26,7 @@ const ManageForm = () => {
                     </TabPanel>
                 </TabPanels>
             </Tabs>
-        </div>
+        </>
     )
 }
 

@@ -85,6 +85,18 @@ const reducer = (state = initialState, action) => {
                     ]
                 }
             }
+        case FormReducerTypes.ADD_FORM_QUESTION: return {
+            ...state,
+            form: {
+                ...state.form,
+                questions: [
+                    ...state.form.questions, {
+                        question: '',
+                        type: QUESTION_TYPES.SHORT_ANSWER
+                    }
+                ]
+            }
+        }
         default: return state
     }
 }

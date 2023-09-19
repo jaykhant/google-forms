@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Date from '../DropDownItem/Date';
 import Time from '../DropDownItem/Time';
 import { Input } from '@chakra-ui/input';
@@ -17,13 +17,20 @@ import { connect } from 'react-redux';
 import { FormReducerTypes } from '../../store/Form/type';
 import { QUESTION_TYPES, QUESTION_TYPE_DISPLAY_NAMES } from '../../Constants'
 
-const ManageQuestion = ({ form, updateForm, updateFormQuestion }) => {
+const ManageQuestion = ({ form, updateForm, updateFormQuestion, addFormQuestion }) => {
+    const [containerHeight, setContainerHeight] = React.useState()
+    useEffect(() => {
+        setContainerHeight(window.innerHeight - 170)
+    }, [])
     return (
-        <div>
+        <>
             <Flex
-                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
+                bg={'#f0ebf8'}
+                overflowY={'auto'}
                 flexDirection="column"
-                bg={'#f0ebf8'}>
+                height={`${containerHeight}px`}
+                px={{ base: "10", md: "40", lg: "60", xl: "80" }}
+            >
                 <Stack spacing={8} py={12}>
                     <Box
                         p={8}
@@ -35,8 +42,14 @@ const ManageQuestion = ({ form, updateForm, updateFormQuestion }) => {
                     >
                         <Stack spacing={4}>
                             {form.title}
-                            <Input value={form.title} onInput={(event) => updateForm({ key: 'title', value: event.target.value })} fontSize='24px' variant='flushed' placeholder='Name' />
-                            <Input value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Description' />
+                            <Input 
+                            value={form.title} 
+                            onInput={(event) => updateForm({ key: 'title', value: event.target.value })} fontSize='32px' 
+                            variant='flushed' 
+                            placeholder='Form title'
+                            fontWeight={'medium'} 
+                            />
+                            <Input value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Form description' />
                         </Stack>
                     </Box>
                 </Stack>
@@ -52,7 +65,12 @@ const ManageQuestion = ({ form, updateForm, updateFormQuestion }) => {
                                             onInput={(event) => updateFormQuestion({
                                                 key: 'question', value: event.target.value, index
                                             })}
-                                            w={'60%'} fontSize='24px' variant='flushed' placeholder='Question'
+                                            bgColor={'#F8F9FA'}
+                                            w={'60%'}
+                                            px={4}
+                                            height={'50px'}
+                                            variant='flushed'
+                                            placeholder='Question'
                                         />
                                         <Menu>
                                             <MenuButton
@@ -148,19 +166,30 @@ const ManageQuestion = ({ form, updateForm, updateFormQuestion }) => {
                                 </Stack>
                                 <Divider pt="5" />
                             </CardBody>
-                            <CardFooter gap="4" display="flex" alignItems="center" justifyContent="end">
-                                <CopyIcon />
-                                <DeleteIcon />
+                            <CardFooter display="flex" alignItems="center" justifyContent="end">
+                                <Button borderRadius={'30px'} bg={'white'}><CopyIcon /></Button>
+                                <Button borderRadius={'30px'} bg={'white'}> <DeleteIcon /></Button>
                                 <Divider orientation='vertical' h='30px' />
-                                <Text>Required</Text>
+                                <Text px={4}>Required</Text>
                                 <Switch id='email-alerts' />
                             </CardFooter>
                         </Card>
                     )
                 }
             </Flex>
+
             <Box bg={'#f0ebf8'} px={{ base: "20", md: "40", lg: "60", xl: "80" }} position={'sticky'} bottom={0} zIndex={10}>
-                <Flex h={16} alignItems={'center'} justifyContent={'end'}>
+                <Flex gap={4} h={16} alignItems={'center'} justifyContent={'end'}>
+                    <Button
+                        bg={'blue.400'}
+                        color={'white'}
+                        _hover={{
+                            bg: 'blue.500',
+                        }}
+                        onClick={addFormQuestion}
+                    >
+                        Add Question
+                    </Button>
                     <Button
                         bg={'blue.400'}
                         color={'white'}
@@ -173,7 +202,7 @@ const ManageQuestion = ({ form, updateForm, updateFormQuestion }) => {
                     </Button>
                 </Flex>
             </Box>
-        </div >
+        </ >
     )
 }
 
@@ -182,13 +211,16 @@ const mapStateToProps = (state) => {
         form: state.form.form,
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         updateForm: ({ key, value }) => {
             dispatch({ type: FormReducerTypes.UPDATE_FORM, key, value })
         },
         updateFormQuestion: ({ key, value, index }) => {
             dispatch({ type: FormReducerTypes.UPDATE_FORM_QUESTION, key, value, index })
+        },
+        addFormQuestion: () => {
+            dispatch({ type: FormReducerTypes.ADD_FORM_QUESTION })
         }
     })
 }

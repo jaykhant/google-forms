@@ -13,7 +13,8 @@ const FormReducerTypes = {
     UPDATE_IS_LOADING_FOR_CREATE_FORM: `${moduleTypes.FORM}/UPDATE_IS_LOADING_FOR_CREATE_FORM`,
     SET_FORM: `${moduleTypes.FORM}/SET_FORM`,
     UPDATE_FORM: `${moduleTypes.FORM}/UPDATE_FORM`,
-    UPDATE_FORM_QUESTION: `${moduleTypes.FORM}/UPDATE_FORM_QUESTION`
+    UPDATE_FORM_QUESTION: `${moduleTypes.FORM}/UPDATE_FORM_QUESTION`,
+    ADD_FORM_QUESTION: `${moduleTypes.FORM}/ADD_FORM_QUESTION`
 }
 
 const FormActionTypes = {
