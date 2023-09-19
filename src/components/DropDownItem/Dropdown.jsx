@@ -1,7 +1,7 @@
 import React from 'react'
 import { Input } from '@chakra-ui/input';
 import { Stack } from '@chakra-ui/layout';
-import { Text, CloseButton } from '@chakra-ui/react'
+import { Text, CloseButton, Button } from '@chakra-ui/react'
 
 const DropDown = () => {
     return (
@@ -12,7 +12,11 @@ const DropDown = () => {
             </Stack>
             <Stack gap="4" direction='row' display="flex" alignItems="center" justifyContent="start">
                 <Text>2.</Text>
-                <Text w={"60%"}>Add option or Add "Others"</Text>
+                <Text cursor={'pointer'} w={"60%"}>
+                    <Button colorScheme='gray' variant='link'>
+                        Add option
+                    </Button>
+                </Text>
                 <CloseButton />
             </Stack>
         </>

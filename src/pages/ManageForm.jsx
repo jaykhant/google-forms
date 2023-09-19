@@ -1,11 +1,11 @@
 import React from 'react'
-import ResponseList from '../components/Response/ResponseList';
-import ManageQuestion from '../components/Question/ManageQuestion';
+import ResponseList from '../components/Form/ResponseList';
+import ManageQuestion from '../components/Form/ManageQuestion';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 
 const ManageForm = () => {
     return (
-        <div>
+        <>
             <Tabs variant="unstyled">
                 <TabList justifyContent={'center'}>
                     <Tab>Questions</Tab>
@@ -26,7 +26,7 @@ const ManageForm = () => {
                     </TabPanel>
                 </TabPanels>
             </Tabs>
-        </div>
+        </>
     )
 }
 
