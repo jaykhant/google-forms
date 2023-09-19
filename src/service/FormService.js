@@ -15,7 +15,7 @@ export default class FormService {
         }
     }
 
-    delete = async (id) => {
+    delete = async ({ id }) => {
         try {
             const response = await this.http.delete(`/?id=${id}`)
             return new ResponseWrapper(response).data

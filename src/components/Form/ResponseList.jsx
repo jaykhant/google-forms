@@ -1,13 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from "react-router-dom";
 import { ViewIcon } from '@chakra-ui/icons'
 import { Tr, Td, Th, Thead, Tbody, Table, Button, TableContainer, Stack } from '@chakra-ui/react'
 
 const ResponseList = () => {
+    const [containerHeight, setContainerHeight] = React.useState()
+    useEffect(() => {
+        setContainerHeight(window.innerHeight - 105)
+    }, [])
+
     return (
-        <div>
-            <Stack h={'93vh'} bg={'#f0ebf8'}>
-                <TableContainer my={6} mx={{ base: "20", md: "40", lg: "60", xl: "80" }}>
+        <>
+            <Stack height={`${containerHeight}px`} bg={'#f0ebf8'}>
+                <TableContainer overflowY={'auto'} pt={6} px={{ base: "20", md: "40", lg: "60", xl: "80" }}>
                     <Table variant='simple'>
                         <Thead>
                             <Tr>
@@ -28,7 +33,7 @@ const ResponseList = () => {
                     </Table>
                 </TableContainer>
             </Stack>
-        </div >
+        </ >
     )
 }
 
