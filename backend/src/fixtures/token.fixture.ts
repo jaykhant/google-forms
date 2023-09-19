@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import config from '../config/index';
+import config from '../config/Index';
 
 const payload = {
     "email": "test@94gmail.com",

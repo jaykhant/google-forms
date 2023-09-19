@@ -1,8 +1,8 @@
 import express from 'express';
 import ResponseController from '../../controllers/ResponseController';
-import validate from '../../middlewares/validate'
+import validate from '../../middlewares/Validate'
 import ResponseValidation from '../../validations/ResponseValidation';
-import auth from '../../middlewares/auth';
+import auth from '../../middlewares/Auth';
 const router = express.Router();
 
 router.post('/', auth, validate(ResponseValidation.create), ResponseController.create)

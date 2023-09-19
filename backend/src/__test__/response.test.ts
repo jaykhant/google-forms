@@ -2,7 +2,7 @@ import app from '../app'
 import request from 'supertest'
 import mongoose from 'mongoose'
 import httpStatus from 'http-status'
-import userAccessToken from '../fixtures/token.fixture';
+import userAccessToken from '../fixtures/Token.fixture';
 
 const mockRresponse = {
     userId: "64ec96edb08805344f0da22e",

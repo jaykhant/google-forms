@@ -5,7 +5,7 @@ import ApiError from '../utils/ApiError';
 import catchAsync from '../utils/CatchAsync';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken'
-import config from '../config/index'
+import config from '../config/Index'
 
 const signUp = catchAsync(async (req: Request, res: Response) => {
     const { email, name, password } = req.body
@@ -48,6 +48,7 @@ const signIn = catchAsync(async (req: Request, res: Response) => {
     res.json({ user, accessToken })
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getCurrentUser = catchAsync(async (req: any, res: Response) => {
     const loggedInUser = req.user
     if (!loggedInUser)

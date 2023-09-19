@@ -2,7 +2,7 @@ import app from '../app'
 import request from 'supertest'
 import mongoose from 'mongoose'
 import httpStatus from 'http-status'
-import userAccessToken from '../fixtures/token.fixture';
+import userAccessToken from '../fixtures/Token.fixture';
 
 const mockRform = {
     title: "test",

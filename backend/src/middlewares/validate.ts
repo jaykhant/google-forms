@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import Joi from "joi";
 import ApiError from '../utils/ApiError'
-import pick from "../utils/pick";
+import pick from "../utils/Pick";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validate = (schema: any) => (req: Request, __: Response, next: NextFunction) => {

@@ -35,7 +35,7 @@ model Form {
 type Questions {
   type     String
   question String
-  Option   String[]
+  option   String[]
 }
 
 model Response {

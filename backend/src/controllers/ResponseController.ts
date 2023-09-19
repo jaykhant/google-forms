@@ -4,6 +4,7 @@ import catchAsync from '../utils/CatchAsync';
 import S3BucketManager from '../utils/S3BucketManager'
 import mongoose from 'mongoose'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
     const { formId, answer } = req.body
 
@@ -14,14 +15,15 @@ const create = catchAsync(async (req: any, res: Response) => {
 
 const find = catchAsync(async (req: Request, res: Response) => {
     const { formId, page, size } = req.query
-
-    let data = await ResponseService.find(String(formId), Number(page), Number(size)) as any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const data = await ResponseService.find(String(formId), Number(page), Number(size)) as any
 
     const folderName = formId?.toString()
 
     const s3BucketManager = new S3BucketManager()
 
     for (let j = 0; j < data.length; j++) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const answer = data[j].answer as any
 
         for (let i = 0; i < answer.length; i++) {
@@ -29,6 +31,7 @@ const find = catchAsync(async (req: Request, res: Response) => {
                 answer[i].fileName = await s3BucketManager.generateSignedUrlForDownload(
                     folderName!.toString(),
                     answer[i].fileName!
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ) as any
         }
     }
