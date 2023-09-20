@@ -36,6 +36,7 @@ type Questions {
   type     String
   question String
   option   String[]
+  required Boolean
 }
 
 model Response {
@@ -52,7 +53,7 @@ model Response {
 type Answer {
   question String
   answer   String?
-  Option   String[]
+  option   String[]
   fileName String?
   date     DateTime? @db.Date
   time     DateTime?
