@@ -6,11 +6,11 @@ import ApiError from '../utils/ApiError';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
-    const { title } = req.body
+    const { title, questions } = req.body
 
     const user = req.user
 
-    res.json(await FormService.create(title, user.id))
+    res.json(await FormService.create(title, user.id, questions))
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -40,9 +40,7 @@ const findAll = catchAsync(async (req: Request, res: Response) => {
 const find = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
 
-    const data = await FormService.findForm(String(id))
-
-    res.json({ data })
+    res.json((await FormService.findForm(String(id)))[0])
 })
 
 const remove = catchAsync(async (req: Request, res: Response) => {

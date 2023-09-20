@@ -6,7 +6,7 @@ const create = {
         answer: Joi.array().required().items(Joi.object({
             question: Joi.string().required(),
             answer: Joi.string().optional(),
-            Option: Joi.array().optional(),
+            option: Joi.array().optional().items(Joi.string().required()),
             fileName: Joi.string().optional(),
             date: Joi.date().optional(),
             time: Joi.date().optional()

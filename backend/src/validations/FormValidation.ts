@@ -2,7 +2,13 @@ import Joi from "joi";
 
 const create = {
     body: Joi.object().keys({
-        title: Joi.string().required()
+        title: Joi.string().required(),
+        questions: Joi.array().required().items(Joi.object({
+            type: Joi.string().required(),
+            question: Joi.string().required(),
+            option: Joi.array().optional().items(Joi.string().required()),
+            required: Joi.boolean().required()
+        }))
     })
 }
 
@@ -14,7 +20,8 @@ const update = {
         questions: Joi.array().required().items(Joi.object({
             type: Joi.string().required(),
             question: Joi.string().required(),
-            option: Joi.array().optional().items(Joi.string().required())
+            option: Joi.array().optional().items(Joi.string().required()),
+            required: Joi.boolean().required()
         }))
     })
 }
