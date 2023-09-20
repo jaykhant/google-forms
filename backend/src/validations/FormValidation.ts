@@ -6,8 +6,8 @@ const create = {
         questions: Joi.array().required().items(Joi.object({
             type: Joi.string().required(),
             question: Joi.string().required(),
-            option: Joi.array().optional().items(Joi.string().required()),
-            required: Joi.boolean().required()
+            options: Joi.array().optional().items(Joi.string().required()),
+            isRequired: Joi.boolean().required()
         }))
     })
 }
@@ -16,12 +16,12 @@ const update = {
     body: Joi.object().keys({
         id: Joi.string().required(),
         title: Joi.string().required(),
-        description: Joi.string().required(),
+        description: Joi.string().optional(),
         questions: Joi.array().required().items(Joi.object({
             type: Joi.string().required(),
             question: Joi.string().required(),
-            option: Joi.array().optional().items(Joi.string().required()),
-            required: Joi.boolean().required()
+            options: Joi.array().optional().items(Joi.string().required()),
+            isRequired: Joi.boolean().required()
         }))
     })
 }

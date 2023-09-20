@@ -3,6 +3,9 @@ import ResponseService from '../services/ResponseService';
 import catchAsync from '../utils/CatchAsync';
 import S3BucketManager from '../utils/S3BucketManager'
 import mongoose from 'mongoose'
+import FormService from '../services/FormService';
+import httpStatus from 'http-status';
+import ApiError from '../utils/ApiError';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
@@ -10,33 +13,23 @@ const create = catchAsync(async (req: any, res: Response) => {
 
     const user = req.user
 
-    res.json({ data: await ResponseService.create(user.id, formId, answer) })
+    const form = await FormService.findform(formId)
+    if (form?.status == 'creating'){
+        throw new ApiError(httpStatus.BAD_GATEWAY, 'Form Not Published')
+    }
+    
+    const response = await ResponseService.create(user.id, formId, answer)
+
+    res.json(response)
 })
 
 const find = catchAsync(async (req: Request, res: Response) => {
     const { formId, page, size } = req.query
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const data = await ResponseService.find(String(formId), Number(page), Number(size)) as any
 
-    const folderName = formId?.toString()
-
-    const s3BucketManager = new S3BucketManager()
-
-    for (let j = 0; j < data.length; j++) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const answer = data[j].answer as any
-
-        for (let i = 0; i < answer.length; i++) {
-            if (answer[i].fileName)
-                answer[i].fileName = await s3BucketManager.generateSignedUrlForDownload(
-                    folderName!.toString(),
-                    answer[i].fileName!
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ) as any
-        }
-    }
-
-    res.json({ data })
+    res.json({ 
+        data: await ResponseService.find(String(formId), Number(page), Number(size)),
+        totalData: await ResponseService.getTotalCount(String(formId))
+     })
 })
 
 const findResponseById = catchAsync(async (req: Request, res: Response) => {

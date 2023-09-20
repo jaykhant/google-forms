@@ -77,6 +77,14 @@ const find = async (id: string, userId: string) => {
     })
 }
 
+const findform = async (id: string) => {
+    return await prisma.form.findFirst({
+        where: {
+            id
+        }
+    })
+}
+
 const findForm = async (id: string) => {
     return await prisma.form.aggregateRaw({
         pipeline: [
@@ -112,5 +120,6 @@ export default {
     remove,
     updatestatus,
     find,
+    findform,
     findForm
 }
