@@ -13,8 +13,18 @@ const FormReducerTypes = {
     UPDATE_IS_LOADING_FOR_CREATE_FORM: `${moduleTypes.FORM}/UPDATE_IS_LOADING_FOR_CREATE_FORM`,
     SET_FORM: `${moduleTypes.FORM}/SET_FORM`,
     UPDATE_FORM: `${moduleTypes.FORM}/UPDATE_FORM`,
+
     UPDATE_FORM_QUESTION: `${moduleTypes.FORM}/UPDATE_FORM_QUESTION`,
-    ADD_FORM_QUESTION: `${moduleTypes.FORM}/ADD_FORM_QUESTION`
+    ADD_FORM_QUESTION: `${moduleTypes.FORM}/ADD_FORM_QUESTION`,
+    DELETE_FORM_QUESTION: `${moduleTypes.FORM}/DELETE_FORM_QUESTION`,
+    COPY_FORM_QUESTION: `${moduleTypes.FORM}/COPY_FORM_QUESTION`,
+
+    ADD_FORM_QUESTION_OPTION: `${moduleTypes.FORM}/ADD_FORM_QUESTION_OPTION`,
+    DELETE_FORM_QUESTION_OPTION: `${moduleTypes.FORM}/DELETE_FORM_QUESTION_OPTION`,
+    UPDATE_FORM_QUESTION_OPTION: `${moduleTypes.FORM}/UPDATE_FORM_QUESTION_OPTION`,
+
+    UPDATE_IS_LOADING_FOR_UPDATE_FORM: `${moduleTypes.FORM}/UPDATE_IS_LOADING_FOR_UPDATE_FORM`,
+
 }
 
 const FormActionTypes = {
@@ -22,6 +32,7 @@ const FormActionTypes = {
     findOne: `${moduleTypes.FORM}/findOne`,
     delete: `${moduleTypes.FORM}/delete`,
     create: `${moduleTypes.FORM}/create`,
+    update: `${moduleTypes.FORM}/update`,
 }
 
 module.exports = {

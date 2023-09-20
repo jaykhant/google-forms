@@ -6,6 +6,15 @@ export default class FormService {
         this.http = new HttpCommon("form", true)
     }
 
+    findOne = async ({ id }) => {
+        try {
+            const response = await this.http.get(`/${id}`)
+            return new ResponseWrapper(response).data
+        } catch (error) {
+            throw new ErrorWrapper(error)
+        }
+    }
+
     findAll = async ({ page, size }) => {
         try {
             const response = await this.http.get(`/?page=${page}&size=${size}`)
@@ -27,6 +36,15 @@ export default class FormService {
     create = async (data) => {
         try {
             const response = await this.http.post('/', data)
+            return new ResponseWrapper(response).data
+        } catch (error) {
+            throw new ErrorWrapper(error)
+        }
+    }
+
+    update = async (data) => {
+        try {
+            const response = await this.http.put('/', data)
             return new ResponseWrapper(response).data
         } catch (error) {
             throw new ErrorWrapper(error)
