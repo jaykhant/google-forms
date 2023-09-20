@@ -63,8 +63,8 @@ export default class HttpCommon {
         return this.apiClient.post(url, data)
     }
 
-    patch = (id, data = {}) => {
-        return this.apiClient.patch(id, data)
+    put = (id, data = {}) => {
+        return this.apiClient.put(id, data)
     }
 
     delete = (id) => {

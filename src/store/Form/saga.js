@@ -5,6 +5,7 @@ import { select } from 'redux-saga/effects'
 
 import History from "../../utils/History";
 import FormService from "../../service/FormService";
+import { QUESTION_TYPES } from "../../Constants";
 let formService = new FormService()
 
 const formState = state => state.form;
@@ -14,6 +15,7 @@ function* init () {
     yield takeEvery(FormActionTypes.findOne, findOne)
     yield takeEvery(FormActionTypes.delete, deleteForm)
     yield takeEvery(FormActionTypes.create, create)
+    yield takeEvery(FormActionTypes.update, update)
 }
 
 function* findAll () {
@@ -35,12 +37,12 @@ function* findOne ({ id }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
         const response = yield call(formService.findOne, { id })
-        console.log(response);
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
-        // yield put({
-        //     type: FormReducerTypes.SET_FORM, form: response.forms
-        // });
+        yield put({
+            type: FormReducerTypes.SET_FORM, form: response
+        });
     } catch (error) {
+        console.log(error);
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
     }
@@ -65,7 +67,7 @@ function* deleteForm ({ deleteIndex }) {
 function* create () {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_CREATE_FORM, isLoadingForCreateForm: true })
     try {
-        const response = yield call(formService.create, { title: 'Untitled form' })
+        const response = yield call(formService.create, { title: 'Untitled form', questions: [{ type: QUESTION_TYPES.MULTIPLE_CHOICE, question: 'Untitled Question', options: ['Option 1'] }] })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_CREATE_FORM, isLoadingForCreateForm: false })
         History.push(`/form/${response.id}`)
     } catch (error) {
@@ -74,5 +76,16 @@ function* create () {
     }
 }
 
+function* update () {
+    yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: true })
+    try {
+        const { form } = yield select(formState)
+        yield call(formService.update, form)
+        yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: false })
+    } catch (error) {
+        yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: false })
+        //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
+    }
+}
 
 export default init;

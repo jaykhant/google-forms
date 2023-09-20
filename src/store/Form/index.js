@@ -21,7 +21,8 @@ const initialState = {
                 type: QUESTION_TYPES.SHORT_ANSWER
             },
         ]
-    }
+    },
+    isLoadingForUpdateForm: false
 }
 
 const reducer = (state = initialState, action) => {
@@ -59,6 +60,10 @@ const reducer = (state = initialState, action) => {
             ]
         }
 
+        case FormReducerTypes.SET_FORM: return {
+            ...state,
+            form: action.form
+        }
         case FormReducerTypes.UPDATE_IS_LOADING_FOR_CREATE_FORM: return {
             ...state,
             isLoadingForCreateForm: action.isLoadingForCreateForm
@@ -71,12 +76,13 @@ const reducer = (state = initialState, action) => {
             }
         }
         case FormReducerTypes.UPDATE_FORM_QUESTION:
+            if (action.key === 'type') delete state.form.questions[action.index].options
             return {
                 ...state,
                 form: {
                     ...state.form,
                     questions: [
-                        ...state.form.questions.slice(0, action.index - 1),
+                        ...state.form.questions.slice(0, action.index),
                         {
                             ...state.form.questions[action.index],
                             [action.key]: action.value
@@ -85,17 +91,95 @@ const reducer = (state = initialState, action) => {
                     ]
                 }
             }
-        case FormReducerTypes.ADD_FORM_QUESTION: return {
+        case FormReducerTypes.ADD_FORM_QUESTION:
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    questions: [
+                        ...state.form.questions,
+                        {
+                            question: '',
+                            type: QUESTION_TYPES.SHORT_ANSWER
+                        }
+                    ]
+                }
+            }
+        case FormReducerTypes.DELETE_FORM_QUESTION:
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    questions: [
+                        ...state.form.questions.slice(0, action.deleteIndex),
+                        ...state.form.questions.slice(action.deleteIndex + 1)
+                    ]
+                }
+            }
+        case FormReducerTypes.COPY_FORM_QUESTION:
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    questions: [
+                        ...state.form.questions.slice(0, action.copyIndex),
+                        action.question,
+                        ...state.form.questions.slice(action.copyIndex)
+                    ]
+                }
+            }
+        case FormReducerTypes.ADD_FORM_QUESTION_OPTION: return {
             ...state,
             form: {
                 ...state.form,
                 questions: [
-                    ...state.form.questions, {
-                        question: '',
-                        type: QUESTION_TYPES.SHORT_ANSWER
-                    }
+                    ...state.form.questions.slice(0, action.questionIndex),
+                    {
+                        ...state.form.questions[action.questionIndex],
+                        options: [...question.options, `Option ${state.form.questions[action.questionIndex].options.length + 1}`]
+                    },
+                    ...state.form.questions.slice(action.questionIndex)
                 ]
             }
+        }
+        case FormReducerTypes.UPDATE_FORM_QUESTION_OPTION: return {
+            ...state,
+            form: {
+                ...state.form,
+                questions: [
+                    ...state.form.questions.slice(0, action.questionIndex),
+                    {
+                        ...state.form.questions[action.questionIndex],
+                        options: [
+                            ...state.form.questions[action.questionIndex].options.slice(0, action.optionIndex),
+                            action.option,
+                            ...state.form.questions[action.questionIndex].options.slice(action.optionIndex + 1)
+                        ]
+                    },
+                    ...state.form.questions.slice(action.questionIndex)
+                ]
+            }
+        }
+        case FormReducerTypes.DELETE_FORM_QUESTION_OPTION: return {
+            ...state,
+            form: {
+                ...state.form,
+                questions: [
+                    ...state.form.questions.slice(0, action.questionIndex),
+                    {
+                        ...state.form.questions[action.questionIndex],
+                        options: [
+                            ...state.form.questions[action.questionIndex].options.slice(0, action.optionIndex),
+                            ...state.form.questions[action.questionIndex].options.slice(action.optionIndex + 1)
+                        ]
+                    },
+                    ...state.form.questions.slice(action.questionIndex)
+                ]
+            }
+        }
+        case FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM: return {
+            ...state,
+            isLoadingForUpdateForm: action.isLoadingForUpdateForm
         }
         default: return state
     }
