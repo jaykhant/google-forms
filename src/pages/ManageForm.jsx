@@ -7,7 +7,7 @@ const ManageForm = () => {
     return (
         <>
             <Tabs variant="unstyled">
-                <TabList justifyContent={'center'}>
+                <TabList justifyContent={'center'} bg={'white'}>
                     <Tab>Questions</Tab>
                     <Tab>Responses</Tab>
                 </TabList>

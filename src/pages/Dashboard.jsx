@@ -7,12 +7,12 @@ import { FormActionTypes } from '../store/Form/type';
 
 const Dashboard = ({ createForm, isLoadingForCreateForm }) => {
     return (
-        <div>
-            <Flex px={{ base: "20", md: "40", lg: "60", xl: "80" }} align="center" justify="end" bg={'#f0ebf8'}>
+        <>
+            <Flex px={{ base: "20", md: "40", lg: "60", xl: "80" }} align="center" justify="end" >
                 <Button isLoading={isLoadingForCreateForm} mt="4" size='md' onClick={createForm}><AddIcon mr="3" />  Add Form</Button>
             </Flex>
             <FormList />
-        </div >
+        </>
     )
 }
 
@@ -21,7 +21,7 @@ const mapStateToProps = (state) => {
         isLoadingForCreateForm: state.form.isLoadingForCreateForm
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         createForm: () => {
             dispatch({ type: FormActionTypes.create })

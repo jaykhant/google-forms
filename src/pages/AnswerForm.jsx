@@ -19,15 +19,13 @@ import { ChevronDownIcon } from '@chakra-ui/icons';
 
 const AnswerForm = () => {
     return (
-        <div>
+        <>
             <Flex
                 py={5}
                 gap={4}
-                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
-                minH={'100vh'}
                 flexDirection="column"
-                bg={'#f0ebf8'}>
-
+                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
+            >
                 <Stack>
                     <Card borderTop='8px'
                         boxShadow={'lg'}
@@ -263,7 +261,7 @@ const AnswerForm = () => {
                 </Stack>
 
             </Flex>
-        </div >
+        </ >
     )
 }
 

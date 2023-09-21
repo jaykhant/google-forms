@@ -1,10 +1,10 @@
+import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
-import { Button, Center, Flex, Spinner, Stack, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
-import { Link } from 'react-router-dom'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
-import { connect } from 'react-redux'
 import DeleteConfirmationDialog from '../Core/DeleteConfirmationDialog'
+import { Button, Center, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 const FormList = ({
     forms,
@@ -23,8 +23,8 @@ const FormList = ({
     let [deleteIndex, setDeleteIndex] = useState(0)
 
     return (
-        <Stack h={'87vh'} bg={'#f0ebf8'}>
-            <TableContainer my={6} mx={{ base: "20", md: "40", lg: "60", xl: "80" }} >
+        <>
+            <TableContainer py={6} mx={{ base: "20", md: "40", lg: "60", xl: "80" }} >
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
@@ -60,9 +60,15 @@ const FormList = ({
                             </Flex>
                             </Td>
                         </Tr>}
-
                     </Tbody>
                 </Table>
+                {forms.length === 0 && !isLoadingForGetForm ?
+                    <Center py={4}>
+                        No Data Found
+                    </Center>
+                    :
+                    <></>
+                }
             </TableContainer>
             <DeleteConfirmationDialog
                 isOpen={isDeleteConfirmationDialogOpen}
@@ -71,7 +77,7 @@ const FormList = ({
                 onDelete={() => {
                     deleteForm(deleteIndex)
                 }} />
-        </Stack>
+        </>
     )
 }
 
@@ -83,7 +89,7 @@ const mapStateToProps = (state) => {
         isDeleteConfirmationDialogOpen: state.form.isDeleteConfirmationDialogOpen
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         findAll: () => {
             dispatch({ type: FormActionTypes.findAll })

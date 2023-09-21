@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Box, Flex, Text, Stack, useColorModeValue } from '@chakra-ui/react'
 
 const ResponseView = () => {
     return (
         <>
             <Flex
-                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
-                h={'93vh'}
                 flexDirection="column"
-                bg={'#f0ebf8'}>
+                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
+            >
                 <Stack spacing={8} minW={'70vh'} py={6} >
                     <Box
                         p={4}
