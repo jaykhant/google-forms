@@ -33,10 +33,10 @@ model Form {
 }
 
 type Questions {
-  type     String
-  question String
-  option   String[]
-  required Boolean
+  type       String
+  question   String
+  options    String[]
+  isRequired Boolean
 }
 
 model Response {
@@ -53,7 +53,7 @@ model Response {
 type Answer {
   question String
   answer   String?
-  option   String[]
+  options  String[]
   fileName String?
   date     DateTime? @db.Date
   time     DateTime?
