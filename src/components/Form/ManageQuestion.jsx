@@ -1,35 +1,29 @@
+import { connect } from 'react-redux';
 import React, { useEffect } from 'react'
-import Date from '../Form/QuestionTypes/Date';
-import Time from '../Form/QuestionTypes/Time';
 import { Input } from '@chakra-ui/input';
 import { Switch } from '@chakra-ui/switch';
+import { useParams } from 'react-router-dom';
+import Date from '../Form/QuestionTypes/Date';
+import Time from '../Form/QuestionTypes/Time';
 import DropDown from '../Form/QuestionTypes/Dropdown';
 import Checkbox from '../Form/QuestionTypes/Checkbox';
-import FileUpload from '../Form/QuestionTypes/FileUpload';
-import ShortAnswer from '../Form/QuestionTypes/ShortAnswer';
-import { Flex, Stack, Text, Box } from '@chakra-ui/layout';
-import MultipleChoice from '../Form/QuestionTypes/MultipleChoice';
 import Paragraph from '../Form/QuestionTypes/Paragraph';
+import FileUpload from '../Form/QuestionTypes/FileUpload';
+import { Flex, Stack, Text, Box } from '@chakra-ui/layout';
+import ShortAnswer from '../Form/QuestionTypes/ShortAnswer';
+import MultipleChoice from '../Form/QuestionTypes/MultipleChoice';
 import { ChevronDownIcon, CopyIcon, DeleteIcon } from '@chakra-ui/icons';
-import { Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/menu';
-import { Button, Card, CardBody, CardFooter, Divider, useColorModeValue } from '@chakra-ui/react';
-import { connect } from 'react-redux';
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type';
 import { QUESTION_TYPES, QUESTION_TYPE_DISPLAY_NAMES } from '../../Constants'
-import { useParams } from 'react-router-dom';
+import { Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/menu';
+import { Button, Card, CardBody, CardFooter, Divider, useColorModeValue } from '@chakra-ui/react';
 
 const ManageQuestion = ({
     form, updateForm, updateFormQuestion, update, findOne,
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
-    addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption
+    addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, updateFormQuestionRequired
 }) => {
-    const [containerHeight, setContainerHeight] = React.useState()
-    useEffect(() => {
-        setContainerHeight(window.innerHeight - 170)
-    }, [])
-
     const { id } = useParams()
-
     useEffect(() => {
         findOne(id)
     }, [id, findOne])
@@ -37,10 +31,8 @@ const ManageQuestion = ({
     return (
         <>
             <Flex
-                bg={'#f0ebf8'}
-                overflowY={'auto'}
                 flexDirection="column"
-                height={`${containerHeight}px`}
+                position={'relative'}
                 px={{ base: "10", md: "40", lg: "60", xl: "80" }}
             >
                 <Stack spacing={8} py={12}>
@@ -201,20 +193,31 @@ const ManageQuestion = ({
                                     <CopyIcon />
                                 </Button>
                                 <Button
-                                    onClick={deleteFormQuestion}
+                                    onClick={() => deleteFormQuestion(questionIndex)}
                                     borderRadius={'30px'} bg={'white'}>
                                     <DeleteIcon />
                                 </Button>
                                 <Divider orientation='vertical' h='30px' />
                                 <Text px={4}>Required</Text>
-                                <Switch id='email-alerts' />
+                                <Switch id='isChecked' isChecked={question.isRequired ? true : false} value={question.isRequired}
+                                    onChange={(event) => updateFormQuestionRequired({
+                                        key: 'isRequired', value: event.target.checked, questionIndex
+                                    })} />
                             </CardFooter>
                         </Card>
                     )
                 }
             </Flex>
 
-            <Box bg={'#f0ebf8'} px={{ base: "20", md: "40", lg: "60", xl: "80" }} position={'sticky'} bottom={0} zIndex={10}>
+            <Box
+                right={0}
+                bottom={0}
+                w={'100%'}
+                zIndex={10}
+                bg={'#f0ebf8'}
+                position={'absolute'}
+                mx={{ base: "10", md: "40", lg: "60", xl: "80" }}
+            >
                 <Flex gap={4} h={16} alignItems={'center'} justifyContent={'end'}>
                     <Button
                         bg={'blue.400'}
@@ -248,7 +251,7 @@ const mapStateToProps = (state) => {
         form: state.form.form,
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         findOne: (id) => {
             dispatch({ type: FormActionTypes.findOne, id })
@@ -262,7 +265,7 @@ function mapDispatchToProps (dispatch) {
         addFormQuestion: () => {
             dispatch({ type: FormReducerTypes.ADD_FORM_QUESTION })
         },
-        deleteFormQuestion: ({ deleteIndex }) => {
+        deleteFormQuestion: (deleteIndex) => {
             dispatch({ type: FormReducerTypes.DELETE_FORM_QUESTION, deleteIndex })
         },
         copyFormQuestion: ({ copyIndex, question }) => {
@@ -276,6 +279,9 @@ function mapDispatchToProps (dispatch) {
         },
         updateFormQuestionOption: ({ questionIndex, optionIndex, option }) => {
             dispatch({ type: FormReducerTypes.UPDATE_FORM_QUESTION_OPTION, questionIndex, optionIndex, option })
+        },
+        updateFormQuestionRequired: ({ key, value, questionIndex }) => {
+            dispatch({ type: FormReducerTypes.UPDATE_FORM_QUESTION, key, value, questionIndex })
         },
         update: () => {
             dispatch({ type: FormActionTypes.update })

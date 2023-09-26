@@ -17,8 +17,10 @@ const initialState = {
         description: '',
         questions: [
             {
+                type: QUESTION_TYPES.MULTIPLE_CHOICE,
                 question: '',
-                type: QUESTION_TYPES.SHORT_ANSWER
+                options: ['Option 1'],
+                isRequired: true
             },
         ]
     },
@@ -76,18 +78,19 @@ const reducer = (state = initialState, action) => {
             }
         }
         case FormReducerTypes.UPDATE_FORM_QUESTION:
-            if (action.key === 'type') delete state.form.questions[action.index].options
+
+            if (action.key === 'type') delete state.form.questions[action.questionIndex].options
             return {
                 ...state,
                 form: {
                     ...state.form,
                     questions: [
-                        ...state.form.questions.slice(0, action.index),
+                        ...state.form.questions.slice(0, action.questionIndex),
                         {
-                            ...state.form.questions[action.index],
+                            ...state.form.questions[action.questionIndex],
                             [action.key]: action.value
                         },
-                        ...state.form.questions.slice(action.index + 1)
+                        ...state.form.questions.slice(action.questionIndex + 1)
                     ]
                 }
             }
@@ -99,8 +102,10 @@ const reducer = (state = initialState, action) => {
                     questions: [
                         ...state.form.questions,
                         {
-                            question: '',
-                            type: QUESTION_TYPES.SHORT_ANSWER
+                            type: QUESTION_TYPES.MULTIPLE_CHOICE,
+                            question: 'Untitled Question',
+                            options: ['Option 1'],
+                            isRequired: true
                         }
                     ]
                 }
@@ -128,38 +133,43 @@ const reducer = (state = initialState, action) => {
                     ]
                 }
             }
-        case FormReducerTypes.ADD_FORM_QUESTION_OPTION: return {
-            ...state,
-            form: {
-                ...state.form,
-                questions: [
-                    ...state.form.questions.slice(0, action.questionIndex),
-                    {
-                        ...state.form.questions[action.questionIndex],
-                        options: [...question.options, `Option ${state.form.questions[action.questionIndex].options.length + 1}`]
-                    },
-                    ...state.form.questions.slice(action.questionIndex)
-                ]
+        case FormReducerTypes.ADD_FORM_QUESTION_OPTION:
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    questions: [
+                        ...state.form.questions.slice(0, action.questionIndex),
+                        {
+                            ...state.form.questions[action.questionIndex],
+                            options: state.form.questions[action.questionIndex].options ? [
+                                ...state.form.questions[action.questionIndex].options,
+                                `Option ${state.form.questions[action.questionIndex].options.length + 1}`
+                            ] : ['Option 1']
+                        },
+                        ...state.form.questions.slice(action.questionIndex + 1)
+                    ],
+                }
             }
-        }
-        case FormReducerTypes.UPDATE_FORM_QUESTION_OPTION: return {
-            ...state,
-            form: {
-                ...state.form,
-                questions: [
-                    ...state.form.questions.slice(0, action.questionIndex),
-                    {
-                        ...state.form.questions[action.questionIndex],
-                        options: [
-                            ...state.form.questions[action.questionIndex].options.slice(0, action.optionIndex),
-                            action.option,
-                            ...state.form.questions[action.questionIndex].options.slice(action.optionIndex + 1)
-                        ]
-                    },
-                    ...state.form.questions.slice(action.questionIndex)
-                ]
+        case FormReducerTypes.UPDATE_FORM_QUESTION_OPTION:
+            return {
+                ...state,
+                form: {
+                    ...state.form,
+                    questions: [
+                        ...state.form.questions.slice(0, action.questionIndex),
+                        {
+                            ...state.form.questions[action.questionIndex],
+                            options: [
+                                ...state.form.questions[action.questionIndex].options.slice(0, action.optionIndex),
+                                action.option,
+                                ...state.form.questions[action.questionIndex].options.slice(action.optionIndex + 1)
+                            ]
+                        },
+                        ...state.form.questions.slice(action.questionIndex + 1)
+                    ]
+                }
             }
-        }
         case FormReducerTypes.DELETE_FORM_QUESTION_OPTION: return {
             ...state,
             form: {
@@ -173,7 +183,7 @@ const reducer = (state = initialState, action) => {
                             ...state.form.questions[action.questionIndex].options.slice(action.optionIndex + 1)
                         ]
                     },
-                    ...state.form.questions.slice(action.questionIndex)
+                    ...state.form.questions.slice(action.questionIndex + 1)
                 ]
             }
         }
