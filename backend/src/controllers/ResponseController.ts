@@ -14,10 +14,10 @@ const create = catchAsync(async (req: any, res: Response) => {
     const user = req.user
 
     const form = await FormService.findform(formId)
-    if (form?.status == 'creating'){
-        throw new ApiError(httpStatus.BAD_GATEWAY, 'Form Not Published')
+    if (form?.status == 'creating') {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Form Not Publish')
     }
-    
+
     const response = await ResponseService.create(user.id, formId, answer)
 
     res.json(response)
@@ -26,10 +26,10 @@ const create = catchAsync(async (req: any, res: Response) => {
 const find = catchAsync(async (req: Request, res: Response) => {
     const { formId, page, size } = req.query
 
-    res.json({ 
+    res.json({
         data: await ResponseService.find(String(formId), Number(page), Number(size)),
         totalData: await ResponseService.getTotalCount(String(formId))
-     })
+    })
 })
 
 const findResponseById = catchAsync(async (req: Request, res: Response) => {

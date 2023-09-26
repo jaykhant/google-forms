@@ -6,11 +6,11 @@ import ApiError from '../utils/ApiError';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
-    const { title, questions } = req.body
+    const { title, description, questions } = req.body
 
     const user = req.user
 
-    res.json(await FormService.create(title, user.id, questions))
+    res.json(await FormService.create(title, user.id, description, questions))
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +21,7 @@ const update = catchAsync(async (req: any, res: Response) => {
 
     const form = await FormService.find(id, user.id)
     if (!form) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden')
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Form does not exist.')
     }
 
     res.json({ data: await FormService.update(id, title, description, questions) })
@@ -57,7 +57,7 @@ const updatestatus = catchAsync(async (req: any, res: Response) => {
 
     const form = await FormService.find(id, user.id)
     if (!form) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden')
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Form does not exist.')
     }
 
     res.json({ data: await FormService.updatestatus(String(id)) })

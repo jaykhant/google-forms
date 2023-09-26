@@ -1,10 +1,11 @@
 import { prisma } from '../utils/PrismaClient';
 
-const create = async (title: string, userId: string, questions: any) => {
+const create = async (title: string, userId: string, description: string, questions: any) => {
     return await prisma.form.create({
         data: {
             title,
             userId,
+            description,
             questions,
             status: 'creating'
         }
