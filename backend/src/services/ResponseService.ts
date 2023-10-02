@@ -49,15 +49,59 @@ const findResponseById = async (id: string) => {
                 }
             },
             {
+                $unwind: {
+                    path: '$answer'
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    userId: {
+                        $first: '$userId'
+                    },
+                    formId: {
+                        $first: '$formId'
+                    },
+                    createdAt: {
+                        $first: '$createdAt'
+                    },
+                    updatedAt: {
+                        $first: '$updatedAt'
+                    },
+                    answer: {
+                        $push: {
+                            type: '$answer.type',
+                            question: '$answer.question',
+                            answer: '$answer.answer',
+                            answers: '$answer.answers',
+                            fileName: '$answer.fileName',
+                            dateTime: { $toString: '$answer.dateTime' }
+                        }
+                    }
+                }
+            },
+            {
                 $project: {
                     _id: 0,
                     id: { $toString: "$_id" },
                     userId: { $toString: "$userId" },
                     formId: { $toString: "$formId" },
-                    status: 1,
                     createdAt: { $toString: "$createdAt" },
                     updatedAt: { $toString: "$updatedAt" },
-                    answer: 1
+                    answer: {
+                        $map: {
+                            input: '$answer',
+                            as: 'answer',
+                            in: {
+                                type: "$$answer.type",
+                                question: '$$answer.question',
+                                answer: '$$answer.answer',
+                                answers: '$$answer.answers',
+                                fileName: '$$answer.fileName',
+                                dateTime: { $ifNull: ["$$answer.dateTime", "$false"] }
+                            }
+                        }
+                    }
                 },
             },
         ]

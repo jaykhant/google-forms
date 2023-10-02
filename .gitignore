@@ -25,3 +25,10 @@ yarn-error.log*
 dist
 .env
 .serverless
+
+cdktf.out
+cdktf.log
+*terraform.*.tfstate*
+.gen
+.terraform
+tsconfig.tsbuildinfo

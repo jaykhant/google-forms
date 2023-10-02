@@ -8,7 +8,8 @@ const create = {
             type: Joi.string().required(),
             question: Joi.string().required(),
             options: Joi.array().optional().items(Joi.string().required()),
-            isRequired: Joi.boolean().required()
+            isRequired: Joi.boolean().required(),
+            ext: Joi.array().optional().items(Joi.string().required().valid("audio/*", "video/*", "image/*", ".doc")),
         }))
     })
 }
@@ -22,7 +23,8 @@ const update = {
             type: Joi.string().required(),
             question: Joi.string().required(),
             options: Joi.array().optional().items(Joi.string().required()),
-            isRequired: Joi.boolean().required()
+            isRequired: Joi.boolean().required(),
+            ext: Joi.array().optional().items(Joi.string().required().valid("audio/*", "video/*", "image/*", ".doc"))
         }))
     })
 }
