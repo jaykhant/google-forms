@@ -37,6 +37,7 @@ type Questions {
   question   String
   options    String[]
   isRequired Boolean
+  ext        String[]
 }
 
 model Response {
@@ -51,10 +52,16 @@ model Response {
 }
 
 type Answer {
+  type     String
   question String
   answer   String?
+  answers  String[]
   options  String[]
-  fileName String?
-  date     DateTime? @db.Date
-  time     DateTime?
+  fileName fileName?
+  dateTime DateTime?
+}
+
+type fileName {
+  type     String
+  fileName String
 }

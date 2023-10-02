@@ -35,9 +35,19 @@ const find = catchAsync(async (req: Request, res: Response) => {
 const findResponseById = catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
 
-    res.json({
-        response: await ResponseService.findResponseById(String(id))
-    })
+    const data = (await ResponseService.findResponseById(String(id)))[0] as any
+
+    const s3BucketManager = new S3BucketManager()
+    for (let i = 0; i < data.answer.length; i++) {
+        if (data.answer[i].fileName)
+            data.answer[i].fileName = await s3BucketManager.generateSignedUrlForDownload(
+                data.formId!.toString(),
+                data.answer[i].fileName.fileName!
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            ) as any
+    }
+
+    res.json(data)
 })
 
 const generateSignedUrl = catchAsync(async (req: Request, res: Response) => {

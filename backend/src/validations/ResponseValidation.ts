@@ -4,12 +4,16 @@ const create = {
     body: Joi.object().keys({
         formId: Joi.string().required(),
         answer: Joi.array().required().items(Joi.object({
+            type: Joi.string().required(),
             question: Joi.string().required(),
             answer: Joi.string().optional(),
+            answers: Joi.array().optional().items(Joi.string().required()),
             options: Joi.array().optional().items(Joi.string().required()),
-            fileName: Joi.string().optional(),
-            date: Joi.date().optional(),
-            time: Joi.date().optional()
+            fileName: Joi.object().optional().keys({
+                type: Joi.string().required(),
+                fileName: Joi.string().required()
+            }),
+            dateTime: Joi.date().optional()
         }))
     })
 }

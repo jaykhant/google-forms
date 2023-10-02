@@ -10,7 +10,8 @@ const envVarsSchema = Joi.object().keys({
   DATABASE_URL: Joi.string().required(),
   SECRET_KEY: Joi.string().required(),
   AWS_ACCESS_KEY_ID: Joi.string().required(),
-  AWS_SECRET_ACCESS_KEY: Joi.string().required()
+  AWS_SECRET_ACCESS_KEY: Joi.string().required(),
+  TERRAFORM: Joi.string().required()
 })
   .unknown();
 
@@ -28,4 +29,5 @@ export default {
     accessKeyId: envVars.S3_ACCESS_KEY_ID,
     secretAccessKey: envVars.S3_SECRET_ACCESS_KEY
   },
+  terraform: envVars.TERRAFORM
 };
