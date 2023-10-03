@@ -1,5 +1,5 @@
 import { prisma } from '../utils/PrismaClient';
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = async (title: string, userId: string, description: string, questions: any) => {
     return await prisma.form.create({
         data: {

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import FormService from '../services/FormService';
+import ResponseService from '../services/ResponseService';
 import catchAsync from '../utils/CatchAsync';
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
@@ -45,6 +46,8 @@ const find = catchAsync(async (req: Request, res: Response) => {
 
 const remove = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.query
+
+    await ResponseService.remove(String(id))
 
     res.json({ data: await FormService.remove(String(id)) })
 })

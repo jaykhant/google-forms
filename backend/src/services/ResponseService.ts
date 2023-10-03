@@ -1,12 +1,12 @@
 import { prisma } from '../utils/PrismaClient';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const create = async (userId: string, formId: string, answer: any) => {
+const create = async (userId: string, formId: string, answers: any) => {
     return await prisma.response.create({
         data: {
             userId,
             formId,
-            answer
+            answers
         }
     })
 }
@@ -49,8 +49,33 @@ const findResponseById = async (id: string) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'User',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'user'
+                }
+            }, {
+                $lookup: {
+                    from: 'Form',
+                    localField: 'formId',
+                    foreignField: '_id',
+                    as: 'form'
+                }
+            },
+            {
                 $unwind: {
-                    path: '$answer'
+                    path: '$answers'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$user'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$form'
                 }
             },
             {
@@ -68,15 +93,21 @@ const findResponseById = async (id: string) => {
                     updatedAt: {
                         $first: '$updatedAt'
                     },
-                    answer: {
+                    answers: {
                         $push: {
-                            type: '$answer.type',
-                            question: '$answer.question',
-                            answer: '$answer.answer',
-                            answers: '$answer.answers',
-                            fileName: '$answer.fileName',
+                            type: '$answers.type',
+                            question: '$answers.question',
+                            answer: '$answers.answer',
+                            answers: '$answers.answers',
+                            fileName: '$answers.fileName',
                             dateTime: { $toString: '$answer.dateTime' }
                         }
+                    },
+                    user: {
+                        $first: '$user'
+                    },
+                    form: {
+                        $first: '$form'
                     }
                 }
             },
@@ -88,19 +119,27 @@ const findResponseById = async (id: string) => {
                     formId: { $toString: "$formId" },
                     createdAt: { $toString: "$createdAt" },
                     updatedAt: { $toString: "$updatedAt" },
-                    answer: {
+                    answers: {
                         $map: {
-                            input: '$answer',
-                            as: 'answer',
+                            input: '$answers',
+                            as: 'answers',
                             in: {
-                                type: "$$answer.type",
-                                question: '$$answer.question',
-                                answer: '$$answer.answer',
-                                answers: '$$answer.answers',
-                                fileName: '$$answer.fileName',
-                                dateTime: { $ifNull: ["$$answer.dateTime", "$false"] }
+                                type: "$$answers.type",
+                                question: '$$answers.question',
+                                answer: '$$answers.answer',
+                                answers: '$$answers.answers',
+                                fileName: '$$answers.fileName',
+                                dateTime: { $ifNull: ["$$answers.dateTime", "$false"] }
                             }
                         }
+                    },
+                    user: {
+                        name: "$user.name",
+                        email: "$user.email"
+                    },
+                    form: {
+                        title: "$form.title",
+                        description: "$form.description"
                     }
                 },
             },
@@ -108,9 +147,18 @@ const findResponseById = async (id: string) => {
     })
 }
 
+const remove = async (formId: string) => {
+    return await prisma.response.deleteMany({
+        where: {
+            formId
+        }
+    })
+}
+
 export default {
     create,
     find,
     findResponseById,
-    getTotalCount
+    getTotalCount,
+    remove
 }
