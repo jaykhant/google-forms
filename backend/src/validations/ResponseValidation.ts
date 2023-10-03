@@ -23,18 +23,18 @@ const create = {
                     "is": QUESTION_TYPES.PARAGRAPH,
                     then: Joi.string().required(),
                     otherwise: Joi.when('type', {
-                        "is": QUESTION_TYPES.CHECKBOX,
+                        "is": QUESTION_TYPES.DROP_DOWN,
                         then: Joi.string().required(),
-                        otherwise: Joi.when('type', {
-                            "is": QUESTION_TYPES.DROP_DOWN,
-                            then: Joi.string().required(),
-                        })
                     })
                 })
             }),
             answers: Joi.when('type', {
                 "is": QUESTION_TYPES.MULTIPLE_CHOICE,
-                then: Joi.array().required().items(Joi.string().required())
+                then: Joi.array().required().items(Joi.string().required()),
+                otherwise: Joi.when('type', {
+                    "is": QUESTION_TYPES.CHECKBOX,
+                    then: Joi.array().required().items(Joi.string().required())
+                })
             }),
             options: Joi.when('type', {
                 "is": QUESTION_TYPES.MULTIPLE_CHOICE,
