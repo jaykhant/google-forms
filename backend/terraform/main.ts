@@ -21,28 +21,28 @@ import { ApiGatewayIntegration } from "@cdktf/provider-aws/lib/api-gateway-integ
 import { ApiGatewayVpcLink } from "@cdktf/provider-aws/lib/api-gateway-vpc-link";
 import { ApiGatewayDeployment } from "@cdktf/provider-aws/lib/api-gateway-deployment";
 import { ApiGatewayStage } from "@cdktf/provider-aws/lib/api-gateway-stage";
-import config from '../src/config/Index'
 
+const resourcename = "googleform"
 class MyStack extends TerraformStack {
     constructor(scope: Construct, id: string) {
         super(scope, id);
 
-        new AwsProvider(this, `${config.terraform}_aws`, {
+        new AwsProvider(this, `${resourcename}_aws`, {
             region: "ap-south-1",
             accessKey: "AKIAYPBV5L2QCA3JKZ3S",
             secretKey: "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"
         });
 
-        const ecrRepository = new EcrRepository(this, `${config.terraform}_EcrRepository`, {
+        const ecrRepository = new EcrRepository(this, `${resourcename}_EcrRepository`, {
             imageScanningConfiguration: {
                 scanOnPush: true,
             },
             imageTagMutability: "MUTABLE",
-            name: `${config.terraform}`,
+            name: `${resourcename}`,
         });
 
-        const ecsCluster = new EcsCluster(this, `${config.terraform}_EcsCluster`, {
-            name: `${config.terraform}`,
+        const ecsCluster = new EcsCluster(this, `${resourcename}_EcsCluster`, {
+            name: `${resourcename}`,
             setting: [
                 {
                     name: "containerInsights",
@@ -51,7 +51,7 @@ class MyStack extends TerraformStack {
             ]
         });
 
-        const assumeRole = new DataAwsIamPolicyDocument(this, `${config.terraform}_policy`, {
+        const assumeRole = new DataAwsIamPolicyDocument(this, `${resourcename}_policy`, {
             statement: [{
                 actions: ["sts:AssumeRole"],
                 effect: "Allow",
@@ -64,16 +64,16 @@ class MyStack extends TerraformStack {
             }],
         });
 
-        const role = new IamRole(this, `${config.terraform}_role`, {
+        const role = new IamRole(this, `${resourcename}_role`, {
             assumeRolePolicy: Token.asString(assumeRole.json),
-            name: `${config.terraform}`,
+            name: `${resourcename}`,
         });
 
-        const taskDefinition = new EcsTaskDefinition(this, `${config.terraform}_taskDefinition`, {
-            family: `${config.terraform}`,
+        const taskDefinition = new EcsTaskDefinition(this, `${resourcename}_taskDefinition`, {
+            family: `${resourcename}`,
             containerDefinitions: Token.asString(
                 Fn.jsonencode([{
-                    name: `${config.terraform}`,
+                    name: `${resourcename}`,
                     image: `${ecrRepository.repositoryUrl}`,
                     essential: true,
                     cpu: 10,
@@ -91,7 +91,7 @@ class MyStack extends TerraformStack {
             executionRoleArn: role.arn
         });
 
-        const policy = new DataAwsIamPolicyDocument(this, `${config.terraform}_policyDocument`, {
+        const policy = new DataAwsIamPolicyDocument(this, `${resourcename}_policyDocument`, {
             statement: [{
                 actions: ["ec2:Describe*"],
                 effect: "Allow",
@@ -99,24 +99,24 @@ class MyStack extends TerraformStack {
             }]
         });
 
-        const awsIamPolicyPolicy = new IamPolicy(this, `${config.terraform}_IamPolicy`, {
-            name: `${config.terraform}`,
+        const awsIamPolicyPolicy = new IamPolicy(this, `${resourcename}_IamPolicy`, {
+            name: `${resourcename}`,
             policy: Token.asString(policy.json)
         });
 
         awsIamPolicyPolicy.overrideLogicalId("policy");
-        new IamRolePolicyAttachment(this, `${config.terraform}_policyAttachment`, {
+        new IamRolePolicyAttachment(this, `${resourcename}_policyAttachment`, {
             policyArn: Token.asString(awsIamPolicyPolicy.arn),
             role: role.name
         });
 
-        const vpc = new DefaultVpc(this, `${config.terraform}_vpc`, {
+        const vpc = new DefaultVpc(this, `${resourcename}_vpc`, {
             tags: {
                 Name: "Default VPC"
             }
         });
 
-        const lbSg = new SecurityGroup(this, `${config.terraform}_securityGroup`, {
+        const lbSg = new SecurityGroup(this, `${resourcename}_securityGroup`, {
             description: "Allow TLS inbound traffic",
             egress: [{
                 cidrBlocks: ["0.0.0.0/0"],
@@ -132,22 +132,22 @@ class MyStack extends TerraformStack {
             }]
         });
 
-        const loadBalancer = new Lb(this, `${config.terraform}_loadBalancer`, {
+        const loadBalancer = new Lb(this, `${resourcename}_loadBalancer`, {
             loadBalancerType: "application",
-            name: `${config.terraform}app`,
+            name: `${resourcename}app`,
             securityGroups: [lbSg.id],
             subnets: ["subnet-32561e5a", "subnet-2016a86c", "subnet-9d58a0e6"]
         });
 
-        const targetGroup = new LbTargetGroup(this, `${config.terraform}_targetGroup`, {
-            name: `${config.terraform}`,
+        const targetGroup = new LbTargetGroup(this, `${resourcename}_targetGroup`, {
+            name: `${resourcename}`,
             port: 80,
             protocol: "HTTP",
             targetType: "ip",
             vpcId: vpc.id
         });
 
-        new LbListener(this, `${config.terraform}_LbListener`, {
+        new LbListener(this, `${resourcename}_LbListener`, {
             loadBalancerArn: loadBalancer.arn,
             port: Token.asNumber("80"),
             protocol: "HTTP",
@@ -159,8 +159,8 @@ class MyStack extends TerraformStack {
             ]
         });
 
-        new EcsService(this, `${config.terraform}_EcsService`, {
-            name: `${config.terraform}`,
+        new EcsService(this, `${resourcename}_EcsService`, {
+            name: `${resourcename}`,
             cluster: ecsCluster.id,
             taskDefinition: Token.asString(taskDefinition.arn),
             desiredCount: 3,
@@ -175,34 +175,24 @@ class MyStack extends TerraformStack {
             }
         })
 
-        const awsLb = new Lb(this, `${config.terraform}_Lb`, {
+        const awsLb = new Lb(this, `${resourcename}_Lb`, {
             internal: true,
             loadBalancerType: "network",
-            name: `${config.terraform}`,
+            name: `${resourcename}`,
             subnets: ["subnet-32561e5a", "subnet-2016a86c", "subnet-9d58a0e6"],
         })
 
-        const apiGateway = new ApiGatewayRestApi(this, `${config.terraform}_ApiGateway`, {
-            name: `${config.terraform}`,
+        const apiGateway = new ApiGatewayRestApi(this, `${resourcename}_ApiGateway`, {
+            name: `${resourcename}`,
         });
 
-        // const awsApiGatewayResource = new ApiGatewayResource(
-        //     this,
-        //     `${config.terraform}_ApiGatewayResource`,
-        //     {
-        //         parentId: apiGateway.rootResourceId,
-        //         pathPart: "/",
-        //         restApiId: apiGateway.id
-        //     })
-
-        // awsApiGatewayResource.overrideLogicalId("apiGateway");
-        const awsApiGatewayVpcLink = new ApiGatewayVpcLink(this, `${config.terraform}_ApiGatewayVpcLink`, {
+        const awsApiGatewayVpcLink = new ApiGatewayVpcLink(this, `${resourcename}_ApiGatewayVpcLink`, {
             name: apiGateway.name,
             targetArns: [Token.asString(awsLb.arn)],
         });
 
         awsApiGatewayVpcLink.overrideLogicalId("apiGateway");
-        const awsApiGatewayMethod = new ApiGatewayMethod(this, `${config.terraform}_ApiGatewayMethod`, {
+        const awsApiGatewayMethod = new ApiGatewayMethod(this, `${resourcename}_ApiGatewayMethod`, {
             authorization: "NONE",
             httpMethod: "GET",
             requestModels: {
@@ -215,7 +205,7 @@ class MyStack extends TerraformStack {
         awsApiGatewayMethod.overrideLogicalId("apiGateway");
         const awsApiGatewayIntegration = new ApiGatewayIntegration(
             this,
-            `${config.terraform}_ApiGatewayIntegration`,
+            `${resourcename}_ApiGatewayIntegration`,
             {
                 connectionId: Token.asString(awsApiGatewayVpcLink.id),
                 connectionType: "VPC_LINK",
@@ -233,7 +223,7 @@ class MyStack extends TerraformStack {
         awsApiGatewayIntegration.overrideLogicalId("apiGateway");
         const awsApiGatewayResourceProxy = new ApiGatewayResource(
             this,
-            `${config.terraform}_ChildApiGatewayResource`,
+            `${resourcename}_ChildApiGatewayResource`,
             {
                 parentId: apiGateway.rootResourceId,
                 pathPart: "{proxy+}",
@@ -241,7 +231,7 @@ class MyStack extends TerraformStack {
             })
 
         awsApiGatewayResourceProxy.overrideLogicalId("awsApiGatewayMethod");
-        const awsApiGatewayMethodProxy = new ApiGatewayMethod(this, `${config.terraform}_ChildApiGatewayMethod`, {
+        const awsApiGatewayMethodProxy = new ApiGatewayMethod(this, `${resourcename}_ChildApiGatewayMethod`, {
             authorization: "NONE",
             httpMethod: "ANY",
             requestModels: {
@@ -254,7 +244,7 @@ class MyStack extends TerraformStack {
         awsApiGatewayMethodProxy.overrideLogicalId("awsApiGatewayMethod");
         const awsApiGatewayIntegrationProxy = new ApiGatewayIntegration(
             this,
-            `${config.terraform}_ChildApiGatewayIntegration`,
+            `${resourcename}_ChildApiGatewayIntegration`,
             {
                 connectionId: Token.asString(awsApiGatewayVpcLink.id),
                 connectionType: "VPC_LINK",
@@ -275,7 +265,7 @@ class MyStack extends TerraformStack {
         awsApiGatewayIntegrationProxy.overrideLogicalId("awsApiGatewayMethod");
         const awsApiGatewayDeployment = new ApiGatewayDeployment(
             this,
-            `${config.terraform}_ApiGatewayDeployment`,
+            `${resourcename}_ApiGatewayDeployment`,
             {
                 lifecycle: {
                     createBeforeDestroy: true,
@@ -297,10 +287,10 @@ class MyStack extends TerraformStack {
         )
 
         awsApiGatewayDeployment.overrideLogicalId("apiGateway");
-        const awsApiGatewayStage = new ApiGatewayStage(this, `${config.terraform}_ApiGatewayStage`, {
+        const awsApiGatewayStage = new ApiGatewayStage(this, `${resourcename}_ApiGatewayStage`, {
             deploymentId: Token.asString(awsApiGatewayDeployment.id),
             restApiId: apiGateway.id,
-            stageName: `${config.terraform}`,
+            stageName: `${resourcename}`,
         })
 
         awsApiGatewayStage.overrideLogicalId("apiGateway")
