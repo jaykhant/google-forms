@@ -4,7 +4,7 @@ import { QUESTION_TYPES, FILE_TYPES } from "../constants"
 const create = {
     body: Joi.object().keys({
         formId: Joi.string().required(),
-        answer: Joi.array().required().items(Joi.object({
+        answers: Joi.array().required().items(Joi.object({
             type: Joi.string().required().valid(
                 QUESTION_TYPES.SHORT_ANSWER,
                 QUESTION_TYPES.PARAGRAPH,
@@ -23,17 +23,17 @@ const create = {
                     "is": QUESTION_TYPES.PARAGRAPH,
                     then: Joi.string().required(),
                     otherwise: Joi.when('type', {
-                        "is": QUESTION_TYPES.CHECKBOX,
+                        "is": QUESTION_TYPES.DROP_DOWN,
                         then: Joi.string().required(),
                         otherwise: Joi.when('type', {
-                            "is": QUESTION_TYPES.DROP_DOWN,
-                            then: Joi.string().required(),
+                            "is": QUESTION_TYPES.MULTIPLE_CHOICE,
+                            then: Joi.string().required()
                         })
                     })
                 })
             }),
             answers: Joi.when('type', {
-                "is": QUESTION_TYPES.MULTIPLE_CHOICE,
+                "is": QUESTION_TYPES.CHECKBOX,
                 then: Joi.array().required().items(Joi.string().required())
             }),
             options: Joi.when('type', {
