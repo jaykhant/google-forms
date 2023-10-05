@@ -9,7 +9,7 @@ import ApiError from '../utils/ApiError';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
-    const { formId, answer } = req.body
+    const { formId, answers } = req.body
 
     const user = req.user
 
@@ -18,7 +18,7 @@ const create = catchAsync(async (req: any, res: Response) => {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Form Not Publish')
     }
 
-    const response = await ResponseService.create(user.id, formId, answer)
+    const response = await ResponseService.create(user.id, formId, answers)
 
     res.json(response)
 })
