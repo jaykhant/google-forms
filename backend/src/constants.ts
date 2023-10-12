@@ -12,5 +12,5 @@ export const FILE_TYPES = {
     AUDIO: 'audio',
     VIDEO: 'video',
     IMAGE: 'image',
-    DOC: '.doc'
+    DOCUMENT: 'document'
 }

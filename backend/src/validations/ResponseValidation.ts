@@ -18,24 +18,24 @@ const create = {
             question: Joi.string().required(),
             answer: Joi.when('type', {
                 "is": QUESTION_TYPES.SHORT_ANSWER,
-                then: Joi.string().required(),
+                then: Joi.string().empty('').optional(),
                 otherwise: Joi.when('type', {
                     "is": QUESTION_TYPES.PARAGRAPH,
-                    then: Joi.string().required(),
+                    then: Joi.string().empty('').optional(),
                     otherwise: Joi.when('type', {
                         "is": QUESTION_TYPES.DROP_DOWN,
-                        then: Joi.string().required(),
+                        then: Joi.string().empty('').optional(),
                         otherwise: Joi.when('type', {
                             "is": QUESTION_TYPES.MULTIPLE_CHOICE,
-                            then: Joi.string().required()
+                            then: Joi.string().empty('').optional()
                         })
                     })
                 })
-            }),
+            }).optional(),
             answers: Joi.when('type', {
                 "is": QUESTION_TYPES.CHECKBOX,
-                then: Joi.array().required().items(Joi.string().required())
-            }),
+                then: Joi.array().optional().items(Joi.string().optional())
+            }).optional(),
             options: Joi.when('type', {
                 "is": QUESTION_TYPES.MULTIPLE_CHOICE,
                 then: Joi.array().required().items(Joi.string().required()),
@@ -50,25 +50,25 @@ const create = {
             }),
             fileName: Joi.when('type', {
                 "is": QUESTION_TYPES.FILE_UPLOAD,
-                then: Joi.string().required()
-            }),
+                then: Joi.string().empty('').optional()
+            }).optional(),
             fileType: Joi.when('type', {
                 "is": QUESTION_TYPES.FILE_UPLOAD,
                 then: Joi.array().required().items(Joi.string().required().valid(
                     FILE_TYPES.AUDIO,
-                    FILE_TYPES.DOC,
+                    FILE_TYPES.DOCUMENT,
                     FILE_TYPES.IMAGE,
                     FILE_TYPES.VIDEO
                 ))
             }),
             dateTime: Joi.when('type', {
                 "is": QUESTION_TYPES.DATE,
-                then: Joi.date().required(),
+                then: Joi.date().allow(null).required(),
                 otherwise: Joi.when('type', {
                     "is": QUESTION_TYPES.TIME,
-                    then: Joi.date().required()
+                    then: Joi.date().allow(null).required()
                 })
-            })
+            }).optional()
         }))
     })
 }
