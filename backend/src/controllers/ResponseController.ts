@@ -42,7 +42,7 @@ const findResponseById = catchAsync(async (req: Request, res: Response) => {
         if (data.answers[i].fileName)
             data.answers[i].fileName = await s3BucketManager.generateSignedUrlForDownload(
                 data.formId!.toString(),
-                data.answers[i].fileName.fileName!
+                data.answers[i].fileName!
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             ) as any
     }

@@ -28,20 +28,23 @@ const questionsValidation = Joi.array().required().items(Joi.object({
     }),
     allowSpecificFileTypes: Joi.when('type', {
         "is": QUESTION_TYPES.FILE_UPLOAD,
-        then: Joi.boolean().required()
+        then: Joi.boolean().optional()
     }),
     fileType: Joi.when('type', {
         "is": QUESTION_TYPES.FILE_UPLOAD,
-        then: Joi.array().required().items(Joi.string().required().valid(
-            FILE_TYPES.AUDIO,
-            FILE_TYPES.DOC,
-            FILE_TYPES.IMAGE,
-            FILE_TYPES.VIDEO
-        ))
+        then: Joi.when('allowSpecificFileTypes', {
+            "is": true,
+            then: Joi.array().required().items(Joi.string().required().valid(
+                FILE_TYPES.AUDIO,
+                FILE_TYPES.DOCUMENT,
+                FILE_TYPES.IMAGE,
+                FILE_TYPES.VIDEO
+            ))
+        })
     }),
     allowMaximumFileSize: Joi.when('type', {
         "is": QUESTION_TYPES.FILE_UPLOAD,
-        then: Joi.number().required()
+        then: Joi.number().required().valid(1, 5, 10)
     })
 }))
 
