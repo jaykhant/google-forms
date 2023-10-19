@@ -618,7 +618,7 @@ class MyStack extends TerraformStack {
                                 Capabilities: "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM",
                                 OutputFileName: "CreateStackOutput.json",
                                 StackName: "MyStack",
-                                TemplatePath: "build_output::sam-templated.yaml",
+                                TemplatePath: "build_output::simple.json",
                             },
                             inputArtifacts: ["build_output"],
                             name: "Deploy",

@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+      commands:
+        cd ./backend/
+  pre_build:
+    commands:
+      aws ecr get-login-password --no-include-email --region ap-south-1
+  build:
+    commands:
+      docker build -t googleform .
+      docker tag googleform:latest 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
+  post_build:
+    commands:
+      docker push 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
+
+artifacts:
+  files:
+    - '**/*'
