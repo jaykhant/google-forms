@@ -1,5 +1,6 @@
 import { Construct } from "constructs";
 import { App, TerraformStack, Token, Fn } from "cdktf";
+// import { App, TerraformStack, Token } from "cdktf";
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { EcrRepository } from "@cdktf/provider-aws/lib/ecr-repository"
 import { EcsCluster } from "@cdktf/provider-aws/lib/ecs-cluster";
@@ -21,6 +22,15 @@ import { ApiGatewayIntegration } from "@cdktf/provider-aws/lib/api-gateway-integ
 import { ApiGatewayVpcLink } from "@cdktf/provider-aws/lib/api-gateway-vpc-link";
 import { ApiGatewayDeployment } from "@cdktf/provider-aws/lib/api-gateway-deployment";
 import { ApiGatewayStage } from "@cdktf/provider-aws/lib/api-gateway-stage";
+import { S3Bucket } from "@cdktf/provider-aws/lib/s3-bucket";
+import { S3BucketAcl } from "@cdktf/provider-aws/lib/s3-bucket-acl";
+import { IamRolePolicy } from "@cdktf/provider-aws/lib/iam-role-policy";
+import { CodebuildProject } from "@cdktf/provider-aws/lib/codebuild-project";
+import { S3BucketOwnershipControls } from "@cdktf/provider-aws/lib/s3-bucket-ownership-controls";
+import { CodestarconnectionsConnection } from "@cdktf/provider-aws/lib/codestarconnections-connection";
+import { Codepipeline } from "@cdktf/provider-aws/lib/codepipeline";
+import { KmsAlias } from "@cdktf/provider-aws/lib/kms-alias";
+import { KmsKey } from "@cdktf/provider-aws/lib/kms-key";
 
 const resourcename = "googleform"
 class MyStack extends TerraformStack {
@@ -294,6 +304,334 @@ class MyStack extends TerraformStack {
         })
 
         awsApiGatewayStage.overrideLogicalId("apiGateway")
+
+        const s3Bucket = new S3Bucket(this, `${resourcename}_s3Bucket`, {
+            bucket: `${resourcename}-bucket`,
+        });
+
+        const awsS3BucketOwnershipControlsS3Bucket = new S3BucketOwnershipControls(
+            this,
+            `${resourcename}_S3BucketOwnershipControls`,
+            {
+                bucket: s3Bucket.id,
+                rule: {
+                    objectOwnership: "BucketOwnerPreferred",
+                },
+            }
+        );
+        awsS3BucketOwnershipControlsS3Bucket.overrideLogicalId("s3Bucket");
+
+        const awsS3BucketAclS3Bucket = new S3BucketAcl(this, `${resourcename}_awsS3BucketAclExample`, {
+            acl: "private",
+            bucket: s3Bucket.id,
+            dependsOn: [awsS3BucketOwnershipControlsS3Bucket],
+        });
+        awsS3BucketAclS3Bucket.overrideLogicalId("s3Bucket");
+
+        const bucketassumeRole = new DataAwsIamPolicyDocument(this, "assume_role", {
+            statement: [
+                {
+                    actions: ["sts:AssumeRole"],
+                    effect: "Allow",
+                    principals: [
+                        {
+                            identifiers: ["codebuild.amazonaws.com"],
+                            type: "Service",
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const dataAwsIamPolicyDocumentS3Bucket = new DataAwsIamPolicyDocument(
+            this,
+            `${resourcename}_DataAwsIamPolicyDocument`,
+            {
+                statement: [
+                    {
+                        actions: [
+                            "logs:CreateLogGroup",
+                            "logs:CreateLogStream",
+                            "logs:PutLogEvents",
+                        ],
+                        effect: "Allow",
+                        resources: ["*"],
+                    },
+                    {
+                        actions: [
+                            "ec2:CreateNetworkInterface",
+                            "ec2:DescribeDhcpOptions",
+                            "ec2:DescribeNetworkInterfaces",
+                            "ec2:DeleteNetworkInterface",
+                            "ec2:DescribeSubnets",
+                            "ec2:DescribeSecurityGroups",
+                            "ec2:DescribeVpcs",
+                        ],
+                        effect: "Allow",
+                        resources: ["*"],
+                    },
+                    {
+                        actions: ["ec2:CreateNetworkInterfacePermission"],
+                        condition: [
+                            {
+                                test: "StringEquals",
+                                values: [s3Bucket.arn],
+                                variable: "ec2:Subnet",
+                            },
+                            {
+                                test: "StringEquals",
+                                values: ["codebuild.amazonaws.com"],
+                                variable: "ec2:AuthorizedService",
+                            },
+                        ],
+                        effect: "Allow",
+                        resources: [
+                            "arn:aws:ec2:us-east-1:123456789012:network-interface/*",
+                        ],
+                    },
+                    {
+                        actions: ["s3:*"],
+                        effect: "Allow",
+                        resources: [s3Bucket.arn, "${" + s3Bucket.arn + "}/*"],
+                    },
+                ],
+            }
+        );
+        dataAwsIamPolicyDocumentS3Bucket.overrideLogicalId("s3Bucket");
+
+        const awsIamRoleS3Bucket = new IamRole(this, `${resourcename}_Role`, {
+            assumeRolePolicy: Token.asString(bucketassumeRole.json),
+            name: `${resourcename}role`,
+        });
+        awsIamRoleS3Bucket.overrideLogicalId("s3Bucket");
+
+        const awsIamRolePolicyS3Bucket = new IamRolePolicy(this, `${resourcename}_RolePolicy`, {
+            policy: Token.asString(dataAwsIamPolicyDocumentS3Bucket.json),
+            role: Token.asString(awsIamRoleS3Bucket.name),
+        });
+        awsIamRolePolicyS3Bucket.overrideLogicalId("s3Bucket");
+
+        const awsCodebuildProjectS3Bucket = new CodebuildProject(this, `${resourcename}_CodebuildProject`, {
+            artifacts: {
+                type: "NO_ARTIFACTS",
+            },
+            buildTimeout: Token.asNumber("5"),
+            cache: {
+                location: s3Bucket.bucket,
+                type: "S3",
+            },
+            description: "codebuild_project",
+            environment: {
+                computeType: "BUILD_GENERAL1_SMALL",
+                environmentVariable: [
+                    {
+                        name: "SOME_KEY1",
+                        value: "SOME_VALUE1",
+                    },
+                    {
+                        name: "SOME_KEY2",
+                        type: "PARAMETER_STORE",
+                        value: "SOME_VALUE2",
+                    },
+                ],
+                image: "aws/codebuild/amazonlinux2-x86_64-standard:4.0",
+                imagePullCredentialsType: "CODEBUILD",
+                type: "LINUX_CONTAINER",
+            },
+            logsConfig: {
+                cloudwatchLogs: {
+                    groupName: "log-group",
+                    streamName: "log-stream",
+                },
+                s3Logs: {
+                    location: "${" + s3Bucket.id + "}/build-log",
+                    status: "ENABLED",
+                },
+            },
+            name: `${resourcename}`,
+            serviceRole: Token.asString(awsIamRoleS3Bucket.arn),
+            source: {
+                gitCloneDepth: 1,
+                gitSubmodulesConfig: {
+                    fetchSubmodules: true,
+                },
+                location: "https://github.com/amylesoft/google-forms",
+                type: "GITHUB",
+            },
+            sourceVersion: "master",
+            vpcConfig: {
+                securityGroupIds: [
+                    Token.asString(lbSg.id),
+                ],
+                subnets: ["subnet-32561e5a", "subnet-2016a86c", "subnet-9d58a0e6"],
+                vpcId: Token.asString(vpc.id),
+            },
+        });
+        awsCodebuildProjectS3Bucket.overrideLogicalId("s3Bucket");
+
+        const codestarconnectionsConnection = new CodestarconnectionsConnection(this, `${resourcename}_Codestarconnection`, {
+            name: `${resourcename}`,
+            providerType: "GitHub",
+        });
+
+        const codepipelineBucket = new S3Bucket(this, "codepipeline_bucket", {
+            bucket: `${resourcename}codepipeline`,
+        });
+
+        // new S3BucketAcl(this, "codepipeline_bucket_acl", {
+        //     acl: "private",
+        //     bucket: codepipelineBucket.id,
+        // });
+
+        const assumeRole_1 = new DataAwsIamPolicyDocument(this, "assume_role_1", {
+            statement: [
+                {
+                    actions: ["sts:AssumeRole"],
+                    effect: "Allow",
+                    principals: [
+                        {
+                            identifiers: ["codepipeline.amazonaws.com"],
+                            type: "Service",
+                        },
+                    ],
+                },
+            ],
+        });
+
+        const codepipelinePolicy = new DataAwsIamPolicyDocument(
+            this,
+            `${resourcename}_codepipeline_policy`,
+            {
+                statement: [
+                    {
+                        actions: [
+                            "s3:PutObject",
+                            "s3:GetObject",
+                            "kms:Decrypt",
+                            "codestar-connections:UseConnection",
+                            "kms:Encrypt",
+                            "kms:GenerateDataKey",
+                            "s3:GetBucketVersioning",
+                            "s3:PutObjectAcl",
+                            "s3:GetObjectVersion"
+                        ],
+                        effect: "Allow",
+                        resources: [
+                            codepipelineBucket.arn,
+                            "${" + codepipelineBucket.arn + "}/*",
+                            "arn:aws:kms:*:582081142432:key/*"
+                        ],
+                    },
+                    {
+                        actions: ["codestar-connections:UseConnection"],
+                        effect: "Allow",
+                        resources: [codestarconnectionsConnection.arn],
+                    },
+                    {
+                        actions: ["codebuild:BatchGetBuilds", "codebuild:StartBuild"],
+                        effect: "Allow",
+                        resources: ["*"],
+                    },
+                ],
+            }
+        );
+
+        const Kmskey = new KmsKey(this, "Kmskey", {});
+        const awsKmsAliasA = new KmsAlias(this, "a_1", {
+            name: `alias/${resourcename}`,
+            targetKeyId: Kmskey.keyId,
+        });
+
+        awsKmsAliasA.overrideLogicalId("Kmskey");
+
+        const codepipelineRole = new IamRole(this, "codepipeline_role", {
+            assumeRolePolicy: Token.asString(assumeRole_1.json),
+            name: `${resourcename}_role`
+        });
+
+        const awsIamRolePolicyCodepipelinePolicy = new IamRolePolicy(
+            this,
+            "codepipeline_policy",
+            {
+                name: "codepipeline_policy",
+                policy: Token.asString(codepipelinePolicy.json),
+                role: codepipelineRole.id,
+            }
+        );
+        awsIamRolePolicyCodepipelinePolicy.overrideLogicalId("codepipeline_policy");
+
+        const awsCodepipelineExample = new Codepipeline(this, "codepipeline", {
+            artifactStore: [
+                {
+                    encryptionKey: {
+                        id: Token.asString(awsKmsAliasA.arn),
+                        type: "KMS",
+                    },
+                    location: codepipelineBucket.bucket,
+                    type: "S3",
+                },
+            ],
+            name: `${resourcename}`,
+            roleArn: codepipelineRole.arn,
+            stage: [
+                {
+                    action: [
+                        {
+                            category: "Source",
+                            configuration: {
+                                BranchName: "master",
+                                ConnectionArn: codestarconnectionsConnection.arn,
+                                FullRepositoryId: "amylesoft/google-forms",
+                            },
+                            name: "Source",
+                            outputArtifacts: ["source_output"],
+                            owner: "AWS",
+                            provider: "CodeStarSourceConnection",
+                            version: "1",
+                        },
+                    ],
+                    name: "Source",
+                },
+                {
+                    action: [
+                        {
+                            category: "Build",
+                            configuration: {
+                                ProjectName: "googleform",
+                            },
+                            inputArtifacts: ["source_output"],
+                            name: "Build",
+                            outputArtifacts: ["build_output"],
+                            owner: "AWS",
+                            provider: "CodeBuild",
+                            version: "1",
+                        },
+                    ],
+                    name: "Build",
+                },
+                {
+                    action: [
+                        {
+                            category: "Deploy",
+                            configuration: {
+                                ActionMode: "REPLACE_ON_FAILURE",
+                                Capabilities: "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM",
+                                OutputFileName: "CreateStackOutput.json",
+                                StackName: "MyStack",
+                                TemplatePath: "build_output::sam-templated.yaml",
+                            },
+                            inputArtifacts: ["build_output"],
+                            name: "Deploy",
+                            owner: "AWS",
+                            provider: "CloudFormation",
+                            version: "1",
+                        },
+                    ],
+                    name: "Deploy",
+                },
+            ],
+        });
+        awsCodepipelineExample.overrideLogicalId("codestarconnectionsConnection");
     }
 }
 
