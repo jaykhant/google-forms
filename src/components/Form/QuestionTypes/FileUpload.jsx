@@ -14,15 +14,15 @@ const FileUpload = () => {
                     <Stack>
                         <Flex gap="4" direction='row' alignItems="center" justifyContent="space-between">
                             <Text>Allow only specific file types</Text>
-                            <Switch id='file-types' />
+                            <Switch name='required'/>
                         </Flex>
                         <Flex gap="4" direction='row' alignItems="center" justifyContent="space-between">
-                            <Checkbox size='lg'>Document</Checkbox>
-                            <Checkbox size='lg'>Image</Checkbox>
+                            <Checkbox name='Document' size='lg'>Document</Checkbox>
+                            <Checkbox name='Image' size='lg'>Image</Checkbox>
                         </Flex>
                         <Flex gap="4" direction='row' alignItems="center" justifyContent="space-between">
-                            <Checkbox size='lg'>Video</Checkbox>
-                            <Checkbox size='lg' pr={1}>Audio</Checkbox>
+                            <Checkbox name='Video' size='lg'>Video</Checkbox>
+                            <Checkbox name='Audio' size='lg' pr={1}>Audio</Checkbox>
                         </Flex>
                     </Stack>
                     <Stack gap="4" direction='row' display="flex" alignItems="center" justifyContent="space-between">

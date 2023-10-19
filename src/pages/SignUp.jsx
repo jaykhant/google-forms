@@ -57,7 +57,7 @@ const SignUp = ({ signUp, signUpForm, updateForm, isFormLoading, formErrorMessag
                                 </Alert> : ''}
                                 <FormControl isInvalid={errors.name}>
                                     <FormLabel htmlFor='name'>Name</FormLabel>
-                                    <Input value={signUpForm.name}
+                                    <Input id='name' value={signUpForm.name}
                                         onInput={(event) => updateForm({ key: 'name', value: event.target.value })} type="name"  {...register('name', {
                                             required: 'This is required',
                                         })} autoComplete='true' />
@@ -68,6 +68,7 @@ const SignUp = ({ signUp, signUpForm, updateForm, isFormLoading, formErrorMessag
                                 <FormControl isInvalid={errors.email}>
                                     <FormLabel htmlFor='email'>Email address</FormLabel>
                                     <Input
+                                        id='email'
                                         value={signUpForm.email}
                                         onInput={(event) => updateForm({ key: 'email', value: event.target.value })}
                                         type="email"
@@ -81,7 +82,7 @@ const SignUp = ({ signUp, signUpForm, updateForm, isFormLoading, formErrorMessag
                                 </FormControl>
                                 <FormControl isInvalid={errors.password}>
                                     <FormLabel htmlFor='password'>Password</FormLabel>
-                                    <Input value={signUpForm.password}
+                                    <Input id='password' value={signUpForm.password}
                                         onInput={(event) => updateForm({ key: 'password', value: event.target.value })}
                                         type="password"
                                         {...register('password', {
@@ -130,7 +131,7 @@ const mapStateToProps = (state) => {
         isFormLoading: state.auth.isFormLoading
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         updateForm: ({ key, value }) => {
             dispatch({ type: AuthReducerTypes.UPDATE_SIGN_UP_FORM, key, value })

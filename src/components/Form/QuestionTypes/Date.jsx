@@ -7,7 +7,7 @@ const Date = () => {
     return (
         <Stack spacing={4}>
             <InputGroup w={'60%'}>
-                <Input disabled variant='flushed' placeholder='Day,year,month' />
+                <Input disabled name='date' variant='flushed' placeholder='Day,year,month' />
                 <InputRightElement pointerEvents='none'>
                     <CalendarIcon />
                 </InputRightElement>

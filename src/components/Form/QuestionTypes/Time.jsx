@@ -7,7 +7,7 @@ const Time = () => {
     return (
         <Stack spacing={4}>
             <InputGroup w={'60%'}>
-                <Input disabled variant='flushed' placeholder='Time' />
+                <Input disabled name='time' variant='flushed' placeholder='Time' />
                 <InputRightElement pointerEvents='none'>
                     <TimeIcon />
                 </InputRightElement>

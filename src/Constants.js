@@ -20,7 +20,15 @@ const QUESTION_TYPE_DISPLAY_NAMES = {
     time: 'Time'
 }
 
+const FILE_ACCEPT_TYPE = {
+    audio: 'audio/*,',
+    videp: 'video/*,',
+    document: '.doc,',
+    image: 'image/*,'
+}
+
 module.exports = {
     QUESTION_TYPES,
-    QUESTION_TYPE_DISPLAY_NAMES
+    QUESTION_TYPE_DISPLAY_NAMES,
+    FILE_ACCEPT_TYPE
 }

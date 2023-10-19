@@ -15,7 +15,7 @@ const MultipleChoice = ({ options = [], onAddOption, onUpdateOption, onDeleteOpt
                 <Stack key={index} gap="4" direction='row' display="flex" alignItems="center" justifyContent="start">
                     <Circle size='20px' border='2px' borderColor="gray">
                     </Circle>
-                    <Input value={option} onInput={(event) => onUpdateOption({ value: event.target.value, optionIndex: index })} w={'60%'} variant='flushed' placeholder='Option 1' />
+                    <Input name='option' value={option} onInput={(event) => onUpdateOption({ value: event.target.value, optionIndex: index })} w={'60%'} variant='flushed' placeholder='Option 1' />
                     {options.length > 1 && <CloseButton onClick={() => onDeleteOption({ optionIndex: index })} />}
                 </Stack>
             )}

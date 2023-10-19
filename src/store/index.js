@@ -12,10 +12,13 @@ import authSaga from "./Auth/saga"
 import form from './Form';
 import formSaga from './Form/saga';
 
+import formSubmit from './FormSubmit'
+import formSubmitSaga from './FormSubmit/saga'
+
 const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
-    auth, form,
+    auth, form,formSubmit,
     app: persistReducer({
         key: 'app',
         storage,
@@ -32,3 +35,4 @@ export const persistor = persistStore(store)
 
 sagaMiddleware.run(authSaga)
 sagaMiddleware.run(formSaga)
+sagaMiddleware.run(formSubmitSaga)

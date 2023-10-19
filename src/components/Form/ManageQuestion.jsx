@@ -23,10 +23,10 @@ const ManageQuestion = ({
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
     addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, updateFormQuestionRequired
 }) => {
-    const { id } = useParams()
+    const { formId } = useParams()
     useEffect(() => {
-        findOne(id)
-    }, [id, findOne])
+        findOne(formId)
+    }, [formId, findOne])
 
     return (
         <>
@@ -47,13 +47,14 @@ const ManageQuestion = ({
                         <Stack spacing={4}>
                             {form.title}
                             <Input
+                                name='formTitle'
                                 value={form.title}
                                 onInput={(event) => updateForm({ key: 'title', value: event.target.value })} fontSize='32px'
                                 variant='flushed'
                                 placeholder='Form title'
                                 fontWeight={'medium'}
                             />
-                            <Input value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Form description' />
+                            <Input name='formDescription' value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Form description' />
                         </Stack>
                     </Box>
                 </Stack>
@@ -65,6 +66,7 @@ const ManageQuestion = ({
                                 <Stack spacing={4}>
                                     <Flex w={'100%'} justifyContent='space-between' align='center'>
                                         <Input
+                                            name='questionTitle'
                                             value={question.question}
                                             onInput={(event) => updateFormQuestion({
                                                 key: 'question', value: event.target.value, questionIndex
@@ -199,7 +201,7 @@ const ManageQuestion = ({
                                 </Button>
                                 <Divider orientation='vertical' h='30px' />
                                 <Text px={4}>Required</Text>
-                                <Switch id='isChecked' isChecked={question.isRequired ? true : false} value={question.isRequired}
+                                <Switch name='required' isChecked={question.isRequired ? true : false} value={question.isRequired}
                                     onChange={(event) => updateFormQuestionRequired({
                                         key: 'isRequired', value: event.target.checked, questionIndex
                                     })} />
@@ -253,8 +255,8 @@ const mapStateToProps = (state) => {
 };
 function mapDispatchToProps(dispatch) {
     return ({
-        findOne: (id) => {
-            dispatch({ type: FormActionTypes.findOne, id })
+        findOne: (formId) => {
+            dispatch({ type: FormActionTypes.findOne, formId })
         },
         updateForm: ({ key, value }) => {
             dispatch({ type: FormReducerTypes.UPDATE_FORM, key, value })

@@ -41,7 +41,7 @@ const FormList = ({
                                 <Tr key={i}>
                                     <Td>{form.title}</Td>
                                     <Td>{form.status}</Td>
-                                    <Td><Link to={`/submit-form/${form.id}`}>Link</Link></Td>
+                                    <Td><Link to={`/response/submit/${form.id}`}>Link</Link></Td>
                                     <Td>{form.createdAt}</Td>
                                     <Td>
                                         <Link to={`/form/${form.id}`}> <Button size='sm'><SettingsIcon /></Button></Link>

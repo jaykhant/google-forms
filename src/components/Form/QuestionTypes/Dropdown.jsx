@@ -14,7 +14,7 @@ const DropDown = ({ options = [], onAddOption, onUpdateOption, onDeleteOption })
             {options.map((option, index) =>
                 <Stack key={index} gap="4" direction='row' display="flex" alignItems="center" justifyContent="start">
                     <Text>{index + 1}.</Text>
-                    <Input value={option} onInput={(event) => onUpdateOption({ value: event.target.value, optionIndex: index })} w={'60%'} variant='flushed' placeholder='Option 1' />
+                    <Input name='option' value={option} onInput={(event) => onUpdateOption({ value: event.target.value, optionIndex: index })} w={'60%'} variant='flushed' placeholder='Option 1' />
                     {options.length > 1 && <CloseButton onClick={() => onDeleteOption({ optionIndex: index })} />}
                 </Stack>
             )}

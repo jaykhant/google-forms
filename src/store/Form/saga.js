@@ -33,10 +33,10 @@ function* findAll() {
     }
 }
 
-function* findOne({ id }) {
+function* findOne({ formId }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
-        const response = yield call(formService.findOne, { id })
+        const response = yield call(formService.findOne, { formId })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         yield put({
             type: FormReducerTypes.SET_FORM, form: response

@@ -5,7 +5,7 @@ import { Stack } from '@chakra-ui/layout';
 const Paragraph = () => {
     return (
         <Stack spacing={4}>
-            <Input w={'60%'} disabled variant='flushed' placeholder='Long-answer text' />
+            <Input w={'60%'} name='long-answer' disabled variant='flushed' placeholder='Long-answer text' />
         </Stack>
     )
 }

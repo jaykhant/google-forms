@@ -65,7 +65,7 @@ const SignIn = ({
                                 </Alert> : ''}
                                 <FormControl isInvalid={errors.email}>
                                     <FormLabel htmlFor='email'>Email address</FormLabel>
-                                    <Input value={signInForm.email}
+                                    <Input id='email' value={signInForm.email}
                                         onInput={(event) => updateForm({ key: 'email', value: event.target.value })}
                                         type="email"
                                         {...register('email', {
@@ -77,7 +77,7 @@ const SignIn = ({
                                 </FormControl>
                                 <FormControl isInvalid={errors.password}>
                                     <FormLabel htmlFor='password'>Password</FormLabel>
-                                    <Input value={signInForm.password}
+                                    <Input id='password' value={signInForm.password}
                                         onInput={(event) => updateForm({ key: 'password', value: event.target.value })} type="password" {...register('password', {
                                             required: 'This is required',
                                         })} autoComplete='true' />
