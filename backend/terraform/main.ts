@@ -1,6 +1,5 @@
 import { Construct } from "constructs";
 import { App, TerraformStack, Token, Fn } from "cdktf";
-// import { App, TerraformStack, Token } from "cdktf";
 import { AwsProvider } from "@cdktf/provider-aws/lib/provider"
 import { EcrRepository } from "@cdktf/provider-aws/lib/ecr-repository"
 import { EcsCluster } from "@cdktf/provider-aws/lib/ecs-cluster";
@@ -127,6 +126,7 @@ class MyStack extends TerraformStack {
         });
 
         const lbSg = new SecurityGroup(this, `${resourcename}_securityGroup`, {
+            name: `${resourcename}`,
             description: "Allow TLS inbound traffic",
             egress: [{
                 cidrBlocks: ["0.0.0.0/0"],
@@ -461,7 +461,7 @@ class MyStack extends TerraformStack {
             sourceVersion: "master",
             vpcConfig: {
                 securityGroupIds: [
-                    Token.asString(lbSg.id),
+                    Token.asString(lbSg.id)
                 ],
                 subnets: ["subnet-32561e5a", "subnet-2016a86c", "subnet-9d58a0e6"],
                 vpcId: Token.asString(vpc.id),
@@ -584,7 +584,7 @@ class MyStack extends TerraformStack {
                                 FullRepositoryId: "amylesoft/google-forms",
                             },
                             name: "Source",
-                            outputArtifacts: ["source_output"],
+                            outputArtifacts: ["SourceArtifact"],
                             owner: "AWS",
                             provider: "CodeStarSourceConnection",
                             version: "1",
@@ -599,9 +599,9 @@ class MyStack extends TerraformStack {
                             configuration: {
                                 ProjectName: "googleform",
                             },
-                            inputArtifacts: ["source_output"],
+                            inputArtifacts: ["SourceArtifact"],
                             name: "Build",
-                            outputArtifacts: ["build_output"],
+                            outputArtifacts: ["BuildArtifact"],
                             owner: "AWS",
                             provider: "CodeBuild",
                             version: "1",
@@ -618,9 +618,9 @@ class MyStack extends TerraformStack {
                                 Capabilities: "CAPABILITY_AUTO_EXPAND,CAPABILITY_IAM",
                                 OutputFileName: "CreateStackOutput.json",
                                 StackName: "MyStack",
-                                TemplatePath: "build_output::simple.json",
+                                TemplatePath: "BuildArtifact::simple.json",
                             },
-                            inputArtifacts: ["build_output"],
+                            inputArtifacts: ["BuildArtifact"],
                             name: "Deploy",
                             owner: "AWS",
                             provider: "CloudFormation",
