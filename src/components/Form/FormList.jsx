@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
-import DeleteConfirmationDialog from '../Core/DeleteConfirmationDialog'
+import ConfirmationDialog from '../Core/ConfirmationDialog'
 import { Button, Center, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 const FormList = ({
@@ -41,7 +41,7 @@ const FormList = ({
                                 <Tr key={i}>
                                     <Td>{form.title}</Td>
                                     <Td>{form.status}</Td>
-                                    <Td><Link to={`/submit-form/${form.id}`}>Link</Link></Td>
+                                    <Td><Link to={`/response/submit/${form.id}`}>Link</Link></Td>
                                     <Td>{form.createdAt}</Td>
                                     <Td>
                                         <Link to={`/form/${form.id}`}> <Button size='sm'><SettingsIcon /></Button></Link>
@@ -70,7 +70,7 @@ const FormList = ({
                     <></>
                 }
             </TableContainer>
-            <DeleteConfirmationDialog
+            <ConfirmationDialog
                 isOpen={isDeleteConfirmationDialogOpen}
                 isLoading={isLoadingForDeleteForm}
                 onCancle={() => { updateIsDeleteConfirmationDialogOpen(false) }}

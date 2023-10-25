@@ -6,9 +6,9 @@ export default class FormService {
         this.http = new HttpCommon("form", true)
     }
 
-    findOne = async ({ id }) => {
+    findOne = async ({ formId }) => {
         try {
-            const response = await this.http.get(`/${id}`)
+            const response = await this.http.get(`/${formId}`)
             return new ResponseWrapper(response).data
         } catch (error) {
             throw new ErrorWrapper(error)

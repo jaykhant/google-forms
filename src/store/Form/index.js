@@ -78,8 +78,12 @@ const reducer = (state = initialState, action) => {
             }
         }
         case FormReducerTypes.UPDATE_FORM_QUESTION:
-
-            if (action.key === 'type') delete state.form.questions[action.questionIndex].options
+            if (action.key === 'type'){
+                delete state.form.questions[action.questionIndex].options
+                delete state.form.questions[action.questionIndex].allowSpecificFileTypes
+                delete state.form.questions[action.questionIndex].fileType
+                delete state.form.questions[action.questionIndex].allowMaximumFileSize
+            }
             return {
                 ...state,
                 form: {

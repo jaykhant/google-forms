@@ -17,16 +17,19 @@ import { FormActionTypes, FormReducerTypes } from '../../store/Form/type';
 import { QUESTION_TYPES, QUESTION_TYPE_DISPLAY_NAMES } from '../../Constants'
 import { Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/menu';
 import { Button, Card, CardBody, CardFooter, Divider, useColorModeValue } from '@chakra-ui/react';
+import { moduleTypes } from '../../store/type';
 
 const ManageQuestion = ({
     form, updateForm, updateFormQuestion, update, findOne,
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
-    addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, updateFormQuestionRequired
+    addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, isLoadingForUpdateForm
 }) => {
-    const { id } = useParams()
+
+    const { formId } = useParams()
+
     useEffect(() => {
-        findOne(id)
-    }, [id, findOne])
+        findOne(formId)
+    }, [formId, findOne])
 
     return (
         <>
@@ -130,9 +133,14 @@ const ManageQuestion = ({
                                                 </MenuItem>
                                                 <MenuDivider />
                                                 <MenuItem value={QUESTION_TYPES.FILE_UPLOAD}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.FILE_UPLOAD, questionIndex
-                                                    })}
+                                                    onClick={() => {
+                                                        updateFormQuestion({
+                                                            key: 'type', value: QUESTION_TYPES.FILE_UPLOAD, questionIndex
+                                                        })
+                                                        updateFormQuestion({
+                                                            key: 'allowSpecificFileTypes', value: false, questionIndex
+                                                        })
+                                                    }}
                                                 >
                                                     {QUESTION_TYPE_DISPLAY_NAMES.file_upload}
                                                 </MenuItem>
@@ -180,7 +188,21 @@ const ManageQuestion = ({
                                                                 onUpdateOption={({ value, optionIndex }) => updateFormQuestionOption({ option: value, questionIndex, optionIndex })}
                                                                 onDeleteOption={({ optionIndex }) => deleteFormQuestionOption({ questionIndex, optionIndex })}
                                                             /> :
-                                                            question.type === QUESTION_TYPES.FILE_UPLOAD ? <FileUpload /> :
+                                                            question.type === QUESTION_TYPES.FILE_UPLOAD ?
+                                                                <FileUpload
+                                                                    onUpdateMaximumFilesize={(allowMaximumFileSize) => {
+                                                                        updateFormQuestion({ key: 'allowMaximumFileSize', value: allowMaximumFileSize, questionIndex })
+                                                                    }}
+                                                                    onUpdateFileTypes={(fileType) => {
+                                                                        updateFormQuestion({ key: 'fileType', value: fileType, questionIndex })
+
+                                                                    }}
+                                                                    onUpdateAllowSpecificFileTypes={(allowSpecificFileTypes) => {
+                                                                        updateFormQuestion({ key: 'allowSpecificFileTypes', value: allowSpecificFileTypes, questionIndex })
+                                                                    }}
+                                                                    allowSpecificFileTypes={question.allowSpecificFileTypes}
+                                                                    allowMaximumFileSize={question.allowMaximumFileSize}
+                                                                    fileType={question.fileType} /> :
                                                                 question.type === QUESTION_TYPES.DATE ? <Date /> :
                                                                     question.type === QUESTION_TYPES.TIME ? <Time />
                                                                         : <></>
@@ -189,7 +211,9 @@ const ManageQuestion = ({
                                 <Divider pt="5" />
                             </CardBody>
                             <CardFooter display="flex" alignItems="center" justifyContent="end">
-                                <Button onClick={copyFormQuestion} borderRadius={'30px'} bg={'white'}>
+                                <Button onClick={() => {
+                                    copyFormQuestion({ question, copyIndex: questionIndex })
+                                }} borderRadius={'30px'} bg={'white'}>
                                     <CopyIcon />
                                 </Button>
                                 <Button
@@ -200,7 +224,7 @@ const ManageQuestion = ({
                                 <Divider orientation='vertical' h='30px' />
                                 <Text px={4}>Required</Text>
                                 <Switch id='isChecked' isChecked={question.isRequired ? true : false} value={question.isRequired}
-                                    onChange={(event) => updateFormQuestionRequired({
+                                    onChange={(event) => updateFormQuestion({
                                         key: 'isRequired', value: event.target.checked, questionIndex
                                     })} />
                             </CardFooter>
@@ -225,6 +249,7 @@ const ManageQuestion = ({
                         _hover={{
                             bg: 'blue.500',
                         }}
+                        isDisabled={isLoadingForUpdateForm}
                         onClick={addFormQuestion}
                     >
                         Add Question
@@ -236,6 +261,7 @@ const ManageQuestion = ({
                             bg: 'blue.500',
                         }}
                         type='submit'
+                        isLoading={isLoadingForUpdateForm}
                         onClick={update}
                     >
                         Save
@@ -248,13 +274,14 @@ const ManageQuestion = ({
 
 const mapStateToProps = (state) => {
     return {
-        form: state.form.form,
+        form: state[moduleTypes.FORM].form,
+        isLoadingForUpdateForm: state[moduleTypes.FORM].isLoadingForUpdateForm
     };
 };
-function mapDispatchToProps(dispatch) {
+function mapDispatchToProps (dispatch) {
     return ({
-        findOne: (id) => {
-            dispatch({ type: FormActionTypes.findOne, id })
+        findOne: (formId) => {
+            dispatch({ type: FormActionTypes.findOne, formId })
         },
         updateForm: ({ key, value }) => {
             dispatch({ type: FormReducerTypes.UPDATE_FORM, key, value })
@@ -279,9 +306,6 @@ function mapDispatchToProps(dispatch) {
         },
         updateFormQuestionOption: ({ questionIndex, optionIndex, option }) => {
             dispatch({ type: FormReducerTypes.UPDATE_FORM_QUESTION_OPTION, questionIndex, optionIndex, option })
-        },
-        updateFormQuestionRequired: ({ key, value, questionIndex }) => {
-            dispatch({ type: FormReducerTypes.UPDATE_FORM_QUESTION, key, value, questionIndex })
         },
         update: () => {
             dispatch({ type: FormActionTypes.update })

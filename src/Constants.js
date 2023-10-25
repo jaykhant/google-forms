@@ -12,7 +12,7 @@ const QUESTION_TYPES = {
 const QUESTION_TYPE_DISPLAY_NAMES = {
     short_answer: 'Short Answer',
     paragraph: 'Paragraph',
-    multiple_choice: 'Multiple choise',
+    multiple_choice: 'Multiple choice',
     checkbox: 'Checkboxes',
     drop_down: 'Drop down',
     file_upload: 'File Upload',
@@ -20,7 +20,15 @@ const QUESTION_TYPE_DISPLAY_NAMES = {
     time: 'Time'
 }
 
+const FILE_TYPES = {
+    AUDIO: 'audio',
+    VIDEO: 'video',
+    IMAGE: 'image',
+    DOCUMENT: 'document'
+}
+
 module.exports = {
     QUESTION_TYPES,
-    QUESTION_TYPE_DISPLAY_NAMES
+    QUESTION_TYPE_DISPLAY_NAMES,
+    FILE_TYPES
 }

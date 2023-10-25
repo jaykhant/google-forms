@@ -9,7 +9,7 @@
     "deploy:staging:serverless": "sls deploy --stage staging --region ap-south-1",
     "test": "jest",
     "compile": "tsc --project ./tsconfig.json",
-    "prisma-generate": "prisma generate --schema=./src/prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema=./src/prisma/schema.prisma",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix"
   },

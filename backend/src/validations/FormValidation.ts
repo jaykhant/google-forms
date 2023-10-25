@@ -12,7 +12,7 @@ const questionsValidation = Joi.array().required().items(Joi.object({
         QUESTION_TYPES.DATE,
         QUESTION_TYPES.TIME
     ),
-    question: Joi.string().required(),
+    question: Joi.string().required().allow(''),
     isRequired: Joi.boolean().required(),
     options: Joi.when('type', {
         "is": QUESTION_TYPES.MULTIPLE_CHOICE,
@@ -28,7 +28,8 @@ const questionsValidation = Joi.array().required().items(Joi.object({
     }),
     allowSpecificFileTypes: Joi.when('type', {
         "is": QUESTION_TYPES.FILE_UPLOAD,
-        then: Joi.boolean().optional()
+        then: Joi.boolean().required(),
+        otherwise: Joi.forbidden()
     }),
     fileType: Joi.when('type', {
         "is": QUESTION_TYPES.FILE_UPLOAD,
@@ -40,11 +41,13 @@ const questionsValidation = Joi.array().required().items(Joi.object({
                 FILE_TYPES.IMAGE,
                 FILE_TYPES.VIDEO
             ))
-        })
+        }),
+        otherwise: Joi.forbidden()
     }),
     allowMaximumFileSize: Joi.when('type', {
         "is": QUESTION_TYPES.FILE_UPLOAD,
-        then: Joi.number().required().valid(1, 5, 10)
+        then: Joi.number().required().valid(1, 5, 10),
+        otherwise: Joi.forbidden()
     })
 }))
 

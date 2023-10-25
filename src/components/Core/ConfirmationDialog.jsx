@@ -1,8 +1,7 @@
 import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button } from '@chakra-ui/react';
 import React from 'react';
 
-
-const DeleteConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => {
+const ConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => {
     return (
         <AlertDialog
             isOpen={isOpen}
@@ -33,4 +32,4 @@ const DeleteConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => 
 }
 
 
-export default DeleteConfirmationDialog;
+export default ConfirmationDialog;
