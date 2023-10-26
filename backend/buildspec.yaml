@@ -8,7 +8,7 @@ phases:
     commands:
       echo Logging in to Amazon ECR.....
       aws --version
-      $(aws ecr get-login --region ap-south-1 --no-include-email)
+      aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 582081142432.dkr.ecr.ap-south-1.amazonaws.com
   build:
     commands:
       echo Build started on `date`
@@ -24,4 +24,4 @@ phases:
 
 artifacts:
   files:
-    - simple.json
+    - '**/*'
