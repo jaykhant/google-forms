@@ -15,11 +15,11 @@ phases:
       echo Building the Docker image...
       docker build -t googleform .
       docker tag googleform:latest 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
+      docker push 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
   post_build:
     commands:
       echo Build completed on `date`
       echo Pushing the Docker images...
-      docker push 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
       echo Writing image definitions file...
 
 artifacts:
