@@ -108,16 +108,16 @@ const SubmitForm = ({
                                                         updateAnswerInResponse({ key: 'answer', value, questionIndex })
                                                     }} />
                                                 ) : question.type === QUESTION_TYPES.FILE_UPLOAD ? (
-                                                    <ElementFileUpload value={question.fileName} onChange={(file) => {
+                                                    <ElementFileUpload value={question.fileName} error={error} onChange={(file) => {
                                                         onChange(file)
                                                         uploadFile({ formId, file, questionIndex })
                                                     }} />
                                                 ) : question.type === QUESTION_TYPES.DATE ? (
-                                                    <ElementDate value={question.dateTime} onChange={(value) => {
+                                                    <ElementDate value={question.dateTime} error={error} onChange={(value) => {
                                                         updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
                                                     }} />
                                                 ) : question.type === QUESTION_TYPES.TIME ? (
-                                                    <ElementTime value={question.dateTime} onChange={(value) => {
+                                                    <ElementTime value={question.dateTime} error={error} onChange={(value) => {
                                                         updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
                                                     }} />
                                                 ) :
@@ -129,7 +129,6 @@ const SubmitForm = ({
                             </Card>
                         )
                     }
-
                     )}
                 </Stack>
                 <Stack>

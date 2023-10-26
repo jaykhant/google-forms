@@ -1,11 +1,14 @@
-import { Input } from "@chakra-ui/react"
+import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react"
 
-const ElementFileUpload = ({ onChange }) => {
+const ElementFileUpload = ({ onChange, error }) => {
 
     return (
-        <Input type='file' variant='flushed' onChange={(event) => {
-            onChange(event.target.files[0])
-        }} />
+        <FormControl isInvalid={error}>
+            <Input type='file' variant='flushed' onChange={(event) => {
+                onChange(event.target.files[0])
+            }} />
+            {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
+        </FormControl>
     )
 }
 

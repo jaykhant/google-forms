@@ -27,7 +27,7 @@ const build = (questions) => {
                 break
             case QUESTION_TYPES.FILE_UPLOAD:
                 validation[index] = question.isRequired ?
-                    yup.string().required() :
+                    yup.string().required('This is required field') :
                     yup.string().optional()
                 break
             case QUESTION_TYPES.DATE:

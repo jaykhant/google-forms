@@ -1,7 +1,7 @@
-import { Input } from "@chakra-ui/react"
+import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 
-const ElementDate = ({ value, onChange }) => {
+const ElementDate = ({ value, onChange, error }) => {
 
     const [date, setDate] = useState('')
 
@@ -15,10 +15,13 @@ const ElementDate = ({ value, onChange }) => {
     }, [value])
 
     return (
-        <Input value={date} w={'20%'} onChange={(event) => {
-            const date = new Date(event.target.value)
-            onChange(date.getTime())
-        }} type='date' variant='flushed' />
+        <FormControl isInvalid={error}>
+            <Input value={date} w={'20%'} onChange={(event) => {
+                const date = new Date(event.target.value)
+                onChange(date.getTime())
+            }} type='date' variant='flushed' />
+            {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
+        </FormControl>
     )
 }
 
