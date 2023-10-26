@@ -1,8 +1,8 @@
-import { Radio, RadioGroup, Stack } from "@chakra-ui/react"
+import { FormControl, FormErrorMessage, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 
-const ElementMultipleChoice = ({ value, options, onChange }) => {
-
+const ElementMultipleChoice = ({ value, options, onChange,error }) => {
     return (
+        <FormControl isInvalid={error}>
         <RadioGroup value={value} onChange={(value) => {
             onChange(value)
         }}>
@@ -14,6 +14,8 @@ const ElementMultipleChoice = ({ value, options, onChange }) => {
                 )}
             </Stack>
         </RadioGroup>
+        {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
+        </FormControl>
     )
 }
 

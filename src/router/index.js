@@ -13,7 +13,7 @@ function AppRouter ({ isLoggedIn }) {
   const location = useLocation()
   const [containerHeight, setContainerHeight] = React.useState()
   useEffect(() => {
-    setContainerHeight(window.innerHeight - 64)
+    setContainerHeight(window.innerHeight)
   }, [])
 
   return (

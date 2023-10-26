@@ -70,63 +70,69 @@ const SubmitForm = ({
                 <Stack>
                     {response.answers.map((question, questionIndex) => {
                         return (
-                            <Card key={questionIndex}>
-                                <CardBody>
-                                    <Stack spacing={4}>
-                                        <Stack direction={'row'}>
-                                            <Text>{question.question}</Text>{response.questions[questionIndex].isRequired ? <Text color='red'>*</Text> : <></>}
-                                        </Stack>
-                                        <Controller
-                                            name={`${questionIndex}`}
-                                            control={control}
-                                            render={({ field: { onChange }, fieldState: { error } }) => {
-                                                return question.type === QUESTION_TYPES.SHORT_ANSWER ? (
-                                                    <ElementInput value={question.answer} maxWidth={'60'} error={error} onChange={(value) => {
-                                                        onChange(value)
-                                                        updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                    }} />
-                                                ) : question.type === QUESTION_TYPES.PARAGRAPH ? (
-                                                    <ElementInput value={question.answer} error={error} onChange={(value) => {
-                                                        onChange(value)
-                                                        updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                    }} />
-                                                ) : question.type === QUESTION_TYPES.MULTIPLE_CHOICE ? (
-                                                    <ElementMultipleChoice options={question.options} value={question.answer} error={error} onChange={(value) => {
-                                                        onChange(value)
-                                                        updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                    }} />
-                                                ) : question.type === QUESTION_TYPES.CHECKBOX ? (
-                                                    <ElementCheckbox value={question.answers} error={error}
-                                                        onChange={(value) => {
-                                                            onChange(value)
-                                                            updateAnswerInResponse({ key: 'answers', value, questionIndex })
-                                                        }}
-                                                        options={question.options} />
-                                                ) : question.type === QUESTION_TYPES.DROP_DOWN ? (
-                                                    <ElementDropDown value={question.answer} options={question.options} error={error} onChange={(value) => {
-                                                        onChange(value)
-                                                        updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                    }} />
-                                                ) : question.type === QUESTION_TYPES.FILE_UPLOAD ? (
-                                                    <ElementFileUpload value={question.fileName} error={error} onChange={(file) => {
-                                                        onChange(file)
-                                                        uploadFile({ formId, file, questionIndex })
-                                                    }} />
-                                                ) : question.type === QUESTION_TYPES.DATE ? (
-                                                    <ElementDate value={question.dateTime} error={error} onChange={(value) => {
-                                                        updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
-                                                    }} />
-                                                ) : question.type === QUESTION_TYPES.TIME ? (
-                                                    <ElementTime value={question.dateTime} error={error} onChange={(value) => {
-                                                        updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
-                                                    }} />
-                                                ) :
-                                                    <></>
-                                            }}
-                                        />
-                                    </Stack>
-                                </CardBody>
-                            </Card>
+                            <Controller
+                                key={questionIndex}
+                                name={`${questionIndex}`}
+                                control={control}
+                                render={({ field: { onChange }, fieldState: { error } }) => {
+                                    return (
+                                        <Card border={error ? '1px solid red' : ''}>
+                                            <CardBody>
+                                                <Stack spacing={4}>
+                                                    <Stack direction={'row'}>
+                                                        <Text>{question.question}</Text>{response.questions[questionIndex].isRequired ? <Text color='red'>*</Text> : <></>}
+                                                    </Stack>
+                                                    {
+                                                        question.type === QUESTION_TYPES.SHORT_ANSWER ? (
+                                                            <ElementInput value={question.answer} maxWidth={'60'} error={error} onChange={(value) => {
+                                                                onChange(value)
+                                                                updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                            }} />
+                                                        ) : question.type === QUESTION_TYPES.PARAGRAPH ? (
+                                                            <ElementInput value={question.answer} error={error} onChange={(value) => {
+                                                                onChange(value)
+                                                                updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                            }} />
+                                                        ) : question.type === QUESTION_TYPES.MULTIPLE_CHOICE ? (
+                                                            <ElementMultipleChoice options={question.options} value={question.answer} error={error} onChange={(value) => {
+                                                                onChange(value)
+                                                                updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                            }} />
+                                                        ) : question.type === QUESTION_TYPES.CHECKBOX ? (
+                                                            <ElementCheckbox value={question.answers} error={error}
+                                                                onChange={(value) => {
+                                                                    onChange(value)
+                                                                    updateAnswerInResponse({ key: 'answers', value, questionIndex })
+                                                                }}
+                                                                options={question.options} />
+                                                        ) : question.type === QUESTION_TYPES.DROP_DOWN ? (
+                                                            <ElementDropDown value={question.answer} options={question.options} error={error} onChange={(value) => {
+                                                                onChange(value)
+                                                                updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                            }} />
+                                                        ) : question.type === QUESTION_TYPES.FILE_UPLOAD ? (
+                                                            <ElementFileUpload value={question.fileName} error={error} onChange={(file) => {
+                                                                onChange(file)
+                                                                uploadFile({ formId, file, questionIndex })
+                                                            }} />
+                                                        ) : question.type === QUESTION_TYPES.DATE ? (
+                                                            <ElementDate value={question.dateTime} error={error} onChange={(value) => {
+                                                                updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
+                                                            }} />
+                                                        ) : question.type === QUESTION_TYPES.TIME ? (
+                                                            <ElementTime value={question.dateTime} error={error} onChange={(value) => {
+                                                                updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
+                                                            }} />
+                                                        ) :
+                                                            <></>
+                                                    }
+                                                </Stack>
+                                            </CardBody>
+                                        </Card>
+                                    )
+                                }}
+                            />
+
                         )
                     }
                     )}
@@ -153,7 +159,7 @@ const mapStateToProps = (state) => {
         loggedInUser: state[moduleTypes.APP].user
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         findOneForm: (formId) => {
             dispatch({ type: ResponseViewActionTypes.findOneForm, formId })

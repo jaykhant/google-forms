@@ -22,7 +22,7 @@ const build = (questions) => {
                 break
             case QUESTION_TYPES.CHECKBOX:
                 validation[index] = question.isRequired ?
-                    yup.array().required().of(yup.string().required('This is required field')).min(1) :
+                    yup.array().required('This is required field').of(yup.string().required('This is required field')).min(1,"This is required field") :
                     yup.array().optional().of(yup.string().required('This is required field'))
                 break
             case QUESTION_TYPES.FILE_UPLOAD:
