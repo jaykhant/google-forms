@@ -10,7 +10,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...
-      - cd ..
+      - dir
       - docker build -t googleform .
       - docker tag googleform:latest 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
   post_build:
