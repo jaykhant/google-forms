@@ -19,7 +19,8 @@ phases:
         - echo Pushing the Docker images...
         - docker push 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
         - echo Writing image definitions file...
+        - printf '[{"name":"googleform","imageUri":"%s"}]' 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest > imagedefinitions.json
 
 artifacts:
   files:
-    - '**/*'
+    - imagedefinitions.json
