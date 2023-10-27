@@ -3,16 +3,10 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - cd backend
       - npm install
   build:
     commands:
-      - npm build
-      - npm test
-
-reports:
-  jest_reports:
-    files:
-      - simple
-    file-format: JUNITXML
-    base-directory: simple
+      - npm run build
+      - npm run test
         
