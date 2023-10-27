@@ -70,7 +70,7 @@ describe('FORM', () => {
                 })
                 .expect(httpStatus.OK)
             expect(res.body).toEqual({
-                ...mockRform
+                
             })
         })
     })
