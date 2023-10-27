@@ -1,15 +1,18 @@
 version: 0.2
 
 phases:
-    pre_build:
-      commands:
-       - COPY . .
-       - run npm run build
-       
-    build:
-      commands:
-       - run npm run test
-      
-    post_build:
-      commands:
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - npm build
+      - npm test
+
+reports:
+  jest_reports:
+    files:
+      - simple
+    file-format: JUNITXML
+    base-directory: simple
         
