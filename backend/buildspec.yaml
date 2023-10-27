@@ -6,6 +6,9 @@ phases:
         - echo Logging in to Amazon ECR.....
         - aws --version
         - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 582081142432.dkr.ecr.ap-south-1.amazonaws.com
+        - REPOSITORY_URI=582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform
+        - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+        - IMAGE_TAG=${COMMIT_HASH:=latest}
     build:
       commands:
         - echo Build started on `date`
@@ -19,7 +22,7 @@ phases:
         - echo Pushing the Docker images...
         - docker push 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest
         - echo Writing image definitions file...
-        - printf '[{"name":"%s","imageUri":"%s"}]' googleform 582081142432.dkr.ecr.ap-south-1.amazonaws.com/googleform:latest > imagedefinitions.json
+        - printf '[{"name":"%s","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 
 artifacts:
     files:
