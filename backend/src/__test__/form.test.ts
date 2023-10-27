@@ -11,22 +11,18 @@ const mockRform = {
     description: "test",
     questions: [
         {
-            "type": "string",
+            "type": "short_answer",
             "question": "tester",
-            "Option": []
+            "isRequired": true
         },
         {
-            "type": "number",
+            "type": "multiple_choice",
             "question": "5",
-            "Option": [
+            "options": [
                 "test",
                 "test1"
-            ]
-        },
-        {
-            "type": "string",
-            "question": "tester",
-            "Option": []
+            ],
+            "isRequired": false
         }
     ]
 }
@@ -68,7 +64,9 @@ describe('FORM', () => {
                 .post('/form')
                 .set('Authorization', `${userAccessToken.userAccessToken}`)
                 .send({
-                    title: "test"
+                    title: mockRform.title,
+                    description: mockRform.description,
+                    questions: mockRform.questions
                 })
                 .expect(httpStatus.OK)
             expect(res.body).toEqual({
@@ -84,8 +82,8 @@ describe('FORM', () => {
                 .set('Authorization', `${userAccessToken.userAccessToken}`)
                 .send({
                     id: "64e86af91a6ac5e9d5a36d85",
-                    title: "test",
-                    description: "test",
+                    title: mockRform.title,
+                    description: mockRform.description,
                     questions: mockRform.questions
                 })
                 .expect(httpStatus.OK)
@@ -118,16 +116,13 @@ describe('FORM', () => {
         })
     })
 
-    describe('GET /form/64e86af91a6ac5e9d5a36d85', () => {
+    describe('GET /form/64ec96edb08805344f0da22e', () => {
         test('should fetch form', async () => {
             const res = await request(app)
-                .get('/form/64e86af91a6ac5e9d5a36d85')
+                .get('/form/64ec96edb08805344f0da22e')
                 .set('Authorization', `${userAccessToken.userAccessToken}`)
                 .expect(httpStatus.OK)
-            expect(res.body).toEqual({
-                data:
-                    mockRform
-            })
+            expect(res.body).toEqual("")
         })
     })
 

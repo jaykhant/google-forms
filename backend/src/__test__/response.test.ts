@@ -5,18 +5,27 @@ import httpStatus from 'http-status'
 import userAccessToken from '../fixtures/Token.fixture';
 
 const mockRresponse = {
+    _id: "64e86af91a6ac5e9d5a36d85",
     userId: "64ec96edb08805344f0da22e",
     formId: "64e704b12293841d80de62fc",
-    answer: [
+    answers: [
         {
+            "type": "short_answer",
             "question": "test",
             "answer": "test"
         },
         {
+            "type": "multiple_choice",
             "question": "test",
-            "Option": [
+            "options": [
                 "test"
             ]
+        },
+        {
+            "type": "file_upload",
+            "question": "select your birth date",
+            "fileType": ["image"],
+            "fileName": "652537c8f628da34a29010af.png"
         }
     ]
 }
@@ -32,11 +41,14 @@ const mockRImageurl = {
     name: "64ec46177e59caa489bb8ea7.png"
 }
 
+const mockRcount = 1
+
 jest.mock('../services/ResponseService', () => {
     return {
         create: jest.fn().mockImplementation(() => mockRresponse),
         find: jest.fn().mockImplementation(() => [mockRresponse]),
-        findResponseById: jest.fn().mockImplementation(() => mockRresponse),
+        findResponseById: jest.fn().mockImplementation(() => [mockRresponse]),
+        getTotalCount: jest.fn().mockImplementation(() => mockRcount)
     }
 })
 
@@ -65,13 +77,11 @@ describe('FORM', () => {
                 .set('Authorization', `${userAccessToken.userAccessToken}`)
                 .send({
                     formId: "64e704b12293841d80de62fc",
-                    answer: mockRresponse.answer
+                    answers: mockRresponse.answers
                 })
                 .expect(httpStatus.OK)
             expect(res.body).toEqual({
-                data: {
-                    ...mockRresponse
-                }
+                ...mockRresponse
             })
         })
     })
@@ -85,7 +95,8 @@ describe('FORM', () => {
             expect(res.body).toEqual({
                 data: [
                     mockRresponse
-                ]
+                ],
+                totalData: 1
             })
         })
         test('should throw a error in case of page and size are empty', async () => {
@@ -103,7 +114,7 @@ describe('FORM', () => {
                 .set('Authorization', `${userAccessToken.userAccessToken}`)
                 .expect(httpStatus.OK)
             expect(res.body).toEqual({
-                response: mockRresponse
+                 ...mockRresponse
             })
         })
     })
