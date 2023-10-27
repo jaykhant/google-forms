@@ -3,6 +3,7 @@ version: 0.2
 phases:
     pre_build:
       commands:
+        - npm install -g node@16.14.2
         - cd backend
         - npm install
     build:
