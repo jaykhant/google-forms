@@ -1,12 +1,15 @@
 version: 0.2
 
 phases:
-  pre_build:
-    commands:
-      - cd backend
-      - npm install
-  build:
-    commands:
-      - npm run build
-      - npm run test
+ install:
+    runtime-versions:
+      nodejs: 18
+    pre_build:
+      commands:
+        - cd backend
+        - npm install
+    build:
+      commands:
+        - npm run build
+        - npm run test
         
