@@ -31,10 +31,10 @@ const build = (questions) => {
                     yup.string().optional()
                 break
             case QUESTION_TYPES.DATE:
-                validation[index] = question.isRequired ? yup.date().required('This is required field') : yup.date().optional()
+                validation[index] = question.isRequired ? yup.number().required('This is required field') : yup.number().optional()
                 break
             case QUESTION_TYPES.TIME:
-                validation[index] = question.isRequired ? yup.date().required('This is required field') : yup.date().optional()
+                validation[index] = question.isRequired ? yup.number().required('This is required field') : yup.number().optional()
                 break
             default:
                 throw new Error('Unknown question type: ', question.type)

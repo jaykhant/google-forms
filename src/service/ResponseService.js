@@ -27,7 +27,7 @@ export default class ResponseService {
 
     generateSignedUrl = async ({ formId, ext }) => {
         try {
-            const response = await this.http.get(`/?formId=${formId}&ext=${ext}`)
+            const response = await this.http.get(`/generate-signed-url/id?formId=${formId}&ext=${ext}`)
             return new ResponseWrapper(response).data
         } catch (error) {
             throw new ErrorWrapper(error)

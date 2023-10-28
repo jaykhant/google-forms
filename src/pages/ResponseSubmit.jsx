@@ -117,10 +117,12 @@ const SubmitForm = ({
                                                             }} />
                                                         ) : question.type === QUESTION_TYPES.DATE ? (
                                                             <ElementDate value={question.dateTime} error={error} onChange={(value) => {
+                                                                onChange(value)
                                                                 updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
                                                             }} />
                                                         ) : question.type === QUESTION_TYPES.TIME ? (
                                                             <ElementTime value={question.dateTime} error={error} onChange={(value) => {
+                                                                onChange(value)
                                                                 updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
                                                             }} />
                                                         ) :

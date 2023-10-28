@@ -12,14 +12,14 @@ const formService = new FormService()
 
 const responseViewState = state => state.response_view;
 
-function* init () {
+function* init() {
     yield takeEvery(ResponseViewActionTypes.findAll, findAll)
     yield takeEvery(ResponseViewActionTypes.findOne, findOne)
     yield takeEvery(ResponseViewActionTypes.findOneForm, findOneForm)
     yield takeEvery(ResponseViewActionTypes.uploadFile, uploadFile)
 }
 
-function* findAll ({ formId }) {
+function* findAll({ formId }) {
     yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: true })
     const { page } = yield select(responseViewState)
     try {
@@ -35,7 +35,7 @@ function* findAll ({ formId }) {
     }
 }
 
-function* findOne ({ responseId }) {
+function* findOne({ responseId }) {
     yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: true })
     try {
         const response = yield call(responseService.findOne, { responseId })
@@ -50,7 +50,7 @@ function* findOne ({ responseId }) {
     }
 }
 
-function* findOneForm ({ formId }) {
+function* findOneForm({ formId }) {
     yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: true })
     try {
         let response = yield call(formService.findOne, { formId })
@@ -99,11 +99,11 @@ function* findOneForm ({ formId }) {
     }
 }
 
-function* uploadFile ({ formId, file, questionIndex }) {
+function* uploadFile({ formId, file, questionIndex }) {
     yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_FILE_UPLOAD, isLoadingForFileUpload: true })
     try {
-        const response = yield call(responseService.generateSignedUrl, { formId })
-        yield call(responseService.uploadFile, { signedUrl: response.signedUrl, ext: file })
+        const response = yield call(responseService.generateSignedUrl, { formId, ext: file.name.split('.').pop() })
+        yield call(responseService.uploadFile, { signedUrl: response.signedUrl, file })
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_FILE_UPLOAD, isLoadingForFileUpload: false })
         yield put({ type: ResponseViewReducerTypes.UPDATE_ANSWER_IN_RESPONSE, key: 'fileName', value: response.name, questionIndex })
         yield put({ type: ResponseViewReducerTypes.UPDATE_ANSWER_IN_RESPONSE, key: 'fileType', value: response.name, questionIndex })
