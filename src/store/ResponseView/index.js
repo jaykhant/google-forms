@@ -3,9 +3,9 @@ import { ResponseViewReducerTypes } from "./type"
 const initialState = {
     responses: [],
 
-    page: 1,
+    page: -1,
     totalData: -1,
-    isLoadingForGetResponse: true,
+    isLoadingForGetResponse: false,
 
     response: {},
     validationSchema: {},
@@ -47,6 +47,21 @@ const reducer = (state = initialState, action) => {
         case ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_FILE_UPLOAD: return {
             ...state,
             isLoadingForFileUpload: action.isLoadingForFileUpload
+        }
+        case ResponseViewReducerTypes.UPDATE_PAGES: return {
+            ...state,
+            page: action.page
+        }
+        case ResponseViewReducerTypes.UPDATE_TOTAL_DATA: return {
+            ...state,
+            totalData: action.totalData
+        }
+        case ResponseViewReducerTypes.CLEAR_RESPONSES: return {
+            ...state,
+            page: -1,
+            totalData: -1,
+            responses: [],
+            isLoadingForGetResponse: false
         }
         default: return state
     }

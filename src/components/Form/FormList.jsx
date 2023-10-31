@@ -9,16 +9,18 @@ import { Button, Center, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Th
 const FormList = ({
     forms,
     findAll,
-    isLoadingForGetForm,
+    clearForm,
     deleteForm,
+    isLoadingForGetForm,
     isLoadingForDeleteForm,
     isDeleteConfirmationDialogOpen,
     updateIsDeleteConfirmationDialogOpen
 }) => {
 
     useEffect(() => {
+        clearForm()
         findAll()
-    }, [findAll])
+    }, [clearForm, findAll])
 
     let [deleteIndex, setDeleteIndex] = useState(0)
 
@@ -101,7 +103,10 @@ function mapDispatchToProps(dispatch) {
         updateIsDeleteConfirmationDialogOpen: (isDeleteConfirmationDialogOpen) => dispatch({
             type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN,
             isDeleteConfirmationDialogOpen
-        })
+        }),
+        clearForm: () => {
+            dispatch({ type: FormReducerTypes.CLEAR_FORM })
+        },
     })
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FormList);

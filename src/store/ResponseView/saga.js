@@ -20,14 +20,14 @@ function* init() {
 }
 
 function* findAll({ formId }) {
-    yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: true })
     const { page } = yield select(responseViewState)
+    if (page === -1) yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: true })
     try {
-        const response = yield call(responseService.findAll, { formId, page: page, size: 20 })
+        const response = yield call(responseService.findAll, { formId, page: page === -1 ? 1 : page === 1 ? 2 : page, size: 20 })
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: false })
-        yield put({
-            type: ResponseViewReducerTypes.SET_RESPONSES, responses: response.data
-        });
+          yield put({ type: ResponseViewReducerTypes.UPDATE_PAGES, page: page === -1 ? 1 : page === 1 ? 3 : page})
+        yield put({type: ResponseViewReducerTypes.SET_RESPONSES, responses: response.data});
+        yield put({ type: ResponseViewReducerTypes.UPDATE_TOTAL_DATA, totalData: response.totalData })
     } catch (error) {
         console.log(error);
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: false })

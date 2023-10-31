@@ -10,7 +10,7 @@ let formService = new FormService()
 
 const formState = state => state.form;
 
-function* init () {
+function* init() {
     yield takeEvery(FormActionTypes.findAll, findAll)
     yield takeEvery(FormActionTypes.findOne, findOne)
     yield takeEvery(FormActionTypes.delete, deleteForm)
@@ -18,22 +18,22 @@ function* init () {
     yield takeEvery(FormActionTypes.update, update)
 }
 
-function* findAll () {
-    yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
+function* findAll() {
     const { page } = yield select(formState)
+    if (page === -1) yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
-        const response = yield call(formService.findAll, { page: page, size: 20 })
+        const response = yield call(formService.findAll, { page: page === -1 ? 1 : page === 1 ? 3 : page, size: 20 })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
-        yield put({
-            type: FormReducerTypes.SET_FORMS, forms: response.forms
-        });
+        yield put({ type: FormReducerTypes.UPDATE_PAGE, page: page === -1 ? 1 : page === 1 ? 3 : page });
+        yield put({ type: FormReducerTypes.SET_FORMS, forms: response.forms });
+        yield put({ type: FormReducerTypes.UPDATE_TOTAL_DATA, totalData: response.totalData });
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
     }
 }
 
-function* findOne ({ formId }) {
+function* findOne({ formId }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
         const response = yield call(formService.findOne, { formId })
@@ -48,7 +48,7 @@ function* findOne ({ formId }) {
     }
 }
 
-function* deleteForm ({ deleteIndex }) {
+function* deleteForm({ deleteIndex }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: true })
     const { forms } = yield select(formState)
     try {
@@ -64,7 +64,7 @@ function* deleteForm ({ deleteIndex }) {
     }
 }
 
-function* create () {
+function* create() {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_CREATE_FORM, isLoadingForCreateForm: true })
     try {
         const response = yield call(formService.create,
@@ -89,7 +89,7 @@ function* create () {
     }
 }
 
-function* update () {
+function* update() {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: true })
     try {
         const { form } = yield select(formState)

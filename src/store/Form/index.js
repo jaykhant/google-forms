@@ -4,7 +4,7 @@ import { FormReducerTypes } from "./type"
 const initialState = {
     forms: [],
 
-    page: 1,
+    page: -1,
     totalData: -1,
     isLoadingForGetForm: false,
 
@@ -62,6 +62,13 @@ const reducer = (state = initialState, action) => {
             ]
         }
 
+        case FormReducerTypes.CLEAR_FORM: return {
+            ...state,
+            forms: [],
+            page: -1,
+            totalData: -1,
+            isLoadingForGetForm: false
+        }
         case FormReducerTypes.SET_FORM: return {
             ...state,
             form: action.form
@@ -78,7 +85,7 @@ const reducer = (state = initialState, action) => {
             }
         }
         case FormReducerTypes.UPDATE_FORM_QUESTION:
-            if (action.key === 'type'){
+            if (action.key === 'type') {
                 delete state.form.questions[action.questionIndex].options
                 delete state.form.questions[action.questionIndex].allowSpecificFileTypes
                 delete state.form.questions[action.questionIndex].fileType

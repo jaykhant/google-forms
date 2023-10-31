@@ -3,10 +3,10 @@ import ResponseList from '../components/Form/ResponseList';
 import ManageQuestion from '../components/Form/ManageQuestion';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 
-const ManageForm = () => {
+const ManageForm = (loadMore) => {
     return (
         <>
-            <Tabs variant="unstyled">
+            <Tabs variant="unstyled" >
                 <TabList justifyContent={'center'} bg={'white'}>
                     <Tab>Questions</Tab>
                     <Tab>Responses</Tab>
@@ -22,7 +22,7 @@ const ManageForm = () => {
                         <ManageQuestion />
                     </TabPanel>
                     <TabPanel p={0}>
-                        <ResponseList />
+                        <ResponseList loadMore={loadMore} />
                     </TabPanel>
                 </TabPanels>
             </Tabs>

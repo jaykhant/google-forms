@@ -4,15 +4,31 @@ import { ViewIcon } from '@chakra-ui/icons'
 import { Tr, Td, Th, Thead, Tbody, Table, Button, TableContainer, Spinner, Center, Flex } from '@chakra-ui/react'
 import { connect } from 'react-redux';
 import { moduleTypes } from '../../store/type';
-import { ResponseViewActionTypes } from '../../store/ResponseView/type';
+import { ResponseViewActionTypes, ResponseViewReducerTypes } from '../../store/ResponseView/type';
 
-const ResponseList = ({ responses, isLoadingForGetResponse, findAll }) => {
-
+const ResponseList = (
+    {
+        findAll,
+        loadMore,
+        responses,
+        totalData,
+        clearResponse,
+        isLoadingForGetResponse,
+    }
+) => {
     const { formId } = useParams()
 
     useEffect(() => {
+        clearResponse()
         findAll(formId)
-    }, [findAll, formId])
+    }, [findAll, formId, clearResponse])
+
+    useEffect(() => {
+        if (!isLoadingForGetResponse && totalData > responses.length) {
+            findAll(formId)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [findAll, formId, loadMore.loadMore])
 
     return (
         <TableContainer overflowY={'auto'} pt={6} px={{ base: "20", md: "40", lg: "60", xl: "80" }}>
@@ -45,20 +61,31 @@ const ResponseList = ({ responses, isLoadingForGetResponse, findAll }) => {
                     }
                 </Tbody>
             </Table>
+            {responses.length === 0 && !isLoadingForGetResponse ?
+                <Center py={4}>
+                    No Data Found
+                </Center>
+                :
+                <></>
+            }
         </TableContainer>
     )
 }
 
 const mapStateToProps = (state) => {
     return {
+        totalData: state[moduleTypes.RESPONSE_VIEW].totalData,
         responses: state[moduleTypes.RESPONSE_VIEW].responses,
         isLoadingForGetResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForGetResponse
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         findAll: (formId) => {
             dispatch({ type: ResponseViewActionTypes.findAll, formId })
+        },
+        clearResponse: () => {
+            dispatch({ type: ResponseViewReducerTypes.CLEAR_RESPONSES })
         },
     })
 }
