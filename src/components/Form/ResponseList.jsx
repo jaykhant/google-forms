@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ViewIcon } from '@chakra-ui/icons'
 import { Tr, Td, Th, Thead, Tbody, Table, Button, TableContainer, Spinner, Center, Flex } from '@chakra-ui/react'
@@ -17,15 +17,19 @@ const ResponseList = (
     }
 ) => {
     const { formId } = useParams()
+    let [allDataIsLoaded, SetAllDataIsLoaded] = useState(false)
 
     useEffect(() => {
         clearResponse()
         findAll(formId)
+        if (totalData === responses.length + 1) SetAllDataIsLoaded(true)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [findAll, formId, clearResponse])
 
     useEffect(() => {
         if (!isLoadingForGetResponse && totalData > responses.length) {
             findAll(formId)
+            if (totalData === responses.length + 1) { SetAllDataIsLoaded(true) }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [findAll, formId, loadMore.loadMore])
@@ -64,6 +68,13 @@ const ResponseList = (
             {responses.length === 0 && !isLoadingForGetResponse ?
                 <Center py={4}>
                     No Data Found
+                </Center>
+                :
+                <></>
+            }
+            {(totalData !== -1 & !allDataIsLoaded) || isLoadingForGetResponse ?
+                <Center py={4}>
+                    Loading....
                 </Center>
                 :
                 <></>

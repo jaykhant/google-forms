@@ -1,15 +1,13 @@
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
 import ConfirmationDialog from '../Core/ConfirmationDialog'
-import { Button, Center, Flex, Spinner, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { Button, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 const FormList = ({
     forms,
-    findAll,
-    clearForm,
     deleteForm,
     isLoadingForGetForm,
     isLoadingForDeleteForm,
@@ -17,10 +15,7 @@ const FormList = ({
     updateIsDeleteConfirmationDialogOpen
 }) => {
 
-    useEffect(() => {
-        clearForm()
-        findAll()
-    }, [clearForm, findAll])
+    
 
     let [deleteIndex, setDeleteIndex] = useState(0)
 
@@ -54,14 +49,7 @@ const FormList = ({
                                     </Td>
                                 </Tr>
                             );
-                        }) : <Tr>
-                            <Td colSpan={5}><Flex>
-                                <Center width={'100%'}>
-                                    <Spinner />
-                                </Center>
-                            </Flex>
-                            </Td>
-                        </Tr>}
+                        }) : <></>}
                     </Tbody>
                 </Table>
                 {forms.length === 0 && !isLoadingForGetForm ?
@@ -93,9 +81,6 @@ const mapStateToProps = (state) => {
 };
 function mapDispatchToProps(dispatch) {
     return ({
-        findAll: () => {
-            dispatch({ type: FormActionTypes.findAll })
-        },
         deleteForm: (deleteIndex) => dispatch({
             type: FormActionTypes.delete,
             deleteIndex
@@ -104,9 +89,6 @@ function mapDispatchToProps(dispatch) {
             type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN,
             isDeleteConfirmationDialogOpen
         }),
-        clearForm: () => {
-            dispatch({ type: FormReducerTypes.CLEAR_FORM })
-        },
     })
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FormList);

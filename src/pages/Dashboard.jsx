@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import { AddIcon } from '@chakra-ui/icons'
-import { Button, Flex } from '@chakra-ui/react'
+import { Button, Center, Flex, Spinner } from '@chakra-ui/react'
 import FormList from '../components/Form/FormList';
 import { connect } from 'react-redux';
-import { FormActionTypes } from '../store/Form/type';
+import { FormActionTypes, FormReducerTypes } from '../store/Form/type';
 
 const Dashboard = (
     {
@@ -11,11 +11,18 @@ const Dashboard = (
         findAll,
         loadMore,
         totalData,
+        clearForm,
         createForm,
+        allDataIsLoaded,
         isLoadingForGetForm,
         isLoadingForCreateForm,
     }
 ) => {
+
+    useEffect(() => {
+        clearForm()
+        findAll()
+    }, [clearForm, findAll])
 
     useEffect(() => {
         if (!isLoadingForGetForm && totalData > forms.length) {
@@ -31,6 +38,13 @@ const Dashboard = (
                 <Button isLoading={isLoadingForCreateForm} mt="4" size='md' onClick={createForm}><AddIcon mr="3" />  Add Form</Button>
             </Flex>
             <FormList />
+            {(totalData !== -1 & !allDataIsLoaded) || isLoadingForGetForm ?
+                <Center>
+                    <Spinner />
+                </Center>
+                :
+                <></>
+            }
         </>
     )
 }
@@ -39,6 +53,7 @@ const mapStateToProps = (state) => {
     return {
         forms: state.form.forms,
         totalData: state.form.totalData,
+        allDataIsLoaded: state.form.allDataIsLoaded,
         isLoadingForGetForm: state.form.isLoadingForGetForm,
         isLoadingForCreateForm: state.form.isLoadingForCreateForm
     };
@@ -50,7 +65,10 @@ function mapDispatchToProps(dispatch) {
         },
         createForm: () => {
             dispatch({ type: FormActionTypes.create })
-        }
+        },
+        clearForm: () => {
+            dispatch({ type: FormReducerTypes.CLEAR_FORMS })
+        },
     })
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
