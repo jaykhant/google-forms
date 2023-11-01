@@ -13,7 +13,6 @@ const Dashboard = (
         totalData,
         clearForm,
         createForm,
-        allDataIsLoaded,
         isLoadingForGetForm,
         isLoadingForCreateForm,
     }
@@ -25,9 +24,7 @@ const Dashboard = (
     }, [clearForm, findAll])
 
     useEffect(() => {
-        if (!isLoadingForGetForm && totalData > forms.length) {
-            findAll()
-        }
+        if (!isLoadingForGetForm && totalData > forms.length) findAll()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [findAll, loadMore])
 
@@ -38,7 +35,7 @@ const Dashboard = (
                 <Button isLoading={isLoadingForCreateForm} mt="4" size='md' onClick={createForm}><AddIcon mr="3" />  Add Form</Button>
             </Flex>
             <FormList />
-            {(totalData !== -1 & !allDataIsLoaded) || isLoadingForGetForm ?
+            {(totalData > forms.length) || isLoadingForGetForm ?
                 <Center>
                     <Spinner />
                 </Center>
@@ -53,7 +50,6 @@ const mapStateToProps = (state) => {
     return {
         forms: state.form.forms,
         totalData: state.form.totalData,
-        allDataIsLoaded: state.form.allDataIsLoaded,
         isLoadingForGetForm: state.form.isLoadingForGetForm,
         isLoadingForCreateForm: state.form.isLoadingForCreateForm
     };

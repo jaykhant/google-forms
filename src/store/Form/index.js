@@ -7,7 +7,6 @@ const initialState = {
     page: -1,
     totalData: -1,
     isLoadingForGetForm: false,
-    allDataIsLoaded:false,
 
     isLoadingForDeleteForm: false,
     isDeleteConfirmationDialogOpen: false,
@@ -73,10 +72,6 @@ const reducer = (state = initialState, action) => {
         case FormReducerTypes.SET_FORM: return {
             ...state,
             form: action.form
-        }
-        case FormReducerTypes.UPDATE_ALL_DATA_IS_LOADED: return {
-            ...state,
-            allDataIsLoaded: action.allDataIsLoaded
         }
         case FormReducerTypes.UPDATE_IS_LOADING_FOR_CREATE_FORM: return {
             ...state,

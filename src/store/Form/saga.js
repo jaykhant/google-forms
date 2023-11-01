@@ -27,10 +27,6 @@ function* findAll() {
         yield put({ type: FormReducerTypes.UPDATE_PAGE, page: page === -1 ? 1 : page === 1 ? 3 : page });
         yield put({ type: FormReducerTypes.SET_FORMS, forms: response.forms });
         yield put({ type: FormReducerTypes.UPDATE_TOTAL_DATA, totalData: response.totalData });
-        const { forms } = yield select(formState)
-        if (response.totalData === forms.length) {
-            yield put({ type: FormReducerTypes.UPDATE_ALL_DATA_IS_LOADED, allDataIsLoaded: true });
-        }
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
