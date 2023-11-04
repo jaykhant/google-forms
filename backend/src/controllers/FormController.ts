@@ -29,12 +29,13 @@ const update = catchAsync(async (req: any, res: Response) => {
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const findAll = catchAsync(async (req: Request, res: Response) => {
+const findAll = catchAsync(async (req: any, res: Response) => {
+    const user = req.user
     const { page, size } = req.query
-
+    
     res.json({
-        forms: await FormService.getAll(Number(page), Number(size)),
-        totalData: await FormService.getTotalCount()
+        forms: await FormService.getAll(Number(page), Number(size), user.id),
+        totalData: await FormService.getTotalCount(user.id)
     })
 })
 

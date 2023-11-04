@@ -54,12 +54,12 @@ const create = {
             }).optional(),
             fileType: Joi.when('type', {
                 "is": QUESTION_TYPES.FILE_UPLOAD,
-                then: Joi.array().required().items(Joi.string().required().valid(
+                then: Joi.string().required().valid(
                     FILE_TYPES.AUDIO,
                     FILE_TYPES.DOCUMENT,
                     FILE_TYPES.IMAGE,
                     FILE_TYPES.VIDEO
-                ))
+                ).allow('')
             }),
             dateTime: Joi.when('type', {
                 "is": QUESTION_TYPES.DATE,

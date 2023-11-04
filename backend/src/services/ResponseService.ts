@@ -100,7 +100,8 @@ const findResponseById = async (id: string) => {
                             answer: '$answers.answer',
                             answers: '$answers.answers',
                             fileName: '$answers.fileName',
-                            dateTime: { $toString: '$answer.dateTime' }
+                            fileType: '$answers.fileType',
+                            dateTime: { $toLong: '$answers.dateTime' }
                         }
                     },
                     user: {
@@ -129,6 +130,7 @@ const findResponseById = async (id: string) => {
                                 answer: '$$answers.answer',
                                 answers: '$$answers.answers',
                                 fileName: '$$answers.fileName',
+                                fileType: '$$answers.fileType',
                                 dateTime: { $ifNull: ["$$answers.dateTime", "$false"] }
                             }
                         }

@@ -50,9 +50,10 @@ function* findOne({ formId }) {
 
 function* deleteForm({ deleteIndex }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: true })
-    const { forms } = yield select(formState)
+    const { forms, totalData } = yield select(formState)
     try {
         yield call(formService.delete, { id: forms[deleteIndex].id })
+        yield put({ type: FormReducerTypes.UPDATE_TOTAL_DATA, totalData: totalData - 1 });
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: false })
         yield put({ type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN, isDeleteConfirmationDialogOpen: false });
         yield put({
