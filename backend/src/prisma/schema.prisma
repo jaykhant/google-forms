@@ -61,5 +61,5 @@ type Answers {
   options  String[]
   fileName String?
   dateTime DateTime?
-  fileType String[]
+  fileType String?
 }

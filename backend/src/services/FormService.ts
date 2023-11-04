@@ -26,9 +26,16 @@ const update = async (id: string, title: string, description: string, questions:
     })
 }
 
-const getAll = async (page: number, size: number) => {
+const getAll = async (page: number, size: number, userId: string) => {
     return await prisma.form.aggregateRaw({
         pipeline: [
+            {
+                $match: {
+                    userId: {
+                        $oid: userId
+                    }
+                }
+            },
             { $skip: (page - 1) * size },
             { $limit: size },
             { $sort: { createdAt: -1 } },
@@ -46,8 +53,12 @@ const getAll = async (page: number, size: number) => {
     })
 }
 
-const getTotalCount = async () => {
-    return await prisma.form.count()
+const getTotalCount = async (userId: string) => {
+    return await prisma.form.count({
+        where: {
+            userId
+        }
+    })
 }
 
 const remove = async (id: string) => {
