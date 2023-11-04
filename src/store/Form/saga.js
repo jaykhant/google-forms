@@ -19,24 +19,24 @@ function* init() {
 }
 
 function* findAll() {
-    yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     const { page } = yield select(formState)
+    if (page === -1) yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
-        const response = yield call(formService.findAll, { page: page, size: 20 })
+        const response = yield call(formService.findAll, { page: page === -1 ? 1 : page === 1 ? 3 : page, size: 20 })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
-        yield put({
-            type: FormReducerTypes.SET_FORMS, forms: response.forms
-        });
+        yield put({ type: FormReducerTypes.UPDATE_PAGE, page: page === -1 ? 1 : page === 1 ? 3 : page });
+        yield put({ type: FormReducerTypes.SET_FORMS, forms: response.forms });
+        yield put({ type: FormReducerTypes.UPDATE_TOTAL_DATA, totalData: response.totalData });
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
     }
 }
 
-function* findOne({ id }) {
+function* findOne({ formId }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
-        const response = yield call(formService.findOne, { id })
+        const response = yield call(formService.findOne, { formId })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         yield put({
             type: FormReducerTypes.SET_FORM, form: response
@@ -70,7 +70,7 @@ function* create() {
         const response = yield call(formService.create,
             {
                 title: 'Untitled form',
-                description:"",
+                description: "",
                 questions: [
                     {
                         type: QUESTION_TYPES.MULTIPLE_CHOICE,
@@ -93,7 +93,7 @@ function* update() {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: true })
     try {
         const { form } = yield select(formState)
-        yield call(formService.update, {id: form.id,title: form.title,questions: form.questions,description:form.description})
+        yield call(formService.update, { id: form.id, title: form.title, questions: form.questions, description: form.description })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: false })
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: false })

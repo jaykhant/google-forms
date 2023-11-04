@@ -57,7 +57,6 @@ const SignIn = ({
                             bg={useColorModeValue('white', 'gray.700')}
                             boxShadow={'lg'}
                             p={8}>
-
                             <Stack spacing={4}>
                                 {formErrorMessage ? <Alert status='error'>
                                     <AlertIcon />

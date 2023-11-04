@@ -12,10 +12,14 @@ import authSaga from "./Auth/saga"
 import form from './Form';
 import formSaga from './Form/saga';
 
+import responseView from './ResponseView'
+import responseViewSaga from './ResponseView/saga'
+import { moduleTypes } from './type';
+
 const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
-    auth, form,
+    auth, form, [moduleTypes.RESPONSE_VIEW]: responseView,
     app: persistReducer({
         key: 'app',
         storage,
@@ -32,3 +36,4 @@ export const persistor = persistStore(store)
 
 sagaMiddleware.run(authSaga)
 sagaMiddleware.run(formSaga)
+sagaMiddleware.run(responseViewSaga)
