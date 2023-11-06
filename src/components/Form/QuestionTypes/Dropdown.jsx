@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import React,{ useEffect } from 'react'
 import { Input } from '@chakra-ui/input';
 import { Stack } from '@chakra-ui/layout';
 import { Text, CloseButton, Button } from '@chakra-ui/react'
@@ -29,6 +30,13 @@ const DropDown = ({ options = [], onAddOption, onUpdateOption, onDeleteOption })
             </Stack>
         </>
     )
+}
+
+DropDown.propTypes = {
+    options: PropTypes.array,
+    onAddOption: PropTypes.func,
+    onUpdateOption: PropTypes.func,
+    onDeleteOption: PropTypes.func,
 }
 
 export default DropDown;

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React,{ useEffect } from 'react'
+import PropTypes from 'prop-types'
 import {
     Box,
     Text,
@@ -116,6 +117,15 @@ const SignIn = ({
     )
 }
 
+SignIn.propTypes = {
+    reset: PropTypes.func,
+    signIn: PropTypes.func,
+    updateForm: PropTypes.func,
+    signInForm: PropTypes.object,
+    isFormLoading: PropTypes.bool,
+    formErrorMessage: PropTypes.string,
+}
+
 const mapStateToProps = (state) => {
     return {
         signInForm: state.auth.signInForm,
@@ -123,7 +133,7 @@ const mapStateToProps = (state) => {
         isFormLoading: state.auth.isFormLoading
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         updateForm: ({ key, value }) => {
             dispatch({ type: AuthReducerTypes.UPDATE_SIGN_IN_FORM, key, value })

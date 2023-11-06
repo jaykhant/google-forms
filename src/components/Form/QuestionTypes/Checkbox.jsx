@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import React,{ useEffect } from 'react'
 import { Input } from '@chakra-ui/input';
 import { Stack } from '@chakra-ui/layout';
 import { Text, Square, CloseButton, Button } from '@chakra-ui/react'
@@ -31,6 +32,13 @@ const Checkbox = ({ options = [], onAddOption, onUpdateOption, onDeleteOption })
             </Stack>
         </>
     )
+}
+
+Checkbox.propTypes = {
+    options: PropTypes.array,
+    onAddOption: PropTypes.func,
+    onUpdateOption: PropTypes.func,
+    onDeleteOption: PropTypes.func,
 }
 
 export default Checkbox;

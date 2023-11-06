@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
-import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import React,{ useEffect } from 'react'
 import { Input } from '@chakra-ui/input';
 import { Switch } from '@chakra-ui/switch';
 import { useParams } from 'react-router-dom';
@@ -272,13 +273,28 @@ const ManageQuestion = ({
     )
 }
 
+ManageQuestion.propTypes = {
+    form: PropTypes.object,
+    updateForm: PropTypes.func,
+    updateFormQuestion: PropTypes.func,
+    update: PropTypes.func,
+    findOne: PropTypes.func,
+    addFormQuestion: PropTypes.func,
+    deleteFormQuestion: PropTypes.func,
+    copyFormQuestion: PropTypes.func,
+    addFormQuestionOption: PropTypes.func,
+    deleteFormQuestionOption: PropTypes.func,
+    updateFormQuestionOption: PropTypes.func,
+    isLoadingForUpdateForm: PropTypes.bool,
+}
+
 const mapStateToProps = (state) => {
     return {
         form: state[moduleTypes.FORM].form,
         isLoadingForUpdateForm: state[moduleTypes.FORM].isLoadingForUpdateForm
     };
 };
-function mapDispatchToProps (dispatch) {
+function mapDispatchToProps(dispatch) {
     return ({
         findOne: (formId) => {
             dispatch({ type: FormActionTypes.findOne, formId })
