@@ -1,4 +1,4 @@
-import React from 'react'
+import PropTypes from 'prop-types'
 import ResponseList from '../components/Form/ResponseList';
 import ManageQuestion from '../components/Form/ManageQuestion';
 import { Tab, TabIndicator, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
@@ -28,6 +28,10 @@ const ManageForm = (loadMore) => {
             </Tabs>
         </>
     )
+}
+
+ManageForm.propTypes = {
+    loadMore: PropTypes.bool,
 }
 
 export default ManageForm;

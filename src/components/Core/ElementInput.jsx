@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react";
 
 const ElementInput = ({ onChange, value, error, maxWidth }) => {
@@ -7,6 +8,13 @@ const ElementInput = ({ onChange, value, error, maxWidth }) => {
             {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
         </FormControl>
     )
+}
+
+ElementInput.propTypes = {
+    onChange: PropTypes.func,
+    error: PropTypes.object,
+    value: PropTypes.string,
+    maxWidth: PropTypes.string,
 }
 
 export default ElementInput;

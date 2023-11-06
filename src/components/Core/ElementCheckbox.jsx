@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { Checkbox, FormControl, FormErrorMessage, Stack } from "@chakra-ui/react"
 
 const ElementCheckbox = ({ value, options, onChange,error }) => {
@@ -16,6 +17,13 @@ const ElementCheckbox = ({ value, options, onChange,error }) => {
         {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
         </FormControl>
     )
+}
+
+ElementCheckbox.propTypes = {
+    options: PropTypes.array,
+    onChange: PropTypes.func,
+    error: PropTypes.object,
+    value: PropTypes.array,
 }
 
 export default ElementCheckbox

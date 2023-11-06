@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
 import ConfirmationDialog from '../Core/ConfirmationDialog'
@@ -14,8 +15,6 @@ const FormList = ({
     isDeleteConfirmationDialogOpen,
     updateIsDeleteConfirmationDialogOpen
 }) => {
-
-    
 
     let [deleteIndex, setDeleteIndex] = useState(0)
 
@@ -69,6 +68,15 @@ const FormList = ({
                 }} />
         </>
     )
+}
+
+FormList.propTypes = {
+    forms: PropTypes.array,
+    deleteForm: PropTypes.func,
+    isLoadingForGetForm: PropTypes.bool,
+    isLoadingForDeleteForm: PropTypes.bool,
+    isDeleteConfirmationDialogOpen: PropTypes.bool,
+    updateIsDeleteConfirmationDialogOpen: PropTypes.func,
 }
 
 const mapStateToProps = (state) => {

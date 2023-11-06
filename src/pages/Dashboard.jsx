@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { AddIcon } from '@chakra-ui/icons'
 import { Button, Center, Flex, Spinner } from '@chakra-ui/react'
 import FormList from '../components/Form/FormList';
 import { connect } from 'react-redux';
 import { FormActionTypes, FormReducerTypes } from '../store/Form/type';
 
-const Dashboard = (
-    {
-        forms,
-        findAll,
-        loadMore,
-        totalData,
-        clearForm,
-        createForm,
-        isLoadingForGetForm,
-        isLoadingForCreateForm,
-    }
-) => {
+const Dashboard = ({
+    forms,
+    findAll,
+    loadMore,
+    totalData,
+    clearForm,
+    createForm,
+    isLoadingForGetForm,
+    isLoadingForCreateForm,
+}) => {
 
     useEffect(() => {
         clearForm()
@@ -25,9 +24,7 @@ const Dashboard = (
 
     useEffect(() => {
         if (!isLoadingForGetForm && totalData > forms.length) findAll()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [findAll, loadMore])
-
+    }, [findAll, loadMore, isLoadingForGetForm, totalData, forms.length])
 
     return (
         <>
@@ -44,6 +41,17 @@ const Dashboard = (
             }
         </>
     )
+}
+
+Dashboard.propTypes = {
+    forms: PropTypes.array,
+    findAll: PropTypes.func,
+    loadMore: PropTypes.bool,
+    totalData: PropTypes.number,
+    clearForm: PropTypes.func,
+    createForm: PropTypes.func,
+    isLoadingForGetForm: PropTypes.bool,
+    isLoadingForCreateForm: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {

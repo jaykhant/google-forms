@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { FormControl, FormErrorMessage, Radio, RadioGroup, Stack } from "@chakra-ui/react"
 
 const ElementMultipleChoice = ({ value, options, onChange,error }) => {
@@ -17,6 +18,13 @@ const ElementMultipleChoice = ({ value, options, onChange,error }) => {
         {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
         </FormControl>
     )
+}
+
+ElementMultipleChoice.propTypes = {
+    options: PropTypes.array,
+    onChange: PropTypes.func,
+    error: PropTypes.object,
+    value: PropTypes.string,
 }
 
 export default ElementMultipleChoice

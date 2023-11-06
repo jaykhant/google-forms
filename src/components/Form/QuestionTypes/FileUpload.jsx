@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { Stack } from '@chakra-ui/layout';
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import { Flex, Grid, Text, Menu, Switch, MenuItem, GridItem, MenuList, MenuButton, Checkbox } from '@chakra-ui/react'
@@ -67,6 +68,15 @@ const FileUpload = ({
             <GridItem />
         </Grid>
     )
+}
+
+FileUpload.propTypes = {
+    fileType: PropTypes.array,
+    allowSpecificFileTypes: PropTypes.bool,
+    allowMaximumFileSize: PropTypes.number,
+    onUpdateMaximumFilesize: PropTypes.func,
+    onUpdateFileTypes: PropTypes.func,
+    onUpdateAllowSpecificFileTypes: PropTypes.func,
 }
 
 export default FileUpload;

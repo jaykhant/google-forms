@@ -1,5 +1,5 @@
-import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button } from '@chakra-ui/react';
-import React from 'react';
+import { AlertDialog, AlertDialogBody, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogOverlay, Button } from "@chakra-ui/react";
+import PropTypes from 'prop-types'
 
 const ConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => {
     return (
@@ -9,19 +9,19 @@ const ConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => {
         >
             <AlertDialogOverlay>
                 <AlertDialogContent>
-                    <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                    <AlertDialogHeader fontSize="lg" fontWeight="bold">
                         Delete
                     </AlertDialogHeader>
 
                     <AlertDialogBody>
-                        Are you sure? You can't undo this action afterwards.
+                        Are you sure? You can not undo this action afterwards.
                     </AlertDialogBody>
 
                     <AlertDialogFooter>
                         <Button onClick={onCancle}>
                             Cancel
                         </Button>
-                        <Button isLoading={isLoading} colorScheme='red' onClick={onDelete} ml={3}>
+                        <Button isLoading={isLoading} colorScheme="red" onClick={onDelete} ml={3}>
                             Delete
                         </Button>
                     </AlertDialogFooter>
@@ -31,5 +31,11 @@ const ConfirmationDialog = ({ isOpen, onDelete, onCancle, isLoading }) => {
     )
 }
 
+ConfirmationDialog.propTypes = {
+    isOpen: PropTypes.bool,
+    onDelete: PropTypes.func,
+    onCancle: PropTypes.func,
+    isLoading: PropTypes.bool,
+}
 
 export default ConfirmationDialog;

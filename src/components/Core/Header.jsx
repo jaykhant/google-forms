@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { ChevronDownIcon, ChevronUpIcon } from '@chakra-ui/icons';
 import {
     Box,
@@ -48,6 +49,11 @@ const Header = ({ logout, user }) => {
             </Box>
         </>
     )
+}
+
+Header.propTypes = {
+    logout: PropTypes.func,
+    user: PropTypes.object,
 }
 
 const mapStateToProps = (state) => {

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Link } from "react-router-dom";
 import {
     Box,
@@ -121,6 +122,15 @@ const SignUp = ({ signUp, signUpForm, updateForm, isFormLoading, formErrorMessag
             </form>
         </div >
     )
+}
+
+SignUp.propTypes = {
+    reset: PropTypes.func,
+    signUp: PropTypes.func,
+    updateForm: PropTypes.func,
+    signUpForm: PropTypes.object,
+    isFormLoading: PropTypes.bool,
+    formErrorMessage: PropTypes.string,
 }
 
 const mapStateToProps = (state) => {

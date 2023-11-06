@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import { useEffect } from 'react'
 import { Input } from '@chakra-ui/input';
 import { Stack } from '@chakra-ui/layout';
 import { Text, Circle, CloseButton, Button } from '@chakra-ui/react'
@@ -31,6 +32,13 @@ const MultipleChoice = ({ options = [], onAddOption, onUpdateOption, onDeleteOpt
             </Stack>
         </>
     )
+}
+
+MultipleChoice.propTypes = {
+    options: PropTypes.array,
+    onAddOption: PropTypes.func,
+    onUpdateOption: PropTypes.func,
+    onDeleteOption: PropTypes.func,
 }
 
 export default MultipleChoice;

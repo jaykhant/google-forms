@@ -1,4 +1,3 @@
-import React from 'react'
 import { Stack } from '@chakra-ui/layout';
 import { TimeIcon } from '@chakra-ui/icons';
 import { Input, InputGroup, InputRightElement } from '@chakra-ui/input';

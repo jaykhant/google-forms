@@ -1,4 +1,3 @@
-import React from 'react'
 import { Input } from '@chakra-ui/input';
 import { Stack } from '@chakra-ui/layout';
 

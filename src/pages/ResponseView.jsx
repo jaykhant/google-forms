@@ -1,6 +1,7 @@
 import moment from 'moment';
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { moduleTypes } from '../store/type';
 import { QUESTION_TYPES, FILE_TYPES } from '../Constants';
 import { Link, useParams } from 'react-router-dom';
@@ -37,7 +38,7 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
                         </Stack>
                     </Box>
                     <Stack spacing={8} py={8}>
-                        {response.answers?.map(function (answer, index) {
+                        {response.answers ? response.answers.map(function (answer, index) {
                             return (
                                 <Stack key={index}>
                                     {
@@ -63,11 +64,11 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
                                                     answer.type === QUESTION_TYPES.CHECKBOX ?
                                                         <Stack>
                                                             <Text fontWeight={'medium'}>{answer.question}</Text>
-                                                            {answer.answers?.map(function (ans, i) {
+                                                            {answer.answers ? answer.answers.map(function (ans, i) {
                                                                 return (
                                                                     <Text key={i} mt={2} p={2} bg={'#F8F9FA'} borderRadius={5} fontSize={16}>{i}. {ans}</Text>
                                                                 )
-                                                            })
+                                                            }) : <></>
                                                             }
                                                         </Stack>
                                                         :
@@ -168,7 +169,7 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
                                     }
                                 </Stack>
                             )
-                        })
+                        }) : <></>
                         }
                     </Stack>
                 </Flex >
@@ -179,6 +180,12 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
             }
         </Stack>
     )
+}
+
+ResponseView.propTypes = {
+    response: PropTypes.object,
+    findOne: PropTypes.func,
+    isLoadingForGetResponse: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {
