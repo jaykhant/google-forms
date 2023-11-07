@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types'
+import React,{ useEffect, useState } from "react";
 import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 
 const ElementTime = ({ value, onChange, error }) => {
 
@@ -26,6 +27,12 @@ const ElementTime = ({ value, onChange, error }) => {
             {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
         </FormControl>
     )
+}
+
+ElementTime.propTypes = {
+    onChange: PropTypes.func,
+    error: PropTypes.object,
+    value: PropTypes.number,
 }
 
 export default ElementTime

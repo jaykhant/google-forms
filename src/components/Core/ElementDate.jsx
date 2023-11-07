@@ -1,5 +1,6 @@
 import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import React,{ useEffect, useState } from "react"
+import PropTypes from 'prop-types'
 
 const ElementDate = ({ value, onChange, error }) => {
     
@@ -29,6 +30,12 @@ const ElementDate = ({ value, onChange, error }) => {
             {error ? <FormErrorMessage>{error.message}</FormErrorMessage> : <></>}
         </FormControl>
     )
+}
+
+ElementDate.propTypes = {
+    onChange: PropTypes.func,
+    error: PropTypes.object,
+    value: PropTypes.number,
 }
 
 export default ElementDate

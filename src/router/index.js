@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import SignUp from "../pages/SignUp";
 import SignIn from "../pages/SignIn";
 import { connect } from "react-redux";
@@ -14,7 +15,7 @@ function AppRouter({ isLoggedIn }) {
   const [containerHeight, setContainerHeight] = React.useState()
   const [loadMore, setLoadMore] = React.useState(false)
 
-  useEffect(() => {
+  useEffect(() => {   
     setContainerHeight(window.innerHeight)
   }, [])
 
@@ -47,6 +48,10 @@ function AppRouter({ isLoggedIn }) {
       </Routes>
     </div>
   );
+}
+
+AppRouter.propTypes = {
+  isLoggedIn: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {

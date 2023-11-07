@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React,{ useEffect } from 'react'
+import PropTypes from 'prop-types'
 import { Flex, Stack, Text } from '@chakra-ui/layout';
 import { Card, Button, Divider, CardBody, Spinner, Center } from '@chakra-ui/react'
 import { connect } from 'react-redux';
@@ -16,7 +17,7 @@ import ElementDate from '../components/Core/ElementDate';
 import ElementTime from '../components/Core/ElementTime';
 import ElementFileUpload from '../components/Core/ElementFileUpload';
 
-const SubmitForm = ({
+const ResponseSubmit = ({
     isLoadingForGetResponse, response, findOneForm, loggedInUser,
     validationSchema, updateAnswerInResponse, uploadFile
 }) => {
@@ -128,6 +129,7 @@ const SubmitForm = ({
                     <Stack>
                         <Flex justifyContent='space-between' align='center'>
                             <Button colorScheme='teal' variant='solid' onClick={handleSubmit(() => {
+                                 // eslint-disable-next-line
                                 console.log("submit :-", JSON.stringify(response));
                             })}>Submit</Button>
                             <Text color={'blue'}>Clear form</Text>
@@ -141,6 +143,16 @@ const SubmitForm = ({
             }
         </Stack>
     )
+}
+
+ResponseSubmit.propTypes = {
+    response: PropTypes.object,
+    findOneForm: PropTypes.func,
+    loggedInUser: PropTypes.object,
+    validationSchema: PropTypes.object,
+    updateAnswerInResponse: PropTypes.func,
+    uploadFile: PropTypes.func,
+    isLoadingForGetResponse: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {
@@ -168,4 +180,4 @@ function mapDispatchToProps(dispatch) {
         }
     })
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SubmitForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ResponseSubmit);

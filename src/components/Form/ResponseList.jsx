@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import PropTypes from 'prop-types'
+import React,{ useEffect } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ViewIcon } from '@chakra-ui/icons'
 import { Tr, Td, Th, Thead, Tbody, Table, Button, TableContainer, Spinner, Center, Stack } from '@chakra-ui/react'
@@ -27,7 +28,6 @@ const ResponseList = (
         if (!isLoadingForGetResponse && totalData > responses.length) {
             findAll(formId)
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [findAll, formId, loadMore.loadMore])
 
     return (
@@ -71,6 +71,15 @@ const ResponseList = (
             }
         </Stack>
     )
+}
+
+ResponseList.propTypes = {
+    findAll: PropTypes.func,
+    loadMore: PropTypes.object,
+    responses: PropTypes.array,
+    totalData: PropTypes.number,
+    clearResponse: PropTypes.func,
+    isLoadingForGetResponse: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {
