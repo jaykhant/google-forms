@@ -6,6 +6,7 @@ const initialState = {
     page: -1,
     totalData: -1,
     isLoadingForGetResponse: false,
+    isLoadingForSubmitResponse: false,
 
     response: {},
     validationSchema: {},
@@ -17,6 +18,10 @@ const reducer = (state = initialState, action) => {
         case ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE: return {
             ...state,
             isLoadingForGetResponse: action.isLoadingForGetResponse
+        }
+        case ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE: return {
+            ...state,
+            isLoadingForSubmitResponse: action.isLoadingForSubmitResponse
         }
         case ResponseViewReducerTypes.SET_RESPONSES: return {
             ...state,

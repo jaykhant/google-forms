@@ -1,4 +1,4 @@
-import React,{ useEffect } from 'react'
+import React , { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Flex, Stack, Text } from '@chakra-ui/layout';
 import { Card, Button, Divider, CardBody, Spinner, Center } from '@chakra-ui/react'
@@ -19,7 +19,7 @@ import ElementFileUpload from '../components/Core/ElementFileUpload';
 
 const ResponseSubmit = ({
     isLoadingForGetResponse, response, findOneForm, loggedInUser,
-    validationSchema, updateAnswerInResponse, uploadFile
+    validationSchema, updateAnswerInResponse, uploadFile, create, isLoadingForSubmitResponse
 }) => {
 
     const { formId } = useParams()
@@ -55,7 +55,7 @@ const ResponseSubmit = ({
                             </CardBody>
                         </Card>
                     </Stack>
-                    <Stack>
+                    <Stack spacing={5}>
                         {response.answers?.map((question, questionIndex) => {
                             return (
                                 <Controller
@@ -99,7 +99,7 @@ const ResponseSubmit = ({
                                                                     updateAnswerInResponse({ key: 'answer', value, questionIndex })
                                                                 }} />
                                                             ) : question.type === QUESTION_TYPES.FILE_UPLOAD ? (
-                                                                <ElementFileUpload value={question.fileName} error={error} onChange={(file) => {
+                                                                <ElementFileUpload value={question.fileName} error={error} fileType={response.questions[questionIndex].fileType} onChange={(file) => {
                                                                     onChange(file)
                                                                     uploadFile({ formId, file, questionIndex })
                                                                 }} />
@@ -128,9 +128,8 @@ const ResponseSubmit = ({
                     </Stack>
                     <Stack>
                         <Flex justifyContent='space-between' align='center'>
-                            <Button colorScheme='teal' variant='solid' onClick={handleSubmit(() => {
-                                 // eslint-disable-next-line
-                                console.log("submit :-", JSON.stringify(response));
+                            <Button colorScheme='teal' variant='solid' isLoading={isLoadingForSubmitResponse} onClick={handleSubmit(() => {
+                                create({formId,response})
                             })}>Submit</Button>
                             <Text color={'blue'}>Clear form</Text>
                         </Flex>
@@ -152,13 +151,16 @@ ResponseSubmit.propTypes = {
     validationSchema: PropTypes.object,
     updateAnswerInResponse: PropTypes.func,
     uploadFile: PropTypes.func,
+    create: PropTypes.func,
     isLoadingForGetResponse: PropTypes.bool,
+    isLoadingForSubmitResponse: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {
     return {
         response: state[moduleTypes.RESPONSE_VIEW].response,
         isLoadingForGetResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForGetResponse,
+        isLoadingForSubmitResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForSubmitResponse,
         validationSchema: state[moduleTypes.RESPONSE_VIEW].validationSchema,
         loggedInUser: state[moduleTypes.APP].user
     };
@@ -177,6 +179,9 @@ function mapDispatchToProps(dispatch) {
         },
         uploadFile: ({ formId, file, questionIndex }) => {
             dispatch({ type: ResponseViewActionTypes.uploadFile, formId, file, questionIndex })
+        },
+        create: ({ formId, response }) => {
+            dispatch({ type: ResponseViewActionTypes.create, formId, response })
         }
     })
 }
