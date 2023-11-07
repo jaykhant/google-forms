@@ -13,10 +13,22 @@ const formService = new FormService()
 const responseViewState = state => state.response_view;
 
 function* init() {
+    yield takeEvery(ResponseViewActionTypes.createResponse, createResponse)
     yield takeEvery(ResponseViewActionTypes.findAll, findAll)
     yield takeEvery(ResponseViewActionTypes.findOne, findOne)
     yield takeEvery(ResponseViewActionTypes.findOneForm, findOneForm)
     yield takeEvery(ResponseViewActionTypes.uploadFile, uploadFile)
+}
+
+function* createResponse({ formId, response }) {
+    yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE, isLoadingForSubmitResponse: true })
+    try {
+        yield call(responseService.create,{formId,answers:response.answers})
+    yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE, isLoadingForSubmitResponse: false })
+    } catch (error) {
+        console.log("createResponse :-", error);
+        yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE, isLoadingForSubmitResponse: false })
+    }
 }
 
 function* findAll({ formId }) {
@@ -25,8 +37,8 @@ function* findAll({ formId }) {
     try {
         const response = yield call(responseService.findAll, { formId, page: page === -1 ? 1 : page === 1 ? 2 : page, size: 20 })
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_GET_RESPONSE, isLoadingForGetResponse: false })
-          yield put({ type: ResponseViewReducerTypes.UPDATE_PAGES, page: page === -1 ? 1 : page === 1 ? 3 : page})
-        yield put({type: ResponseViewReducerTypes.SET_RESPONSES, responses: response.data});
+        yield put({ type: ResponseViewReducerTypes.UPDATE_PAGES, page: page === -1 ? 1 : page === 1 ? 3 : page })
+        yield put({ type: ResponseViewReducerTypes.SET_RESPONSES, responses: response.data });
         yield put({ type: ResponseViewReducerTypes.UPDATE_TOTAL_DATA, totalData: response.totalData })
     } catch (error) {
         console.log(error);
@@ -106,13 +118,12 @@ function* uploadFile({ formId, file, questionIndex }) {
         yield call(responseService.uploadFile, { signedUrl: response.signedUrl, file })
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_FILE_UPLOAD, isLoadingForFileUpload: false })
         yield put({ type: ResponseViewReducerTypes.UPDATE_ANSWER_IN_RESPONSE, key: 'fileName', value: response.name, questionIndex })
-        yield put({ type: ResponseViewReducerTypes.UPDATE_ANSWER_IN_RESPONSE, key: 'fileType', value: response.name, questionIndex })
+        yield put({ type: ResponseViewReducerTypes.UPDATE_ANSWER_IN_RESPONSE, key: 'fileType', value: file.type.split('/')[0], questionIndex })
     } catch (error) {
         console.log(error);
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_FILE_UPLOAD, isLoadingForFileUpload: false })
         //yield put({ type: ResponseViewReducerTypes.RESPONSE_ERROR, errorMessage: error.message });
     }
 }
-
 
 export default init;

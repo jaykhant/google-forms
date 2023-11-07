@@ -9,7 +9,7 @@ const ElementTime = ({ value, onChange, error }) => {
     useEffect(() => {
         if (!isNaN(value)) {
             const date = new Date(value)
-            setDate(`${date.getHours()}:${String(date.getMinutes())}`)
+            setDate(`${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`)
         } else {
             setDate('')
         }

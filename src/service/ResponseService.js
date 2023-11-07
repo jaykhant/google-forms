@@ -44,4 +44,13 @@ export default class ResponseService {
             throw new ErrorWrapper(e);
         }
     }
+
+    create = async ({ formId, answers }) => {
+        try {
+            const response = await this.http.post('', { formId, answers })
+            return new ResponseWrapper(response).data
+        } catch (error) {
+            throw new ErrorWrapper(error)
+        }
+    }
 }

@@ -37,7 +37,7 @@ const ManageQuestion = ({
             <Flex
                 flexDirection="column"
                 position={'relative'}
-                px={{ base: "10", md: "40", lg: "60", xl: "80" }}
+                px={{ base: "10", md: "20", lg: "60", xl: "80" }}
             >
                 <Stack spacing={8} py={12}>
                     <Box
@@ -241,7 +241,7 @@ const ManageQuestion = ({
                 zIndex={10}
                 bg={'#f0ebf8'}
                 position={'absolute'}
-                mx={{ base: "10", md: "40", lg: "60", xl: "80" }}
+                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
             >
                 <Flex gap={4} h={16} alignItems={'center'} justifyContent={'end'}>
                     <Button
