@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types'
 import React from "react"
-import { FILE_TYPES_DISPLAY_NAMES } from '../../Constants';
+import { FILE_ACCEPT_TYPES } from '../../Constants';
 import { FormControl, FormErrorMessage, Input } from "@chakra-ui/react"
 
 const ElementFileUpload = ({ onChange, error, fileType }) => {
     let acceptFileType = ''
     fileType.forEach(element => {
-        acceptFileType +=  FILE_TYPES_DISPLAY_NAMES[element]
+        acceptFileType +=  FILE_ACCEPT_TYPES[element]
     });
 
     return (

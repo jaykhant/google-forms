@@ -27,16 +27,16 @@ const FILE_TYPES = {
     DOCUMENT: 'document'
 }
 
-const FILE_TYPES_DISPLAY_NAMES = {
-    audio: 'audio/*,',
-    video: 'video/*,',
-    image: 'image/*,',
-    document: '.doc,'
+const FILE_ACCEPT_TYPES = {
+    [FILE_TYPES.AUDIO]: 'audio/*,',
+    [FILE_TYPES.VIDEO]: 'video/*,',
+    [FILE_TYPES.IMAGE]: 'image/*,',
+    [FILE_TYPES.DOCUMENT]: '.doc,'
 }
 
 module.exports = {
     QUESTION_TYPES,
     QUESTION_TYPE_DISPLAY_NAMES,
     FILE_TYPES,
-    FILE_TYPES_DISPLAY_NAMES
+    FILE_ACCEPT_TYPES
 }
