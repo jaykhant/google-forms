@@ -1,4 +1,4 @@
-import React , { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Flex, Stack, Text } from '@chakra-ui/layout';
 import { Card, Button, Divider, CardBody, Spinner, Center } from '@chakra-ui/react'
@@ -16,15 +16,17 @@ import ElementCheckbox from '../components/Core/ElementCheckbox';
 import ElementDate from '../components/Core/ElementDate';
 import ElementTime from '../components/Core/ElementTime';
 import ElementFileUpload from '../components/Core/ElementFileUpload';
+import ConfirmationDialog from '../components/Core/ConfirmationDialog';
 
 const ResponseSubmit = ({
     isLoadingForGetResponse, response, findOneForm, loggedInUser,
-    validationSchema, updateAnswerInResponse, uploadFile, create, isLoadingForSubmitResponse
+    validationSchema, updateAnswerInResponse, uploadFile, create, isLoadingForSubmitResponse, clearResponse,
+    isLoadingForClearResponse, isClearResponseConfirmationDialogOpen, updateIsClearFormConfirmationDialogOpen
 }) => {
 
     const { formId } = useParams()
 
-    const { handleSubmit, control } = useForm({
+    const { handleSubmit, control, reset } = useForm({
         resolver: yupResolver(validationSchema)
     })
 
@@ -129,18 +131,33 @@ const ResponseSubmit = ({
                     <Stack>
                         <Flex justifyContent='space-between' align='center'>
                             <Button colorScheme='teal' variant='solid' isLoading={isLoadingForSubmitResponse} onClick={handleSubmit(() => {
-                                create({formId,response})
+                                create({ formId, response })
                             })}>Submit</Button>
-                            <Text color={'blue'}>Clear form</Text>
+                            <Text color={'blue'} cursor={'pointer'} onClick={(() => {
+                                updateIsClearFormConfirmationDialogOpen(true)
+                            })}>Clear form</Text>
                         </Flex>
                     </Stack>
                 </Flex>
                 :
-                <Center width={'100%'}>
+                <Center py={10} width={'100%'}>
                     <Spinner />
                 </Center>
             }
-        </Stack>
+            <ConfirmationDialog
+                title={'Clear form?'}
+                message={'This will remove your answers from all questions and cannot be undone.'}
+                isOpen={isClearResponseConfirmationDialogOpen}
+                isLoading={isLoadingForClearResponse}
+                onCancle={() => { updateIsClearFormConfirmationDialogOpen(false) }}
+                onDelete={() => {
+                    updateIsClearFormConfirmationDialogOpen(false)
+                    reset()
+                    clearResponse()
+                    findOneForm(formId)
+                }}
+            />
+        </Stack> 
     )
 }
 
@@ -152,8 +169,12 @@ ResponseSubmit.propTypes = {
     updateAnswerInResponse: PropTypes.func,
     uploadFile: PropTypes.func,
     create: PropTypes.func,
+    clearResponse: PropTypes.func,
     isLoadingForGetResponse: PropTypes.bool,
     isLoadingForSubmitResponse: PropTypes.bool,
+    isLoadingForClearResponse: PropTypes.bool,
+    isClearResponseConfirmationDialogOpen: PropTypes.bool,
+    updateIsClearFormConfirmationDialogOpen: PropTypes.func,
 }
 
 const mapStateToProps = (state) => {
@@ -162,6 +183,8 @@ const mapStateToProps = (state) => {
         isLoadingForGetResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForGetResponse,
         isLoadingForSubmitResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForSubmitResponse,
         validationSchema: state[moduleTypes.RESPONSE_VIEW].validationSchema,
+        isClearResponseConfirmationDialogOpen: state[moduleTypes.RESPONSE_VIEW].isClearResponseConfirmationDialogOpen,
+        isLoadingForClearResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForClearResponse,
         loggedInUser: state[moduleTypes.APP].user
     };
 };
@@ -182,6 +205,12 @@ function mapDispatchToProps(dispatch) {
         },
         create: ({ formId, response }) => {
             dispatch({ type: ResponseViewActionTypes.create, formId, response })
+        },
+        clearResponse: () => {
+            dispatch({ type: ResponseViewReducerTypes.CLEAR_RESPONSE })
+        },
+        updateIsClearFormConfirmationDialogOpen:(isClearResponseConfirmationDialogOpen) =>{
+            dispatch({ type: ResponseViewReducerTypes.UPDATE_IS_CLEAR_RESPONSE_CONFIRMATION_DIALOG_OPEN,isClearResponseConfirmationDialogOpen })
         }
     })
 }

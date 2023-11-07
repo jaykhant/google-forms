@@ -10,7 +10,10 @@ const initialState = {
 
     response: {},
     validationSchema: {},
-    isLoadingForFileUpload: false
+    isLoadingForFileUpload: false,
+    
+    isLoadingForClearResponse:false,
+    isClearResponseConfirmationDialogOpen:false
 }
 
 const reducer = (state = initialState, action) => {
@@ -22,6 +25,14 @@ const reducer = (state = initialState, action) => {
         case ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE: return {
             ...state,
             isLoadingForSubmitResponse: action.isLoadingForSubmitResponse
+        }
+        case ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_CLEAR_RESPONSE: return {
+            ...state,
+            isLoadingForClearResponse: action.isLoadingForClearResponse
+        }
+        case ResponseViewReducerTypes.UPDATE_IS_CLEAR_RESPONSE_CONFIRMATION_DIALOG_OPEN: return {
+            ...state,
+            isClearResponseConfirmationDialogOpen: action.isClearResponseConfirmationDialogOpen
         }
         case ResponseViewReducerTypes.SET_RESPONSES: return {
             ...state,
@@ -67,6 +78,13 @@ const reducer = (state = initialState, action) => {
             totalData: -1,
             responses: [],
             isLoadingForGetResponse: false
+        }
+        case ResponseViewReducerTypes.CLEAR_RESPONSE: return {
+            ...state,
+            response: {},
+            validationSchema:{},
+            isLoadingForFileUpload:false,
+            isLoadingForSubmitResponse: false
         }
         default: return state
     }

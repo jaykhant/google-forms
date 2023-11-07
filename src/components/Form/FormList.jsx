@@ -25,7 +25,6 @@ const FormList = ({
                     <Thead>
                         <Tr>
                             <Th>Name</Th>
-                            <Th>Status</Th>
                             <Th>Link</Th>
                             <Th>Created</Th>
                             <Th>Action</Th>
@@ -36,7 +35,6 @@ const FormList = ({
                             return (
                                 <Tr key={i}>
                                     <Td>{form.title}</Td>
-                                    <Td>{form.status}</Td>
                                     <Td><Link to={`/response/submit/${form.id}`}>Link</Link></Td>
                                     <Td>{form.createdAt}</Td>
                                     <Td>
