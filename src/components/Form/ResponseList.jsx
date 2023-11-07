@@ -32,7 +32,7 @@ const ResponseList = (
 
     return (
         <Stack>
-            <TableContainer overflowY={'auto'} pt={6} px={{ base: "20", md: "40", lg: "60", xl: "80" }}>
+            <TableContainer overflowY={'auto'} pt={6} px={{ base: "8", md: "14", lg: "28", xl: "44" }}>
                 <Table variant='simple'>
                     <Thead>
                         <Tr>

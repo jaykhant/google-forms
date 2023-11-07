@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import React,{ useState } from 'react'
+import React, { useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
 import ConfirmationDialog from '../Core/ConfirmationDialog'
@@ -20,7 +20,7 @@ const FormList = ({
 
     return (
         <>
-            <TableContainer py={6} mx={{ base: "20", md: "40", lg: "60", xl: "80" }} >
+            <TableContainer py={6}>
                 <Table variant='simple'>
                     <Thead>
                         <Tr>

@@ -1,7 +1,7 @@
-import React,{ useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { AddIcon } from '@chakra-ui/icons'
-import { Button, Center, Flex, Spinner } from '@chakra-ui/react'
+import { Button, Center, Flex, Spinner, Stack } from '@chakra-ui/react'
 import FormList from '../components/Form/FormList';
 import { connect } from 'react-redux';
 import { FormActionTypes, FormReducerTypes } from '../store/Form/type';
@@ -27,8 +27,8 @@ const Dashboard = ({
     }, [findAll, loadMore, isLoadingForGetForm, totalData, forms.length])
 
     return (
-        <div>
-            <Flex px={{ base: "20", md: "40", lg: "60", xl: "80" }} align="center" justify="end" >
+        <Stack px={{ base: "8", md: "14", lg: "28", xl: "44" }}>
+            <Flex align="center" justify="end" >
                 <Button isLoading={isLoadingForCreateForm} mt="4" size='md' onClick={createForm}><AddIcon mr="3" />  Add Form</Button>
             </Flex>
             <FormList />
@@ -39,7 +39,7 @@ const Dashboard = ({
                 :
                 <></>
             }
-        </div>
+        </Stack>
     )
 }
 
