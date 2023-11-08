@@ -12,6 +12,8 @@ import authSaga from "./Auth/saga"
 import form from './Form';
 import formSaga from './Form/saga';
 
+import shareForm from './ShareForm';
+
 import responseView from './ResponseView'
 import responseViewSaga from './ResponseView/saga'
 import { moduleTypes } from './type';
@@ -19,7 +21,7 @@ import { moduleTypes } from './type';
 const sagaMiddleware = createSagaMiddleware()
 
 const rootReducer = combineReducers({
-    auth, form, [moduleTypes.RESPONSE_VIEW]: responseView,
+    auth, form, [moduleTypes.RESPONSE_VIEW]: responseView,[moduleTypes.SHARE_FORM]: shareForm,
     app: persistReducer({
         key: 'app',
         storage,

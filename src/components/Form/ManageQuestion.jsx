@@ -19,11 +19,14 @@ import { QUESTION_TYPES, QUESTION_TYPE_DISPLAY_NAMES } from '../../Constants'
 import { Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/menu';
 import { Button, Card, CardBody, CardFooter, Divider, useColorModeValue } from '@chakra-ui/react';
 import { moduleTypes } from '../../store/type';
+import ShareFormDialog from "./ShareFormDialog"
+import { ShareFormReducerTypes } from '../../store/ShareForm/type';
 
 const ManageQuestion = ({
     form, updateForm, updateFormQuestion, update, findOne,
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
-    addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, isLoadingForUpdateForm
+    addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, isLoadingForUpdateForm,
+    updateIsShareFormDialogOpen 
 }) => {
 
     const { formId } = useParams()
@@ -233,7 +236,7 @@ const ManageQuestion = ({
                     )
                 }
             </Flex>
-
+            
             <Box
                 right={0}
                 bottom={0}
@@ -267,8 +270,21 @@ const ManageQuestion = ({
                     >
                         Save
                     </Button>
+                    <Button
+                        bg={'green.400'}
+                        color={'white'}
+                        _hover={{
+                            bg: 'green.200',
+                        }}
+                        onClick={()=>{
+                            updateIsShareFormDialogOpen(true)
+                        }}
+                    >
+                       Send
+                    </Button>
                 </Flex>
             </Box>
+            <ShareFormDialog formId={formId}/>
         </ >
     )
 }
@@ -285,6 +301,7 @@ ManageQuestion.propTypes = {
     addFormQuestionOption: PropTypes.func,
     deleteFormQuestionOption: PropTypes.func,
     updateFormQuestionOption: PropTypes.func,
+    updateIsShareFormDialogOpen: PropTypes.func,
     isLoadingForUpdateForm: PropTypes.bool,
 }
 
@@ -325,6 +342,9 @@ function mapDispatchToProps(dispatch) {
         },
         update: () => {
             dispatch({ type: FormActionTypes.update })
+        },
+        updateIsShareFormDialogOpen: (isShareFormDialogOpen) => {
+            dispatch({ type: ShareFormReducerTypes.UPDATE_IS_SHARE_FORM_DIALOG_OPEN, isShareFormDialogOpen })
         }
     })
 }

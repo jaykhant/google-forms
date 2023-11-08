@@ -24,8 +24,7 @@ const FormList = ({
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
-                            <Th>Name</Th>
-                            <Th>Link</Th>
+                            <Th>Name</Th>                        
                             <Th>Created</Th>
                             <Th>Action</Th>
                         </Tr>
@@ -35,7 +34,6 @@ const FormList = ({
                             return (
                                 <Tr key={i}>
                                     <Td>{form.title}</Td>
-                                    <Td><Link to={`/response/submit/${form.id}`}>Link</Link></Td>
                                     <Td>{form.createdAt}</Td>
                                     <Td>
                                         <Link to={`/form/${form.id}`}> <Button size='sm'><SettingsIcon /></Button></Link>

@@ -74,12 +74,12 @@ const ResponseSubmit = ({
                                                         </Stack>
                                                         {
                                                             question.type === QUESTION_TYPES.SHORT_ANSWER ? (
-                                                                <ElementInput value={question.answer} maxWidth={'60'} error={error} onChange={(value) => {
+                                                                <ElementInput placeholder='Your answer' value={question.answer} maxWidth={'60'} error={error} onChange={(value) => {
                                                                     onChange(value)
                                                                     updateAnswerInResponse({ key: 'answer', value, questionIndex })
                                                                 }} />
                                                             ) : question.type === QUESTION_TYPES.PARAGRAPH ? (
-                                                                <ElementInput value={question.answer} error={error} onChange={(value) => {
+                                                                <ElementInput placeholder='Your answer' value={question.answer} error={error} onChange={(value) => {
                                                                     onChange(value)
                                                                     updateAnswerInResponse({ key: 'answer', value, questionIndex })
                                                                 }} />
