@@ -11,7 +11,8 @@
     "compile": "tsc --project ./tsconfig.json",
     "prisma:generate": "prisma generate --schema=./src/prisma/schema.prisma",
     "lint": "npx eslint .",
-    "lint:fix": "npx eslint --fix"
+    "lint:fix": "npx eslint --fix",
+    "start:prod": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
