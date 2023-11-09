@@ -24,7 +24,13 @@ const initialState = {
             },
         ]
     },
-    isLoadingForUpdateForm: false
+    isLoadingForUpdateForm: false,
+
+    errorMessage: {
+        verity: '',
+        message: '',
+        showErrorMessage: false
+    }
 }
 
 const reducer = (state = initialState, action) => {
@@ -32,6 +38,10 @@ const reducer = (state = initialState, action) => {
         case FormReducerTypes.SET_FORMS: return {
             ...state,
             forms: [...(state.page === 1 ? [] : state.forms), ...action.forms]
+        }
+        case FormReducerTypes.SET_ERROR_MESSAGE: return {
+            ...state,
+            errorMessage: action
         }
         case FormReducerTypes.UPDATE_PAGE: return {
             ...state,
@@ -62,6 +72,14 @@ const reducer = (state = initialState, action) => {
             ]
         }
 
+        case FormReducerTypes.CLEAR_ERROR_MESSAGE: return {
+            ...state,
+            errorMessage: {
+                verity: '',
+                message: '',
+                showErrorMessage: false
+            }
+        }
         case FormReducerTypes.CLEAR_FORMS: return {
             ...state,
             forms: [],

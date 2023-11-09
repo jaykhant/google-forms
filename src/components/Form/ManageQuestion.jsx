@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
-import React,{ useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Input } from '@chakra-ui/input';
 import { Switch } from '@chakra-ui/switch';
 import { useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ import { ChevronDownIcon, CopyIcon, DeleteIcon } from '@chakra-ui/icons';
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type';
 import { QUESTION_TYPES, QUESTION_TYPE_DISPLAY_NAMES } from '../../Constants'
 import { Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/menu';
-import { Button, Card, CardBody, CardFooter, Divider, useColorModeValue } from '@chakra-ui/react';
+import { Button, Card, CardBody, CardFooter, Divider,useToast } from '@chakra-ui/react';
 import { moduleTypes } from '../../store/type';
 import ShareFormDialog from "./ShareFormDialog"
 import { ShareFormReducerTypes } from '../../store/ShareForm/type';
@@ -26,31 +26,47 @@ const ManageQuestion = ({
     form, updateForm, updateFormQuestion, update, findOne,
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
     addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, isLoadingForUpdateForm,
-    updateIsShareFormDialogOpen 
+    updateIsShareFormDialogOpen, errorMessage, clearErrorMessage
 }) => {
 
+    const toast = useToast()
+
     const { formId } = useParams()
+    
+    useEffect(() => {
+        if(errorMessage.showErrorMessage) {
+            toast({               
+                position:'top',
+                description: errorMessage.message,
+                status: errorMessage.verity,
+                isClosable: true,
+                duration: 2000
+              })
+        }
+        clearErrorMessage()
+    }, [errorMessage.showErrorMessage,errorMessage.message,errorMessage.verity,clearErrorMessage])
 
     useEffect(() => {
         findOne(formId)
     }, [formId, findOne])
 
     return (
-        <>
+        < >
             <Flex
+                my={12}
+                minW={'250px'}
+                width={'770px'}
                 flexDirection="column"
-                position={'relative'}
-                px={{ base: "10", md: "20", lg: "60", xl: "80" }}
             >
-                <Stack spacing={8} py={12}>
-                    <Box
-                        p={8}
-                        rounded={'lg'}
-                        borderTop='4px'
-                        boxShadow={'lg'}
-                        borderTopColor='blue'
-                        bg={useColorModeValue('white', 'gray.700')}
-                    >
+                <Card
+                    p={8}
+                    mb={6}
+                    rounded={'lg'}
+                    borderTop='4px'
+                    boxShadow={'lg'}
+                    borderTopColor='blue'
+                >
+                    <CardBody>
                         <Stack spacing={4}>
                             {form.title}
                             <Input
@@ -62,12 +78,11 @@ const ManageQuestion = ({
                             />
                             <Input value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Form description' />
                         </Stack>
-                    </Box>
-                </Stack>
-
+                    </CardBody>
+                </Card>
                 {
                     form.questions.map((question, questionIndex) =>
-                        <Card mb={12} key={questionIndex}>
+                        <Card mb={6} key={questionIndex} >
                             <CardBody>
                                 <Stack spacing={4}>
                                     <Flex w={'100%'} justifyContent='space-between' align='center'>
@@ -236,7 +251,7 @@ const ManageQuestion = ({
                     )
                 }
             </Flex>
-            
+
             <Box
                 right={0}
                 bottom={0}
@@ -244,9 +259,9 @@ const ManageQuestion = ({
                 zIndex={10}
                 bg={'#f0ebf8'}
                 position={'absolute'}
-                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
+                paddingLeft={{ sm: '280px', md: '462px' }}
             >
-                <Flex gap={4} h={16} alignItems={'center'} justifyContent={'end'}>
+                <Flex gap={4} h={16} alignItems={'center'} justifyContent={'center'}>
                     <Button
                         bg={'blue.400'}
                         color={'white'}
@@ -271,27 +286,31 @@ const ManageQuestion = ({
                         Save
                     </Button>
                     <Button
-                        bg={'green.400'}
+                        bg={'teal'}
                         color={'white'}
                         _hover={{
-                            bg: 'green.200',
+                            bg: 'teal.500',
                         }}
-                        onClick={()=>{
+                        isDisabled={isLoadingForUpdateForm}
+                        onClick={() => {
                             updateIsShareFormDialogOpen(true)
                         }}
                     >
-                       Send
+                        Send
                     </Button>
                 </Flex>
             </Box>
-            <ShareFormDialog formId={formId}/>
+
+            <ShareFormDialog formId={formId} />
         </ >
     )
 }
 
 ManageQuestion.propTypes = {
     form: PropTypes.object,
+    errorMessage: PropTypes.object,
     updateForm: PropTypes.func,
+    clearErrorMessage: PropTypes.func,
     updateFormQuestion: PropTypes.func,
     update: PropTypes.func,
     findOne: PropTypes.func,
@@ -308,6 +327,7 @@ ManageQuestion.propTypes = {
 const mapStateToProps = (state) => {
     return {
         form: state[moduleTypes.FORM].form,
+        errorMessage: state[moduleTypes.FORM].errorMessage,
         isLoadingForUpdateForm: state[moduleTypes.FORM].isLoadingForUpdateForm
     };
 };
@@ -345,7 +365,10 @@ function mapDispatchToProps(dispatch) {
         },
         updateIsShareFormDialogOpen: (isShareFormDialogOpen) => {
             dispatch({ type: ShareFormReducerTypes.UPDATE_IS_SHARE_FORM_DIALOG_OPEN, isShareFormDialogOpen })
-        }
+        },
+        clearErrorMessage: () => {
+            dispatch({ type: FormReducerTypes.CLEAR_ERROR_MESSAGE })
+        },
     })
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ManageQuestion);

@@ -21,7 +21,8 @@ import ConfirmationDialog from '../components/Core/ConfirmationDialog';
 const ResponseSubmit = ({
     isLoadingForGetResponse, response, findOneForm, loggedInUser,
     validationSchema, updateAnswerInResponse, uploadFile, create, isLoadingForSubmitResponse, clearResponse,
-    isLoadingForClearResponse, isClearResponseConfirmationDialogOpen, updateIsClearFormConfirmationDialogOpen
+    isLoadingForClearResponse, isClearResponseConfirmationDialogOpen, isSubmitResponseSuccessfully,
+    updateIsClearFormConfirmationDialogOpen, updateIsSubmitResponseSuccessfully
 }) => {
 
     const { formId } = useParams()
@@ -35,115 +36,133 @@ const ResponseSubmit = ({
     }, [findOneForm, formId])
 
     return (
-        <Stack>
-            {!isLoadingForGetResponse ?
-                <Flex
-                    py={5}
-                    gap={4}
-                    flexDirection="column"
-                    px={{ base: "20", md: "40", lg: "60", xl: "80" }}
+        <Flex py={6} justifyContent={'center'}>
+            {isSubmitResponseSuccessfully ?
+                <Card
+                    maxW={'90vw'}
+                    boxShadow='lg'
+                    borderTop='8px'
+                    width={'640px'}
+                    borderTopColor='blue'
                 >
-                    <Stack>
-                        <Card borderTop='8px'
-                            boxShadow={'lg'}
-                            borderTopColor='blue'>
-                            <CardBody>
-                                <Stack spacing={4}>
-                                    <Text fontSize={'28px'} fontWeight={'medium'}>{response.title}</Text>
-                                    {response.description ? <Text>{response.description}</Text> : <></>}
-                                </Stack>
-                                <Divider p={2} />
-                                <Text fontWeight={'medium'} py={2}>{loggedInUser.email}</Text>
-                            </CardBody>
-                        </Card>
-                    </Stack>
-                    <Stack spacing={5}>
-                        {response.answers?.map((question, questionIndex) => {
-                            return (
-                                <Controller
-                                    key={questionIndex}
-                                    name={`${questionIndex}`}
-                                    control={control}
-                                    render={({ field: { onChange }, fieldState: { error } }) => {
-                                        return (
-                                            <Card border={error ? '1px solid red' : ''}>
-                                                <CardBody>
-                                                    <Stack spacing={4}>
-                                                        <Stack direction={'row'}>
-                                                            <Text>{question.question}</Text>{response.questions[questionIndex].isRequired ? <Text color='red'>*</Text> : <></>}
-                                                        </Stack>
-                                                        {
-                                                            question.type === QUESTION_TYPES.SHORT_ANSWER ? (
-                                                                <ElementInput placeholder='Your answer' value={question.answer} maxWidth={'60'} error={error} onChange={(value) => {
-                                                                    onChange(value)
-                                                                    updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                                }} />
-                                                            ) : question.type === QUESTION_TYPES.PARAGRAPH ? (
-                                                                <ElementInput placeholder='Your answer' value={question.answer} error={error} onChange={(value) => {
-                                                                    onChange(value)
-                                                                    updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                                }} />
-                                                            ) : question.type === QUESTION_TYPES.MULTIPLE_CHOICE ? (
-                                                                <ElementMultipleChoice options={question.options} value={question.answer} error={error} onChange={(value) => {
-                                                                    onChange(value)
-                                                                    updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                                }} />
-                                                            ) : question.type === QUESTION_TYPES.CHECKBOX ? (
-                                                                <ElementCheckbox value={question.answers} error={error}
-                                                                    onChange={(value) => {
-                                                                        onChange(value)
-                                                                        updateAnswerInResponse({ key: 'answers', value, questionIndex })
-                                                                    }}
-                                                                    options={question.options} />
-                                                            ) : question.type === QUESTION_TYPES.DROP_DOWN ? (
-                                                                <ElementDropDown value={question.answer} options={question.options} error={error} onChange={(value) => {
-                                                                    onChange(value)
-                                                                    updateAnswerInResponse({ key: 'answer', value, questionIndex })
-                                                                }} />
-                                                            ) : question.type === QUESTION_TYPES.FILE_UPLOAD ? (
-                                                                <ElementFileUpload value={question.fileName} error={error} fileType={response.questions[questionIndex].fileType} onChange={(file) => {
-                                                                    onChange(file)
-                                                                    uploadFile({ formId, file, questionIndex })
-                                                                }} />
-                                                            ) : question.type === QUESTION_TYPES.DATE ? (
-                                                                <ElementDate value={question.dateTime} error={error} onChange={(value) => {
-                                                                    onChange(value)
-                                                                    updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
-                                                                }} />
-                                                            ) : question.type === QUESTION_TYPES.TIME ? (
-                                                                <ElementTime value={question.dateTime} error={error} onChange={(value) => {
-                                                                    onChange(value)
-                                                                    updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
-                                                                }} />
-                                                            ) :
-                                                                <></>
-                                                        }
-                                                    </Stack>
-                                                </CardBody>
-                                            </Card>
-                                        )
-                                    }}
-                                />
-                            )
-                        }
-                        )}
-                    </Stack>
-                    <Stack>
-                        <Flex justifyContent='space-between' align='center'>
-                            <Button colorScheme='teal' variant='solid' isLoading={isLoadingForSubmitResponse} onClick={handleSubmit(() => {
-                                create({ formId, response })
-                            })}>Submit</Button>
-                            <Text color={'blue'} cursor={'pointer'} onClick={(() => {
-                                updateIsClearFormConfirmationDialogOpen(true)
-                            })}>Clear form</Text>
-                        </Flex>
-                    </Stack>
-                </Flex>
+                    <CardBody>
+                        <Stack spacing={4}>
+                            <Text fontSize='28px' fontWeight='medium'>{response.title}</Text>
+                            <Text>Your response has been recorded.</Text>
+                            <Button as='u' size='sm' color='#1a73e8' variant='link' cursor='pointer' justifyContent='start' onClick={() => { updateIsSubmitResponseSuccessfully(false); window.location.reload(); findOneForm(formId) }}>Submit another response</Button>
+                        </Stack>
+                    </CardBody>
+                </Card>
                 :
-                <Center py={10} width={'100%'}>
-                    <Spinner />
-                </Center>
+                <Stack>
+                    {!isLoadingForGetResponse ?
+                        <Flex
+                            py={5}
+                            gap={4}
+                            flexDirection="column"
+                        >
+                            <Card borderTop='8px'
+                                boxShadow={'lg'}
+                                borderTopColor='blue'
+                                width={'640px'} maxW={'90vw'}
+                            >
+                                <CardBody>
+                                    <Stack spacing={4}>
+                                        <Text fontSize={'28px'} fontWeight={'medium'}>{response.title}</Text>
+                                        {response.description ? <Text>{response.description}</Text> : <></>}
+                                    </Stack>
+                                    <Divider p={2} />
+                                    <Text fontWeight={'medium'} py={2}>{loggedInUser.email}</Text>
+                                </CardBody>
+                            </Card>
+                            <Stack spacing={5}>
+                                {response.answers?.map((question, questionIndex) => {
+                                    return (
+                                        <Controller
+                                            key={questionIndex}
+                                            name={`${questionIndex}`}
+                                            control={control}
+                                            render={({ field: { onChange }, fieldState: { error } }) => {
+                                                return (
+                                                    <Card border={error ? '1px solid red' : ''} width={'640px'} maxW={'90vw'}>
+                                                        <CardBody>
+                                                            <Stack spacing={4}>
+                                                                <Stack direction={'row'}>
+                                                                    <Text>{question.question}</Text>{response.questions[questionIndex].isRequired ? <Text color='red'>*</Text> : <></>}
+                                                                </Stack>
+                                                                {
+                                                                    question.type === QUESTION_TYPES.SHORT_ANSWER ? (
+                                                                        <ElementInput placeholder='Your answer' value={question.answer} maxWidth={'60'} error={error} onChange={(value) => {
+                                                                            onChange(value)
+                                                                            updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                                        }} />
+                                                                    ) : question.type === QUESTION_TYPES.PARAGRAPH ? (
+                                                                        <ElementInput placeholder='Your answer' value={question.answer} error={error} onChange={(value) => {
+                                                                            onChange(value)
+                                                                            updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                                        }} />
+                                                                    ) : question.type === QUESTION_TYPES.MULTIPLE_CHOICE ? (
+                                                                        <ElementMultipleChoice options={question.options} value={question.answer} error={error} onChange={(value) => {
+                                                                            onChange(value)
+                                                                            updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                                        }} />
+                                                                    ) : question.type === QUESTION_TYPES.CHECKBOX ? (
+                                                                        <ElementCheckbox value={question.answers} error={error}
+                                                                            onChange={(value) => {
+                                                                                onChange(value)
+                                                                                updateAnswerInResponse({ key: 'answers', value, questionIndex })
+                                                                            }}
+                                                                            options={question.options} />
+                                                                    ) : question.type === QUESTION_TYPES.DROP_DOWN ? (
+                                                                        <ElementDropDown value={question.answer} options={question.options} error={error} onChange={(value) => {
+                                                                            onChange(value)
+                                                                            updateAnswerInResponse({ key: 'answer', value, questionIndex })
+                                                                        }} />
+                                                                    ) : question.type === QUESTION_TYPES.FILE_UPLOAD ? (
+                                                                        <ElementFileUpload value={question.fileName} error={error} fileType={response.questions[questionIndex].fileType} onChange={(file) => {
+                                                                            onChange(file)
+                                                                            uploadFile({ formId, file, questionIndex })
+                                                                        }} />
+                                                                    ) : question.type === QUESTION_TYPES.DATE ? (
+                                                                        <ElementDate value={question.dateTime} error={error} onChange={(value) => {
+                                                                            onChange(value)
+                                                                            updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
+                                                                        }} />
+                                                                    ) : question.type === QUESTION_TYPES.TIME ? (
+                                                                        <ElementTime value={question.dateTime} error={error} onChange={(value) => {
+                                                                            onChange(value)
+                                                                            updateAnswerInResponse({ key: 'dateTime', value, questionIndex })
+                                                                        }} />
+                                                                    ) :
+                                                                        <></>
+                                                                }
+                                                            </Stack>
+                                                        </CardBody>
+                                                    </Card>
+                                                )
+                                            }}
+                                        />
+                                    )
+                                }
+                                )}
+                            </Stack>
+                            <Flex justifyContent='space-between' align='center'>
+                                <Button colorScheme='teal' variant='solid' isLoading={isLoadingForSubmitResponse} onClick={handleSubmit(() => {
+                                    create({ formId, response })
+                                })}>Submit</Button>
+                                <Text color={'blue'} cursor={'pointer'} onClick={(() => {
+                                    updateIsClearFormConfirmationDialogOpen(true)
+                                })}>Clear form</Text>
+                            </Flex>
+                        </Flex>
+                        :
+                        <Center py={10} width={'100%'}>
+                            <Spinner />
+                        </Center>
+                    }
+                </Stack>
             }
+
             <ConfirmationDialog
                 title={'Clear form?'}
                 message={'This will remove your answers from all questions and cannot be undone.'}
@@ -157,7 +176,7 @@ const ResponseSubmit = ({
                     findOneForm(formId)
                 }}
             />
-        </Stack> 
+        </Flex>
     )
 }
 
@@ -174,6 +193,8 @@ ResponseSubmit.propTypes = {
     isLoadingForSubmitResponse: PropTypes.bool,
     isLoadingForClearResponse: PropTypes.bool,
     isClearResponseConfirmationDialogOpen: PropTypes.bool,
+    isSubmitResponseSuccessfully: PropTypes.bool,
+    updateIsSubmitResponseSuccessfully: PropTypes.func,
     updateIsClearFormConfirmationDialogOpen: PropTypes.func,
 }
 
@@ -182,6 +203,7 @@ const mapStateToProps = (state) => {
         response: state[moduleTypes.RESPONSE_VIEW].response,
         isLoadingForGetResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForGetResponse,
         isLoadingForSubmitResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForSubmitResponse,
+        isSubmitResponseSuccessfully: state[moduleTypes.RESPONSE_VIEW].isSubmitResponseSuccessfully,
         validationSchema: state[moduleTypes.RESPONSE_VIEW].validationSchema,
         isClearResponseConfirmationDialogOpen: state[moduleTypes.RESPONSE_VIEW].isClearResponseConfirmationDialogOpen,
         isLoadingForClearResponse: state[moduleTypes.RESPONSE_VIEW].isLoadingForClearResponse,
@@ -209,8 +231,11 @@ function mapDispatchToProps(dispatch) {
         clearResponse: () => {
             dispatch({ type: ResponseViewReducerTypes.CLEAR_RESPONSE })
         },
-        updateIsClearFormConfirmationDialogOpen:(isClearResponseConfirmationDialogOpen) =>{
-            dispatch({ type: ResponseViewReducerTypes.UPDATE_IS_CLEAR_RESPONSE_CONFIRMATION_DIALOG_OPEN,isClearResponseConfirmationDialogOpen })
+        updateIsClearFormConfirmationDialogOpen: (isClearResponseConfirmationDialogOpen) => {
+            dispatch({ type: ResponseViewReducerTypes.UPDATE_IS_CLEAR_RESPONSE_CONFIRMATION_DIALOG_OPEN, isClearResponseConfirmationDialogOpen })
+        },
+        updateIsSubmitResponseSuccessfully: (isSubmitResponseSuccessfully) => {
+            dispatch({ type: ResponseViewReducerTypes.UPDATE_IS_SUBMIT_RESPONSE_SUCCESSFULLY, isSubmitResponseSuccessfully })
         }
     })
 }

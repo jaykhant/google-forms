@@ -1,7 +1,7 @@
 import moment from 'moment';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
-import React,{ useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { moduleTypes } from '../store/type';
 import { QUESTION_TYPES, FILE_TYPES } from '../Constants';
 import { Link, useParams } from 'react-router-dom';
@@ -17,27 +17,24 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
     }, [findOne, responseId])
 
     return (
-        <Stack>
+        <Flex py={6} justifyContent={'center'}>
             {!isLoadingForGetResponse ?
-                <Flex
-                    flexDirection="column"
-                    px={{ base: "20", md: "40", lg: "60", xl: "80" }}
-                >
+                <Flex flexDirection="column">
                     <Box
-                        p={8}
-                        mt={8}
+                        p={4}
+                        mt={4}
                         rounded={'lg'}
                         borderTop='8px'
                         boxShadow={'lg'}
                         borderTopColor='blue'
                         bg={'white'}
+                        width={'640px'}
+                        maxW={'90vw'}
                     >
-                        <Stack>
-                            <Text fontSize={28} fontWeight={'medium'}>{response.form?.title}</Text>
-                            <Text fontWeight={'medium'}>{response.form?.description}</Text>
-                        </Stack>
+                        <Text fontSize={28} fontWeight={'medium'}>{response.form?.title}</Text>
+                        <Text pt={2} fontWeight={'medium'}>{response.form?.description}</Text>
                     </Box>
-                    <Stack spacing={8} py={8}>
+                    <Stack spacing={8} py={6}>
                         {response.answers ? response.answers.map(function (answer, index) {
                             return (
                                 <Stack key={index}>
@@ -47,6 +44,8 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
                                             bg={'white'}
                                             rounded={'lg'}
                                             boxShadow={'lg'}
+                                            width={'640px'}
+                                            maxW={'90vw'}
                                         >
                                             {
                                                 answer.type === QUESTION_TYPES.PARAGRAPH ||
@@ -178,7 +177,7 @@ const ResponseView = ({ response, isLoadingForGetResponse, findOne }) => {
                     <Spinner />
                 </Center>
             }
-        </Stack>
+        </Flex>
     )
 }
 

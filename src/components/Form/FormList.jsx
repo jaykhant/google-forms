@@ -1,22 +1,39 @@
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
 import ConfirmationDialog from '../Core/ConfirmationDialog'
-import { Button, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { useToast, Button, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
 
 const FormList = ({
     forms,
     deleteForm,
+    errorMessage,
+    clearErrorMessage,
     isLoadingForGetForm,
     isLoadingForDeleteForm,
     isDeleteConfirmationDialogOpen,
     updateIsDeleteConfirmationDialogOpen
 }) => {
 
+    const toast = useToast()
+
     let [deleteIndex, setDeleteIndex] = useState(0)
+
+    useEffect(() => {
+        if (errorMessage.showErrorMessage) {
+            toast({
+                position: 'top',
+                description: errorMessage.message,
+                status: errorMessage.verity,
+                isClosable: true,
+                duration: 2000
+            })
+        }
+        clearErrorMessage()
+    }, [errorMessage.showErrorMessage, errorMessage.message, errorMessage.verity, clearErrorMessage])
 
     return (
         <>
@@ -24,7 +41,7 @@ const FormList = ({
                 <Table variant='simple'>
                     <Thead>
                         <Tr>
-                            <Th>Name</Th>                        
+                            <Th>Name</Th>
                             <Th>Created</Th>
                             <Th>Action</Th>
                         </Tr>
@@ -69,6 +86,8 @@ const FormList = ({
 FormList.propTypes = {
     forms: PropTypes.array,
     deleteForm: PropTypes.func,
+    errorMessage: PropTypes.object,
+    clearErrorMessage: PropTypes.func,
     isLoadingForGetForm: PropTypes.bool,
     isLoadingForDeleteForm: PropTypes.bool,
     isDeleteConfirmationDialogOpen: PropTypes.bool,
@@ -78,6 +97,7 @@ FormList.propTypes = {
 const mapStateToProps = (state) => {
     return {
         forms: state.form.forms,
+        errorMessage: state.form.errorMessage,
         isLoadingForGetForm: state.form.isLoadingForGetForm,
         isLoadingForDeleteForm: state.form.isLoadingForDeleteForm,
         isDeleteConfirmationDialogOpen: state.form.isDeleteConfirmationDialogOpen
@@ -93,6 +113,9 @@ function mapDispatchToProps(dispatch) {
             type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN,
             isDeleteConfirmationDialogOpen
         }),
+        clearErrorMessage: () => {
+            dispatch({ type: FormReducerTypes.CLEAR_ERROR_MESSAGE })
+        },
     })
 }
 export default connect(mapStateToProps, mapDispatchToProps)(FormList);

@@ -7,6 +7,7 @@ const initialState = {
     totalData: -1,
     isLoadingForGetResponse: false,
     isLoadingForSubmitResponse: false,
+    isSubmitResponseSuccessfully:false,
 
     response: {},
     validationSchema: {},
@@ -33,6 +34,10 @@ const reducer = (state = initialState, action) => {
         case ResponseViewReducerTypes.UPDATE_IS_CLEAR_RESPONSE_CONFIRMATION_DIALOG_OPEN: return {
             ...state,
             isClearResponseConfirmationDialogOpen: action.isClearResponseConfirmationDialogOpen
+        }
+        case ResponseViewReducerTypes.UPDATE_IS_SUBMIT_RESPONSE_SUCCESSFULLY: return {
+            ...state,
+            isSubmitResponseSuccessfully: action.isSubmitResponseSuccessfully
         }
         case ResponseViewReducerTypes.SET_RESPONSES: return {
             ...state,

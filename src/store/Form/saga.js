@@ -53,14 +53,16 @@ function* deleteForm({ deleteIndex }) {
     const { forms, totalData } = yield select(formState)
     try {
         yield call(formService.delete, { id: forms[deleteIndex].id })
-        yield put({ type: FormReducerTypes.UPDATE_TOTAL_DATA, totalData: totalData - 1 });
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: false })
+        yield put({ type: FormReducerTypes.UPDATE_TOTAL_DATA, totalData: totalData - 1 });
         yield put({ type: FormReducerTypes.UPDATE_IS_DELETE_CONFIRMATION_DIALOG_OPEN, isDeleteConfirmationDialogOpen: false });
         yield put({
             type: FormReducerTypes.FORM_DELETE_SUCCESS, deleteIndex
         });
+        yield put({ type: FormReducerTypes.SET_ERROR_MESSAGE, verity: 'success', message: 'Form deleted successfully', showErrorMessage: true })
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_DELETE_FORM, isLoadingForDeleteForm: false })
+        yield put({ type: FormReducerTypes.SET_ERROR_MESSAGE, verity: 'error', message: 'Something wrong', showErrorMessage: true })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
     }
 }
@@ -96,8 +98,10 @@ function* update() {
         const { form } = yield select(formState)
         yield call(formService.update, { id: form.id, title: form.title, questions: form.questions, description: form.description })
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: false })
+        yield put({ type: FormReducerTypes.SET_ERROR_MESSAGE, verity: 'success', message: 'Form save successfully', showErrorMessage: true })
     } catch (error) {
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_UPDATE_FORM, isLoadingForUpdateForm: false })
+        yield put({ type: FormReducerTypes.SET_ERROR_MESSAGE, verity: 'error', message: 'Something wrong', showErrorMessage: true })
         //yield put({ type: FormReducerTypes.FORM_ERROR, errorMessage: error.message });
     }
 }
