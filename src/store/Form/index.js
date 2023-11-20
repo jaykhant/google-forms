@@ -87,6 +87,10 @@ const reducer = (state = initialState, action) => {
             totalData: -1,
             isLoadingForGetForm: false
         }
+        case FormReducerTypes.CLEAR_FORM: return {
+            ...state,
+            form: {},
+        }
         case FormReducerTypes.SET_FORM: return {
             ...state,
             form: action.form

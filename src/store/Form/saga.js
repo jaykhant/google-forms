@@ -37,10 +37,10 @@ function* findOne({ formId }) {
     yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: true })
     try {
         const response = yield call(formService.findOne, { formId })
-        yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
         yield put({
             type: FormReducerTypes.SET_FORM, form: response
         });
+        yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })
     } catch (error) {
         console.log(error);
         yield put({ type: FormReducerTypes.UPDATE_IS_LOADING_FOR_GET_FORM, isLoadingForGetForm: false })

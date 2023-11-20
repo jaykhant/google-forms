@@ -16,6 +16,7 @@ const FormReducerTypes = {
     SET_FORM: `${moduleTypes.FORM}/SET_FORM`,
     UPDATE_FORM: `${moduleTypes.FORM}/UPDATE_FORM`,
     CLEAR_FORMS: `${moduleTypes.FORM}/CLEAR_FORMS`,
+    CLEAR_FORM: `${moduleTypes.FORM}/CLEAR_FORM`,
 
     UPDATE_FORM_QUESTION: `${moduleTypes.FORM}/UPDATE_FORM_QUESTION`,
     ADD_FORM_QUESTION: `${moduleTypes.FORM}/ADD_FORM_QUESTION`,
