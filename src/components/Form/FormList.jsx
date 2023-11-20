@@ -6,11 +6,12 @@ import { DeleteIcon, SettingsIcon } from '@chakra-ui/icons'
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type'
 import ConfirmationDialog from '../Core/ConfirmationDialog'
 import { useToast, Button, Center, Table, TableContainer, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react'
+import { moduleTypes } from '../../store/type'
 
 const FormList = ({
     forms,
+    error,
     deleteForm,
-    errorMessage,
     clearErrorMessage,
     isLoadingForGetForm,
     isLoadingForDeleteForm,
@@ -23,17 +24,17 @@ const FormList = ({
     let [deleteIndex, setDeleteIndex] = useState(0)
 
     useEffect(() => {
-        if (errorMessage.showErrorMessage) {
+        if (error.message != '') {
             toast({
                 position: 'top',
-                description: errorMessage.message,
-                status: errorMessage.verity,
+                description: error.message,
+                status: error.type,
                 isClosable: true,
                 duration: 2000
             })
         }
         clearErrorMessage()
-    }, [errorMessage.showErrorMessage, errorMessage.message, errorMessage.verity, clearErrorMessage])
+    }, [error.message, error.type, clearErrorMessage])
 
     return (
         <>
@@ -86,7 +87,7 @@ const FormList = ({
 FormList.propTypes = {
     forms: PropTypes.array,
     deleteForm: PropTypes.func,
-    errorMessage: PropTypes.object,
+    error: PropTypes.object,
     clearErrorMessage: PropTypes.func,
     isLoadingForGetForm: PropTypes.bool,
     isLoadingForDeleteForm: PropTypes.bool,
@@ -96,11 +97,11 @@ FormList.propTypes = {
 
 const mapStateToProps = (state) => {
     return {
-        forms: state.form.forms,
-        errorMessage: state.form.errorMessage,
-        isLoadingForGetForm: state.form.isLoadingForGetForm,
-        isLoadingForDeleteForm: state.form.isLoadingForDeleteForm,
-        isDeleteConfirmationDialogOpen: state.form.isDeleteConfirmationDialogOpen
+        forms: state[moduleTypes.FORM].forms,
+        error: state[moduleTypes.FORM].error,
+        isLoadingForGetForm: state[moduleTypes.FORM].isLoadingForGetForm,
+        isLoadingForDeleteForm: state[moduleTypes.FORM].isLoadingForDeleteForm,
+        isDeleteConfirmationDialogOpen: state[moduleTypes.FORM].isDeleteConfirmationDialogOpen
     };
 };
 function mapDispatchToProps(dispatch) {

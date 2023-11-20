@@ -26,7 +26,7 @@ const ManageQuestion = ({
     form, updateForm, updateFormQuestion, update, findOne,
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
     addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, isLoadingForUpdateForm,
-    updateIsShareFormDialogOpen, errorMessage, clearErrorMessage, isLoadingForGetForm, clearForm
+    updateIsShareFormDialogOpen, error, clearErrorMessage, isLoadingForGetForm, clearForm
 }) => {
 
     const toast = useToast()
@@ -34,17 +34,17 @@ const ManageQuestion = ({
     const { formId } = useParams()
 
     useEffect(() => {
-        if (errorMessage.showErrorMessage) {
+        if (error.message != '') {
             toast({
                 position: 'top',
-                description: errorMessage.message,
-                status: errorMessage.verity,
+                description: error.message,
+                status: error.type,
                 isClosable: true,
                 duration: 2000
             })
         }
         clearErrorMessage()
-    }, [errorMessage.showErrorMessage, errorMessage.message, errorMessage.verity, clearErrorMessage])
+    }, [error.message, error.type, clearErrorMessage])
 
     useEffect(() => {
         clearForm()
@@ -321,7 +321,7 @@ const ManageQuestion = ({
 
 ManageQuestion.propTypes = {
     form: PropTypes.object,
-    errorMessage: PropTypes.object,
+    error: PropTypes.object,
     clearForm: PropTypes.func,
     updateForm: PropTypes.func,
     clearErrorMessage: PropTypes.func,
@@ -342,7 +342,7 @@ ManageQuestion.propTypes = {
 const mapStateToProps = (state) => {
     return {
         form: state[moduleTypes.FORM].form,
-        errorMessage: state[moduleTypes.FORM].errorMessage,
+        error: state[moduleTypes.FORM].error,
         isLoadingForUpdateForm: state[moduleTypes.FORM].isLoadingForUpdateForm,
         isLoadingForGetForm: state[moduleTypes.FORM].isLoadingForGetForm
     };

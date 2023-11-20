@@ -26,10 +26,9 @@ const initialState = {
     },
     isLoadingForUpdateForm: false,
 
-    errorMessage: {
-        verity: '',
+    error: {
+        type: '',
         message: '',
-        showErrorMessage: false
     }
 }
 
@@ -41,7 +40,7 @@ const reducer = (state = initialState, action) => {
         }
         case FormReducerTypes.SET_ERROR_MESSAGE: return {
             ...state,
-            errorMessage: action
+            error: action.error
         }
         case FormReducerTypes.UPDATE_PAGE: return {
             ...state,
@@ -74,10 +73,9 @@ const reducer = (state = initialState, action) => {
 
         case FormReducerTypes.CLEAR_ERROR_MESSAGE: return {
             ...state,
-            errorMessage: {
-                verity: '',
+            error: {
+                type: '',
                 message: '',
-                showErrorMessage: false
             }
         }
         case FormReducerTypes.CLEAR_FORMS: return {
