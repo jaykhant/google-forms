@@ -25,8 +25,10 @@ function* create({ formId, response }) {
     try {
         yield call(responseService.create, { formId, answers: response.answers })
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE, isLoadingForSubmitResponse: false })
+        yield put({ type: ResponseViewReducerTypes.UPDATE_IS_SUBMIT_RESPONSE_SUCCESSFULLY, isSubmitResponseSuccessfully: true })
     } catch (error) {
         console.log("create :-", error);
+        yield put({ type: ResponseViewReducerTypes.UPDATE_IS_SUBMIT_RESPONSE_SUCCESSFULLY, isSubmitResponseSuccessfully: false })
         yield put({ type: ResponseViewReducerTypes.UPDATE_IS_LOADING_FOR_SUBMIT_RESPONSE, isLoadingForSubmitResponse: false })
     }
 }

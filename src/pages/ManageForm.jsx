@@ -19,7 +19,7 @@ const ManageForm = (loadMore) => {
                     borderRadius="1px"
                 />
                 <TabPanels>
-                    <TabPanel p={0}>
+                    <TabPanel p={0} display={'flex'} justifyContent={'center'}>
                         <ManageQuestion />
                     </TabPanel>
                     <TabPanel p={0}>

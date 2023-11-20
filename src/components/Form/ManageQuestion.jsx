@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
-import React,{ useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Input } from '@chakra-ui/input';
 import { Switch } from '@chakra-ui/switch';
 import { useParams } from 'react-router-dom';
@@ -17,7 +17,7 @@ import { ChevronDownIcon, CopyIcon, DeleteIcon } from '@chakra-ui/icons';
 import { FormActionTypes, FormReducerTypes } from '../../store/Form/type';
 import { QUESTION_TYPES, QUESTION_TYPE_DISPLAY_NAMES } from '../../Constants'
 import { Menu, MenuButton, MenuDivider, MenuItem, MenuList } from '@chakra-ui/menu';
-import { Button, Card, CardBody, CardFooter, Divider, useColorModeValue } from '@chakra-ui/react';
+import { Button, Card, Center, CardBody, CardFooter, Divider, Spinner, useToast } from '@chakra-ui/react';
 import { moduleTypes } from '../../store/type';
 import ShareFormDialog from "./ShareFormDialog"
 import { ShareFormReducerTypes } from '../../store/ShareForm/type';
@@ -26,272 +26,305 @@ const ManageQuestion = ({
     form, updateForm, updateFormQuestion, update, findOne,
     addFormQuestion, deleteFormQuestion, copyFormQuestion,
     addFormQuestionOption, deleteFormQuestionOption, updateFormQuestionOption, isLoadingForUpdateForm,
-    updateIsShareFormDialogOpen 
+    updateIsShareFormDialogOpen, error, clearErrorMessage, isLoadingForGetForm, clearForm
 }) => {
+
+    const toast = useToast()
 
     const { formId } = useParams()
 
     useEffect(() => {
+        if (error.message != '') {
+            toast({
+                position: 'top',
+                description: error.message,
+                status: error.type,
+                isClosable: true,
+                duration: 2000
+            })
+        }
+        clearErrorMessage()
+    }, [error.message, error.type, clearErrorMessage])
+
+    useEffect(() => {
+        clearForm()
         findOne(formId)
-    }, [formId, findOne])
+    }, [formId, findOne, clearForm])
 
     return (
-        <>
-            <Flex
-                flexDirection="column"
-                position={'relative'}
-                px={{ base: "10", md: "20", lg: "60", xl: "80" }}
-            >
-                <Stack spacing={8} py={12}>
-                    <Box
-                        p={8}
-                        rounded={'lg'}
-                        borderTop='4px'
-                        boxShadow={'lg'}
-                        borderTopColor='blue'
-                        bg={useColorModeValue('white', 'gray.700')}
+        < >
+            {!isLoadingForGetForm ?
+                <Stack>
+                    <Flex
+                        my={12}
+                        minW={'250px'}
+                        width={'770px'}
+                        flexDirection="column"
                     >
-                        <Stack spacing={4}>
-                            {form.title}
-                            <Input
-                                value={form.title}
-                                onInput={(event) => updateForm({ key: 'title', value: event.target.value })} fontSize='32px'
-                                variant='flushed'
-                                placeholder='Form title'
-                                fontWeight={'medium'}
-                            />
-                            <Input value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Form description' />
-                        </Stack>
-                    </Box>
-                </Stack>
-
-                {
-                    form.questions.map((question, questionIndex) =>
-                        <Card mb={12} key={questionIndex}>
-                            <CardBody>
-                                <Stack spacing={4}>
-                                    <Flex w={'100%'} justifyContent='space-between' align='center'>
+                        {form.title ?
+                            <Card
+                                p={8}
+                                mb={6}
+                                rounded={'lg'}
+                                borderTop='4px'
+                                boxShadow={'lg'}
+                                borderTopColor='blue'
+                            >
+                                <CardBody>
+                                    <Stack spacing={4}>
+                                        {form.title}
                                         <Input
-                                            value={question.question}
-                                            onInput={(event) => updateFormQuestion({
-                                                key: 'question', value: event.target.value, questionIndex
-                                            })}
-                                            bgColor={'#F8F9FA'}
-                                            w={'60%'}
-                                            px={4}
-                                            height={'50px'}
+                                            value={form.title}
+                                            onInput={(event) => updateForm({ key: 'title', value: event.target.value })} fontSize='32px'
                                             variant='flushed'
-                                            placeholder='Question'
+                                            placeholder='Form title'
+                                            fontWeight={'medium'}
                                         />
-                                        <Menu>
-                                            <MenuButton
-                                                px={4}
-                                                py={2}
-                                                w={'35%'}
-                                                transition='all 0.2s'
-                                                borderRadius='md'
-                                                borderWidth='1px'
-                                                _focus={{ boxShadow: 'outline' }}
-                                            >
-                                                <Flex justifyContent='space-between' align='center'>
-                                                    <Text>{QUESTION_TYPE_DISPLAY_NAMES[question.type]}</Text>
-                                                    <ChevronDownIcon />
-                                                </Flex>
-                                            </MenuButton>
-                                            <MenuList spacing={8}>
-                                                <MenuItem value={QUESTION_TYPES.SHORT_ANSWER}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.SHORT_ANSWER, questionIndex
+                                        <Input value={form.description} onInput={(event) => updateForm({ key: 'description', value: event.target.value })} variant='flushed' placeholder='Form description' />
+                                    </Stack>
+                                </CardBody>
+                            </Card>
+                            : <></>
+                        }
+                        {
+                            form?.questions?.map((question, questionIndex) =>
+                                <Card mb={6} key={questionIndex} >
+                                    <CardBody>
+                                        <Stack spacing={4}>
+                                            <Flex w={'100%'} justifyContent='space-between' align='center'>
+                                                <Input
+                                                    value={question.question}
+                                                    onInput={(event) => updateFormQuestion({
+                                                        key: 'question', value: event.target.value, questionIndex
                                                     })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.short_answer}
-                                                </MenuItem>
-                                                <MenuItem value={QUESTION_TYPES.PARAGRAPH}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.PARAGRAPH, questionIndex
-                                                    })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.paragraph}
-                                                </MenuItem>
-                                                <MenuDivider />
-                                                <MenuItem value={QUESTION_TYPES.MULTIPLE_CHOICE}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.MULTIPLE_CHOICE, questionIndex
-                                                    })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.multiple_choice}
-                                                </MenuItem>
-                                                <MenuItem value={QUESTION_TYPES.CHECKBOX}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.CHECKBOX, questionIndex
-                                                    })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.checkbox}
-                                                </MenuItem>
-                                                <MenuItem value={QUESTION_TYPES.DROP_DOWN}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.DROP_DOWN, questionIndex
-                                                    })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.drop_down}
-                                                </MenuItem>
-                                                <MenuDivider />
-                                                <MenuItem value={QUESTION_TYPES.FILE_UPLOAD}
-                                                    onClick={() => {
-                                                        updateFormQuestion({
-                                                            key: 'type', value: QUESTION_TYPES.FILE_UPLOAD, questionIndex
-                                                        })
-                                                        updateFormQuestion({
-                                                            key: 'allowSpecificFileTypes', value: false, questionIndex
-                                                        })
-                                                    }}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.file_upload}
-                                                </MenuItem>
-                                                <MenuDivider />
-                                                <MenuItem value={QUESTION_TYPES.DATE}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.DATE, questionIndex
-                                                    })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.date}
-                                                </MenuItem>
-                                                <MenuItem value={QUESTION_TYPES.TIME}
-                                                    onClick={() => updateFormQuestion({
-                                                        key: 'type', value: QUESTION_TYPES.TIME, questionIndex
-                                                    })}
-                                                >
-                                                    {QUESTION_TYPE_DISPLAY_NAMES.time}
-                                                </MenuItem>
-                                            </MenuList>
-                                        </Menu>
-                                    </Flex>
-                                </Stack>
-                                <Stack py="5">
-                                    {
-                                        question.type === QUESTION_TYPES.SHORT_ANSWER ? <ShortAnswer /> :
-                                            question.type === QUESTION_TYPES.PARAGRAPH ? <Paragraph /> :
-                                                question.type === QUESTION_TYPES.MULTIPLE_CHOICE ?
-                                                    <MultipleChoice
-                                                        options={question.options}
-                                                        onAddOption={() => addFormQuestionOption({ questionIndex })}
-                                                        onUpdateOption={({ value, optionIndex }) => updateFormQuestionOption({ option: value, questionIndex, optionIndex })}
-                                                        onDeleteOption={({ optionIndex }) => deleteFormQuestionOption({ questionIndex, optionIndex })}
-                                                    /> :
-                                                    question.type === QUESTION_TYPES.CHECKBOX ?
-                                                        <Checkbox
-                                                            options={question.options}
-                                                            onAddOption={() => addFormQuestionOption({ questionIndex })}
-                                                            onUpdateOption={({ value, optionIndex }) => updateFormQuestionOption({ option: value, questionIndex, optionIndex })}
-                                                            onDeleteOption={({ optionIndex }) => deleteFormQuestionOption({ questionIndex, optionIndex })}
-                                                        /> :
-                                                        question.type === QUESTION_TYPES.DROP_DOWN ?
-                                                            <DropDown
+                                                    bgColor={'#F8F9FA'}
+                                                    w={'60%'}
+                                                    px={4}
+                                                    height={'50px'}
+                                                    variant='flushed'
+                                                    placeholder='Question'
+                                                />
+                                                <Menu>
+                                                    <MenuButton
+                                                        px={4}
+                                                        py={2}
+                                                        w={'35%'}
+                                                        transition='all 0.2s'
+                                                        borderRadius='md'
+                                                        borderWidth='1px'
+                                                        _focus={{ boxShadow: 'outline' }}
+                                                    >
+                                                        <Flex justifyContent='space-between' align='center'>
+                                                            <Text>{QUESTION_TYPE_DISPLAY_NAMES[question.type]}</Text>
+                                                            <ChevronDownIcon />
+                                                        </Flex>
+                                                    </MenuButton>
+                                                    <MenuList spacing={8}>
+                                                        <MenuItem value={QUESTION_TYPES.SHORT_ANSWER}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.SHORT_ANSWER, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.short_answer}
+                                                        </MenuItem>
+                                                        <MenuItem value={QUESTION_TYPES.PARAGRAPH}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.PARAGRAPH, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.paragraph}
+                                                        </MenuItem>
+                                                        <MenuDivider />
+                                                        <MenuItem value={QUESTION_TYPES.MULTIPLE_CHOICE}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.MULTIPLE_CHOICE, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.multiple_choice}
+                                                        </MenuItem>
+                                                        <MenuItem value={QUESTION_TYPES.CHECKBOX}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.CHECKBOX, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.checkbox}
+                                                        </MenuItem>
+                                                        <MenuItem value={QUESTION_TYPES.DROP_DOWN}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.DROP_DOWN, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.drop_down}
+                                                        </MenuItem>
+                                                        <MenuDivider />
+                                                        <MenuItem value={QUESTION_TYPES.FILE_UPLOAD}
+                                                            onClick={() => {
+                                                                updateFormQuestion({
+                                                                    key: 'type', value: QUESTION_TYPES.FILE_UPLOAD, questionIndex
+                                                                })
+                                                                updateFormQuestion({
+                                                                    key: 'allowSpecificFileTypes', value: false, questionIndex
+                                                                })
+                                                            }}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.file_upload}
+                                                        </MenuItem>
+                                                        <MenuDivider />
+                                                        <MenuItem value={QUESTION_TYPES.DATE}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.DATE, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.date}
+                                                        </MenuItem>
+                                                        <MenuItem value={QUESTION_TYPES.TIME}
+                                                            onClick={() => updateFormQuestion({
+                                                                key: 'type', value: QUESTION_TYPES.TIME, questionIndex
+                                                            })}
+                                                        >
+                                                            {QUESTION_TYPE_DISPLAY_NAMES.time}
+                                                        </MenuItem>
+                                                    </MenuList>
+                                                </Menu>
+                                            </Flex>
+                                        </Stack>
+                                        <Stack py="5">
+                                            {
+                                                question.type === QUESTION_TYPES.SHORT_ANSWER ? <ShortAnswer /> :
+                                                    question.type === QUESTION_TYPES.PARAGRAPH ? <Paragraph /> :
+                                                        question.type === QUESTION_TYPES.MULTIPLE_CHOICE ?
+                                                            <MultipleChoice
                                                                 options={question.options}
                                                                 onAddOption={() => addFormQuestionOption({ questionIndex })}
                                                                 onUpdateOption={({ value, optionIndex }) => updateFormQuestionOption({ option: value, questionIndex, optionIndex })}
                                                                 onDeleteOption={({ optionIndex }) => deleteFormQuestionOption({ questionIndex, optionIndex })}
                                                             /> :
-                                                            question.type === QUESTION_TYPES.FILE_UPLOAD ?
-                                                                <FileUpload
-                                                                    onUpdateMaximumFilesize={(allowMaximumFileSize) => {
-                                                                        updateFormQuestion({ key: 'allowMaximumFileSize', value: allowMaximumFileSize, questionIndex })
-                                                                    }}
-                                                                    onUpdateFileTypes={(fileType) => {
-                                                                        updateFormQuestion({ key: 'fileType', value: fileType, questionIndex })
-
-                                                                    }}
-                                                                    onUpdateAllowSpecificFileTypes={(allowSpecificFileTypes) => {
-                                                                        updateFormQuestion({ key: 'allowSpecificFileTypes', value: allowSpecificFileTypes, questionIndex })
-                                                                    }}
-                                                                    allowSpecificFileTypes={question.allowSpecificFileTypes}
-                                                                    allowMaximumFileSize={question.allowMaximumFileSize}
-                                                                    fileType={question.fileType} /> :
-                                                                question.type === QUESTION_TYPES.DATE ? <Date /> :
-                                                                    question.type === QUESTION_TYPES.TIME ? <Time />
-                                                                        : <></>
-                                    }
-                                </Stack>
-                                <Divider pt="5" />
-                            </CardBody>
-                            <CardFooter display="flex" alignItems="center" justifyContent="end">
-                                <Button onClick={() => {
-                                    copyFormQuestion({ question, copyIndex: questionIndex })
-                                }} borderRadius={'30px'} bg={'white'}>
-                                    <CopyIcon />
+                                                            question.type === QUESTION_TYPES.CHECKBOX ?
+                                                                <Checkbox
+                                                                    options={question.options}
+                                                                    onAddOption={() => addFormQuestionOption({ questionIndex })}
+                                                                    onUpdateOption={({ value, optionIndex }) => updateFormQuestionOption({ option: value, questionIndex, optionIndex })}
+                                                                    onDeleteOption={({ optionIndex }) => deleteFormQuestionOption({ questionIndex, optionIndex })}
+                                                                /> :
+                                                                question.type === QUESTION_TYPES.DROP_DOWN ?
+                                                                    <DropDown
+                                                                        options={question.options}
+                                                                        onAddOption={() => addFormQuestionOption({ questionIndex })}
+                                                                        onUpdateOption={({ value, optionIndex }) => updateFormQuestionOption({ option: value, questionIndex, optionIndex })}
+                                                                        onDeleteOption={({ optionIndex }) => deleteFormQuestionOption({ questionIndex, optionIndex })}
+                                                                    /> :
+                                                                    question.type === QUESTION_TYPES.FILE_UPLOAD ?
+                                                                        <FileUpload
+                                                                            onUpdateMaximumFilesize={(allowMaximumFileSize) => {
+                                                                                updateFormQuestion({ key: 'allowMaximumFileSize', value: allowMaximumFileSize, questionIndex })
+                                                                            }}
+                                                                            onUpdateFileTypes={(fileType) => {
+                                                                                updateFormQuestion({ key: 'fileType', value: fileType, questionIndex })
+                                                                            }}
+                                                                            onUpdateAllowSpecificFileTypes={(allowSpecificFileTypes) => {
+                                                                                updateFormQuestion({ key: 'allowSpecificFileTypes', value: allowSpecificFileTypes, questionIndex })
+                                                                            }}
+                                                                            allowSpecificFileTypes={question.allowSpecificFileTypes}
+                                                                            allowMaximumFileSize={question.allowMaximumFileSize}
+                                                                            fileType={question.fileType} /> :
+                                                                        question.type === QUESTION_TYPES.DATE ? <Date /> :
+                                                                            question.type === QUESTION_TYPES.TIME ? <Time />
+                                                                                : <></>
+                                            }
+                                        </Stack>
+                                        <Divider pt="5" />
+                                    </CardBody>
+                                    <CardFooter display="flex" alignItems="center" justifyContent="end">
+                                        <Button onClick={() => {
+                                            copyFormQuestion({ question, copyIndex: questionIndex })
+                                        }} borderRadius={'30px'} bg={'white'}>
+                                            <CopyIcon />
+                                        </Button>
+                                        <Button
+                                            onClick={() => deleteFormQuestion(questionIndex)}
+                                            borderRadius={'30px'} bg={'white'}>
+                                            <DeleteIcon />
+                                        </Button>
+                                        <Divider orientation='vertical' h='30px' />
+                                        <Text px={4}>Required</Text>
+                                        <Switch id='isChecked' isChecked={question.isRequired ? true : false} value={question.isRequired}
+                                            onChange={(event) => updateFormQuestion({
+                                                key: 'isRequired', value: event.target.checked, questionIndex
+                                            })} />
+                                    </CardFooter>
+                                </Card>
+                            )
+                        }
+                    </Flex>
+                    {form?.questions ?
+                        <Box
+                            right={0}
+                            bottom={0}
+                            w={'100%'}
+                            zIndex={10}
+                            bg={'#f0ebf8'}
+                            position={'absolute'}
+                            paddingLeft={{ sm: '280px', md: '462px' }}
+                        >
+                            <Flex gap={4} h={16} alignItems={'center'} justifyContent={'center'}>
+                                <Button
+                                    bg={'blue.400'}
+                                    color={'white'}
+                                    _hover={{
+                                        bg: 'blue.500',
+                                    }}
+                                    isDisabled={isLoadingForUpdateForm}
+                                    onClick={addFormQuestion}
+                                >
+                                    Add Question
                                 </Button>
                                 <Button
-                                    onClick={() => deleteFormQuestion(questionIndex)}
-                                    borderRadius={'30px'} bg={'white'}>
-                                    <DeleteIcon />
+                                    bg={'blue.400'}
+                                    color={'white'}
+                                    _hover={{
+                                        bg: 'blue.500',
+                                    }}
+                                    type='submit'
+                                    isLoading={isLoadingForUpdateForm}
+                                    onClick={update}
+                                >
+                                    Save
                                 </Button>
-                                <Divider orientation='vertical' h='30px' />
-                                <Text px={4}>Required</Text>
-                                <Switch id='isChecked' isChecked={question.isRequired ? true : false} value={question.isRequired}
-                                    onChange={(event) => updateFormQuestion({
-                                        key: 'isRequired', value: event.target.checked, questionIndex
-                                    })} />
-                            </CardFooter>
-                        </Card>
-                    )
-                }
-            </Flex>
-            
-            <Box
-                right={0}
-                bottom={0}
-                w={'100%'}
-                zIndex={10}
-                bg={'#f0ebf8'}
-                position={'absolute'}
-                px={{ base: "20", md: "40", lg: "60", xl: "80" }}
-            >
-                <Flex gap={4} h={16} alignItems={'center'} justifyContent={'end'}>
-                    <Button
-                        bg={'blue.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'blue.500',
-                        }}
-                        isDisabled={isLoadingForUpdateForm}
-                        onClick={addFormQuestion}
-                    >
-                        Add Question
-                    </Button>
-                    <Button
-                        bg={'blue.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'blue.500',
-                        }}
-                        type='submit'
-                        isLoading={isLoadingForUpdateForm}
-                        onClick={update}
-                    >
-                        Save
-                    </Button>
-                    <Button
-                        bg={'green.400'}
-                        color={'white'}
-                        _hover={{
-                            bg: 'green.200',
-                        }}
-                        onClick={()=>{
-                            updateIsShareFormDialogOpen(true)
-                        }}
-                    >
-                       Send
-                    </Button>
-                </Flex>
-            </Box>
-            <ShareFormDialog formId={formId}/>
+                                <Button
+                                    bg={'teal'}
+                                    color={'white'}
+                                    _hover={{
+                                        bg: 'teal.500',
+                                    }}
+                                    isDisabled={isLoadingForUpdateForm}
+                                    onClick={() => {
+                                        updateIsShareFormDialogOpen(true)
+                                    }}
+                                >
+                                    Send
+                                </Button>
+                            </Flex>
+                        </Box>
+                        : <></>
+                    }
+
+                    <ShareFormDialog formId={formId} />
+                </Stack>
+                :
+                <Center py={10}>
+                    <Spinner />
+                </Center>
+            }
         </ >
     )
 }
 
 ManageQuestion.propTypes = {
     form: PropTypes.object,
+    error: PropTypes.object,
+    clearForm: PropTypes.func,
     updateForm: PropTypes.func,
+    clearErrorMessage: PropTypes.func,
     updateFormQuestion: PropTypes.func,
     update: PropTypes.func,
     findOne: PropTypes.func,
@@ -303,12 +336,15 @@ ManageQuestion.propTypes = {
     updateFormQuestionOption: PropTypes.func,
     updateIsShareFormDialogOpen: PropTypes.func,
     isLoadingForUpdateForm: PropTypes.bool,
+    isLoadingForGetForm: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => {
     return {
         form: state[moduleTypes.FORM].form,
-        isLoadingForUpdateForm: state[moduleTypes.FORM].isLoadingForUpdateForm
+        error: state[moduleTypes.FORM].error,
+        isLoadingForUpdateForm: state[moduleTypes.FORM].isLoadingForUpdateForm,
+        isLoadingForGetForm: state[moduleTypes.FORM].isLoadingForGetForm
     };
 };
 function mapDispatchToProps(dispatch) {
@@ -345,7 +381,13 @@ function mapDispatchToProps(dispatch) {
         },
         updateIsShareFormDialogOpen: (isShareFormDialogOpen) => {
             dispatch({ type: ShareFormReducerTypes.UPDATE_IS_SHARE_FORM_DIALOG_OPEN, isShareFormDialogOpen })
-        }
+        },
+        clearErrorMessage: () => {
+            dispatch({ type: FormReducerTypes.CLEAR_ERROR_MESSAGE })
+        },
+        clearForm: () => {
+            dispatch({ type: FormReducerTypes.CLEAR_FORM })
+        },
     })
 }
 export default connect(mapStateToProps, mapDispatchToProps)(ManageQuestion);

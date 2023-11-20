@@ -16,7 +16,7 @@ const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, update
     const toast = useToast()
 
     useEffect(() => {
-        updateViewFormLink(`http://localhost:3000/response/submit/${formId}`)
+        updateViewFormLink(`${process.env.REACT_APP_URL}/response/submit/${formId}`)
     }, [formId, updateViewFormLink])
 
     return (

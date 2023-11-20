@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
-import React,{ useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ViewIcon } from '@chakra-ui/icons'
-import { Tr, Td, Th, Thead, Tbody, Table, Button, TableContainer, Spinner, Center, Stack } from '@chakra-ui/react'
+import { Tr, Td, Th, Thead, Tbody, Table, Button, TableContainer, Spinner, Center, Flex, Stack } from '@chakra-ui/react'
 import { connect } from 'react-redux';
 import { moduleTypes } from '../../store/type';
 import { ResponseViewActionTypes, ResponseViewReducerTypes } from '../../store/ResponseView/type';
@@ -32,36 +32,40 @@ const ResponseList = (
 
     return (
         <Stack>
-            <TableContainer overflowY={'auto'} pt={6} px={{ base: "8", md: "14", lg: "28", xl: "44" }}>
-                <Table variant='simple'>
-                    <Thead>
-                        <Tr>
-                            <Th>Name</Th>
-                            <Th>Email</Th>
-                            <Th>Action</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>
-                        {!isLoadingForGetResponse ? responses.map((response, index) =>
-                            <Tr key={index}>
-                                <Td>{response.user.name}</Td>
-                                <Td>{response.user.email}</Td>
-                                <Td>
-                                    <Link to={`/response/${response.id}`}> <Button size='sm'><ViewIcon /></Button></Link>
-                                </Td>
-                            </Tr>)
-                            : <></>
-                        }
-                    </Tbody>
-                </Table>
-                {responses.length === 0 && !isLoadingForGetResponse ?
-                    <Center py={4}>
-                        No Data Found
-                    </Center>
-                    :
-                    <></>
-                }
-            </TableContainer>
+            <Flex justifyContent={'center'} >
+                <TableContainer pt={6} overflowY={'auto'} w={'770px'}>
+                    <Table variant='simple'>
+                        <Thead>
+                            <Tr>
+                                <Th>Name</Th>
+                                <Th>Email</Th>
+                                <Th>Action</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>
+                            {!isLoadingForGetResponse ? responses.map((response, index) =>
+                                <Tr key={index}>
+                                    <Td>{response.user.name}</Td>
+                                    <Td>{response.user.email}</Td>
+                                    <Td>
+                                        <Link to={`/response/${response.id}`}>
+                                            <Button size='sm'><ViewIcon /></Button>
+                                        </Link>
+                                    </Td>
+                                </Tr>)
+                                : <></>
+                            }
+                        </Tbody>
+                    </Table>
+                </TableContainer>
+            </Flex>
+            {responses.length === 0 && !isLoadingForGetResponse ?
+                <Center py={4}>
+                    No Data Found
+                </Center>
+                :
+                <></>
+            }
             {(totalData > responses.length) || isLoadingForGetResponse ?
                 <Center>
                     <Spinner />
@@ -69,7 +73,7 @@ const ResponseList = (
                 :
                 <></>
             }
-        </Stack>
+        </Stack >
     )
 }
 
