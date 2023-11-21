@@ -4,6 +4,7 @@ import ResponseService from '../services/ResponseService';
 import catchAsync from '../utils/CatchAsync';
 import httpStatus from 'http-status';
 import ApiError from '../utils/ApiError';
+import EmailHelper from '../utils/EmailHelper';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const create = catchAsync(async (req: any, res: Response) => {
@@ -29,10 +30,27 @@ const update = catchAsync(async (req: any, res: Response) => {
 })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const shareToEmail = catchAsync(async (req: any, res: Response) => {
+    const { id } = req.params
+    const user = req.user
+    const { subject, message, email } = req.body
+
+    const form = await FormService.find(id, user.id)
+    if (!form) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Form does not exist.')
+    }
+
+    const emailHelper = new EmailHelper()
+    await emailHelper.sendEmail({ email: email, subject, message, formId: form.id })
+
+    res.send()
+})
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const findAll = catchAsync(async (req: any, res: Response) => {
     const user = req.user
     const { page, size } = req.query
-    
+
     res.json({
         forms: await FormService.getAll(Number(page), Number(size), user.id),
         totalData: await FormService.getTotalCount(user.id)
@@ -72,6 +90,7 @@ export default {
     update,
     findAll,
     find,
+    shareToEmail,
     remove,
     updatestatus
 }

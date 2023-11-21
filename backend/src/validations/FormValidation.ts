@@ -79,6 +79,18 @@ const find = {
     id: Joi.string().required()
 }
 
+const shareToEmail = {
+    params: Joi.object().keys({
+        id: Joi.string().required()
+    }),
+    body: Joi.object().keys({
+        email: Joi.string().required().email(),
+        subject: Joi.string().required(),
+        message: Joi.string().required()
+    })
+}
+
+
 const remove = {
     query: Joi.object().keys({
         id: Joi.string().required()
@@ -96,6 +108,7 @@ export default {
     update,
     findAll,
     find,
+    shareToEmail,
     remove,
     updatestatus
 }
