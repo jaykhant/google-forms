@@ -18,12 +18,18 @@ const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, update
 }) => {
     const schema = yup.object({
         email: yup.string().required('This is required field'),
+        subject: yup.string().required('This is required field'),
+        message: yup.string().required('This is required field'),
     }).required()
 
     const toast = useToast()
 
     const { handleSubmit, control, reset } = useForm({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues: {
+            subject: "Untitled form",
+            message: "I've invited you to fill in a form:",
+          },
     })
 
     useEffect(() => {
@@ -97,15 +103,33 @@ const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, update
                                 </Stack>
                                 <Stack gap={0} py={2}>
                                     <Text fontSize={14} color={'#70757a'}>Subject</Text>
-                                    <ElementInput value={form.subject} onChange={(value) => {
-                                        updateForm({ key: 'subject', value })
-                                    }} />
+                                    <Controller
+                                        name='subject'
+                                        control={control}
+                                        render={({ field: { onChange }, fieldState: { error } }) => {
+                                            return (
+                                                <ElementInput error={error} value={form.subject} onChange={(value) => {
+                                                    onChange(value)
+                                                    updateForm({ key: 'subject', value })
+                                                }} />
+                                            )
+                                        }}
+                                    />
                                 </Stack>
                                 <Stack gap={0} py={2}>
                                     <Text fontSize={14} color={'#70757a'}>Message</Text>
-                                    <ElementInput value={form.message} onChange={(value) => {
-                                        updateForm({ key: 'message', value })
-                                    }} />
+                                    <Controller
+                                        name='message'
+                                        control={control}
+                                        render={({ field: { onChange }, fieldState: { error } }) => {
+                                            return (
+                                                <ElementInput error={error} value={form.message} onChange={(value) => {
+                                                    onChange(value)
+                                                    updateForm({ key: 'message', value })
+                                                }} />
+                                            )
+                                        }}
+                                    />
                                 </Stack>
                             </TabPanel>
                             <TabPanel p={0} mt={3}>
