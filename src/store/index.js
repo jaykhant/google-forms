@@ -13,6 +13,7 @@ import form from './Form';
 import formSaga from './Form/saga';
 
 import shareForm from './ShareForm';
+import shareFormSaga from './ShareForm/saga';
 
 import responseView from './ResponseView'
 import responseViewSaga from './ResponseView/saga'
@@ -39,3 +40,4 @@ export const persistor = persistStore(store)
 sagaMiddleware.run(authSaga)
 sagaMiddleware.run(formSaga)
 sagaMiddleware.run(responseViewSaga)
+sagaMiddleware.run(shareFormSaga)
