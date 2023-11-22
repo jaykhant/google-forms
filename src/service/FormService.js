@@ -50,4 +50,13 @@ export default class FormService {
             throw new ErrorWrapper(error)
         }
     }
+
+    sendEmail = async ({ formId, form }) => {
+        try {
+            const response = await this.http.post(`/${formId}`, form)
+            return new ResponseWrapper(response).data
+        } catch (error) {
+            throw new ErrorWrapper(error)
+        }
+    }
 }

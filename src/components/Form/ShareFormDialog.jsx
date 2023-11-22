@@ -1,23 +1,53 @@
+import * as yup from "yup";
 import PropTypes from 'prop-types'
 import { connect } from "react-redux";
 import React, { useEffect } from "react"
 import ElementInput from '../Core/ElementInput'
 import { moduleTypes } from "../../store/type";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, useForm } from 'react-hook-form';
 import { EmailIcon, LinkIcon } from '@chakra-ui/icons';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { ShareFormReducerTypes } from "../../store/ShareForm/type";
+import { ShareFormActionTypes, ShareFormReducerTypes } from "../../store/ShareForm/type";
 import {
     Tab, Text, Tabs, Flex, Modal, Stack, Button, Divider, useToast, TabList, TabPanel, ModalBody,
     TabPanels, ModalFooter, ModalOverlay, ModalHeader, ModalContent, TabIndicator, ModalCloseButton,
 } from "@chakra-ui/react";
 
-const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, updateIsShareFormDialogOpen, isLoadingForShareForm, updateViewFormLink, isSelectEmail, updateIsSelectEmail, formId }) => {
+const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, updateIsShareFormDialogOpen, isLoadingForShareForm, updateViewFormLink, isSelectEmail, updateIsSelectEmail, formId, sendEmail, error, clearErrorMessage, clearForm
+}) => {
+    const schema = yup.object({
+        email: yup.string().required('This is required field'),
+        subject: yup.string().required('This is required field'),
+        message: yup.string().required('This is required field'),
+    }).required()
 
     const toast = useToast()
+
+    const { handleSubmit, control, reset } = useForm({
+        resolver: yupResolver(schema),
+        defaultValues: {
+            subject: "Untitled form",
+            message: "I've invited you to fill in a form:",
+          },
+    })
 
     useEffect(() => {
         updateViewFormLink(`${process.env.REACT_APP_URL}/response/submit/${formId}`)
     }, [formId, updateViewFormLink])
+
+    useEffect(() => {
+        if (error.message != '') {
+            toast({
+                position: 'top',
+                description: error.message,
+                status: error.type,
+                isClosable: true,
+                duration: 2000
+            })
+        }
+        clearErrorMessage()
+    }, [error.message, error.type, clearErrorMessage])
 
     return (
         <Modal
@@ -58,21 +88,48 @@ const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, update
                                 <Text fontWeight={'500'} py={2}>Email</Text>
                                 <Stack gap={0} py={2}>
                                     <Text fontSize={14} color={'#70757a'}>To</Text>
-                                    <ElementInput placeholder='Enter names or email addresses' value={form.to} onChange={(value) => {
-                                        updateForm({ key: 'to', value })
-                                    }} />
+                                    <Controller
+                                        name='email'
+                                        control={control}
+                                        render={({ field: { onChange }, fieldState: { error } }) => {
+                                            return (
+                                                <ElementInput placeholder='Enter names or email addresses' error={error} value={form.email} onChange={(value) => {
+                                                    onChange(value)
+                                                    updateForm({ key: 'email', value })
+                                                }} />
+                                            )
+                                        }}
+                                    />
                                 </Stack>
                                 <Stack gap={0} py={2}>
                                     <Text fontSize={14} color={'#70757a'}>Subject</Text>
-                                    <ElementInput value={form.subject} onChange={(value) => {
-                                        updateForm({ key: 'subject', value })
-                                    }} />
+                                    <Controller
+                                        name='subject'
+                                        control={control}
+                                        render={({ field: { onChange }, fieldState: { error } }) => {
+                                            return (
+                                                <ElementInput error={error} value={form.subject} onChange={(value) => {
+                                                    onChange(value)
+                                                    updateForm({ key: 'subject', value })
+                                                }} />
+                                            )
+                                        }}
+                                    />
                                 </Stack>
                                 <Stack gap={0} py={2}>
                                     <Text fontSize={14} color={'#70757a'}>Message</Text>
-                                    <ElementInput value={form.message} onChange={(value) => {
-                                        updateForm({ key: 'message', value })
-                                    }} />
+                                    <Controller
+                                        name='message'
+                                        control={control}
+                                        render={({ field: { onChange }, fieldState: { error } }) => {
+                                            return (
+                                                <ElementInput error={error} value={form.message} onChange={(value) => {
+                                                    onChange(value)
+                                                    updateForm({ key: 'message', value })
+                                                }} />
+                                            )
+                                        }}
+                                    />
                                 </Stack>
                             </TabPanel>
                             <TabPanel p={0} mt={3}>
@@ -88,14 +145,22 @@ const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, update
 
                 <ModalFooter>
                     <Button colorScheme='gray' variant='ghost' onClick={() => {
-                        updateIsShareFormDialogOpen(false)
+                        clearForm()
+                        reset()
                     }}>
                         Cancle
                     </Button>
                     {!isSelectEmail ?
-                        <Button color={'#4C2B87'} px={6} ml={3} colorScheme='gray' variant='outline' isLoading={isLoadingForShareForm} onClick={() => {
-                            console.log('send');
-                        }}>
+                        <Button
+                            px={6}
+                            ml={3}
+                            type='submit'
+                            color={'#4C2B87'}
+                            colorScheme='gray'
+                            variant='outline'
+                            isLoading={isLoadingForShareForm}
+                            onClick={handleSubmit(() => { sendEmail(formId) })}
+                        >
                             Send
                         </Button>
                         :
@@ -119,11 +184,15 @@ const ShareFormDialog = ({ isShareFormDialogOpen, updateForm, form, link, update
 }
 
 ShareFormDialog.propTypes = {
+    error: PropTypes.object,
     form: PropTypes.object,
     link: PropTypes.string,
     formId: PropTypes.string,
+    clearForm: PropTypes.func,
+    sendEmail: PropTypes.func,
     updateForm: PropTypes.func,
     isSelectEmail: PropTypes.bool,
+    clearErrorMessage: PropTypes.func,
     updateViewFormLink: PropTypes.func,
     updateIsSelectEmail: PropTypes.func,
     isShareFormDialogOpen: PropTypes.bool,
@@ -134,6 +203,7 @@ ShareFormDialog.propTypes = {
 const mapStateToProps = (state) => {
     return {
         form: state[moduleTypes.SHARE_FORM].form,
+        error: state[moduleTypes.SHARE_FORM].error,
         link: state[moduleTypes.SHARE_FORM].viewFormLink,
         isSelectEmail: state[moduleTypes.SHARE_FORM].isSelectEmail,
         isShareFormDialogOpen: state[moduleTypes.SHARE_FORM].isShareFormDialogOpen,
@@ -153,7 +223,16 @@ function mapDispatchToProps(dispatch) {
         },
         updateIsShareFormDialogOpen: (isShareFormDialogOpen) => {
             dispatch({ type: ShareFormReducerTypes.UPDATE_IS_SHARE_FORM_DIALOG_OPEN, isShareFormDialogOpen })
-        }
+        },
+        clearErrorMessage: () => {
+            dispatch({ type: ShareFormReducerTypes.CLEAR_ERROR_MESSAGE })
+        },
+        clearForm: () => {
+            dispatch({ type: ShareFormReducerTypes.CLEAR_FORM })
+        },
+        sendEmail: (formId) => {
+            dispatch({ type: ShareFormActionTypes.sendEmail, formId })
+        },
     })
 }
 
