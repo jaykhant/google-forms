@@ -6,16 +6,16 @@ import React, { useEffect } from "react";
 import Dashboard from "../pages/Dashboard";
 import ManageForm from '../pages/ManageForm';
 import Header from "../components/Core/Header";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import ResponseView from "../pages/ResponseView";
 import ResponseSubmit from "../pages/ResponseSubmit";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 function AppRouter({ isLoggedIn }) {
   const location = useLocation()
   const [containerHeight, setContainerHeight] = React.useState()
   const [loadMore, setLoadMore] = React.useState(false)
 
-  useEffect(() => {   
+  useEffect(() => {
     setContainerHeight(window.innerHeight)
   }, [])
 
@@ -37,13 +37,25 @@ function AppRouter({ isLoggedIn }) {
     >
       {isLoggedIn ? <Header /> : ''}
       <Routes>
-        <Route path="/sign-in" element={isLoggedIn ? <Navigate to="/" /> : <SignIn />} />
+        <Route path="/sign-in" element={
+          isLoggedIn && location.search == "" ?
+            <Navigate to="/" /> :
+            isLoggedIn & location.search != "" ?
+              <Navigate to={`/response/submit/${location.search.split('=').pop()}`} /> :
+              <SignIn />
+        }
+        />
         <Route path="/sign-up" element={isLoggedIn ? <Navigate to="/" /> : <SignUp />} />
 
         <Route path="/" element={isLoggedIn ? <Dashboard loadMore={loadMore} /> : <Navigate to="/sign-in" />} />
         <Route path="/form/:formId" element={isLoggedIn ? <ManageForm loadMore={loadMore} /> : <Navigate to="/sign-in" />} />
 
-        <Route path="/response/submit/:formId" element={isLoggedIn ? <ResponseSubmit /> : <Navigate to="/sign-in" />} />
+        <Route path="/response/submit/:formId" element={
+          isLoggedIn ? <ResponseSubmit /> :
+            <Navigate to={`/sign-in?redirect=${location.pathname.split('/').pop()}`
+            } />
+        }
+        />
         <Route path="/response/:responseId" element={isLoggedIn ? <ResponseView /> : <Navigate to="/sign-in" />} />
       </Routes>
     </div>
